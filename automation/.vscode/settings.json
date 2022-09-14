@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "https://json.schemastore.org/eslintrc.json": "file:///home/pdavis/projects/saas/preston/openshift-microservices/automation/boutique-allinone-pipeline.yaml"
+    }
+}
