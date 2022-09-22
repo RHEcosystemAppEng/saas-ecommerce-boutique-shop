@@ -20,6 +20,7 @@ public class Tenant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private String tenantKey;
     private String tenantUserName;
     private String orgName;
     private String address;

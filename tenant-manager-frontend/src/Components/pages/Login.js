@@ -1,14 +1,16 @@
 import React from 'react';
-import background from '../../images/background.png';
 import redHatLogo from '../../images/Logo-Red_Hat.png';
 import {
+    ListItem,
+    ListVariant,
     LoginFooterItem,
     LoginForm,
     LoginMainFooterBandItem,
     LoginMainFooterLinksItem,
     LoginPage,
-    ListItem,
-    ListVariant
+    Tab,
+    Tabs,
+    TabTitleText
 } from '@patternfly/react-core';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
 import axios from "../../axios-middleware";
@@ -23,6 +25,7 @@ export const Login = () => {
     const [password, setPassword] = React.useState('');
     const [isValidPassword, setIsValidPassword] = React.useState(true);
     const [isRememberMeChecked, setIsRememberMeChecked] = React.useState(false);
+    const [activeTabKey, setActiveTabKey] = React.useState(0);
     const handleUsernameChange = value => {
         setUsername(value);
         setShowHelperText(false)
@@ -34,6 +37,9 @@ export const Login = () => {
     const onRememberMeClick = () => {
         setIsRememberMeChecked(!isRememberMeChecked);
     };
+    const handleTabClick = (event, tabIndex) => {
+        setActiveTabKey(tabIndex)
+    };
     const onLoginButtonClick = event => {
         event.preventDefault();
         setIsValidUsername(!!username);
@@ -44,18 +50,58 @@ export const Login = () => {
             "email": username,
             "password": password
         }
+        switch (activeTabKey) {
+            case 0:
+                manageTenantLogin(formData);
+                break;
+            case 1:
+                manageManagerLogin(formData);
+                break;
+            case 2:
+                manageOpsLogin(formData);
+                break;
+        }
+    };
 
+    const manageTenantLogin = (formData) => {
         axios
             .post("/login", formData)
             .then((res) => {
                 localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
-                navigate("/dashboard/"+res.data.id)
+                localStorage.setItem("tenantKey", res.data.key)
+                navigate("/dashboard/" + res.data.id)
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))
                 setShowHelperText(true)
             })
-    };
+    }
+
+    const manageManagerLogin = (formData) => {
+        axios
+            .post("/mgr-login", formData)
+            .then((res) => {
+                localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
+                navigate("/mgr-dashboard")
+            })
+            .catch((err) => {
+                console.error(JSON.stringify(err))
+                setShowHelperText(true)
+            })
+    }
+
+    const manageOpsLogin = (formData) => {
+        axios
+            .post("/ops-login", formData)
+            .then((res) => {
+                localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
+                navigate("/ops-dashboard")
+            })
+            .catch((err) => {
+                console.error(JSON.stringify(err))
+                setShowHelperText(true)
+            })
+    }
     const socialMediaLoginContent = <React.Fragment>
         <LoginMainFooterLinksItem href="#" linkComponentProps={{
             'aria-label': 'Login with Google'
@@ -102,7 +148,7 @@ export const Login = () => {
         Need an account? <a href="/register">Sign up.</a>
     </LoginMainFooterBandItem>;
     const forgotCredentials = <LoginMainFooterBandItem>
-        <a href="src/Components/pages/SimpleLoginPage#Login.js">Forgot username or password?</a>
+        <a href="#">Forgot username or password?</a>
     </LoginMainFooterBandItem>;
     const listItem = <React.Fragment>
         <ListItem>
@@ -136,6 +182,24 @@ export const Login = () => {
                       loginTitle="Log in to your tenant account" loginSubtitle="Enter your tenant credentials."
                       socialMediaLoginContent={socialMediaLoginContent}
                       signUpForAccountMessage={signUpForAccountMessage} forgotCredentials={forgotCredentials}>
-        {loginForm}
+
+        <Tabs
+            activeKey={activeTabKey}
+            onSelect={handleTabClick}
+            aria-label="Tabs in the example with a tooltip ref"
+            role="region"
+        >
+            <Tab eventKey={0} title={<TabTitleText>Tenant Login</TabTitleText>}
+                 aria-label="Tooltip ref content - users">
+                {loginForm}
+            </Tab>
+            <Tab eventKey={1} title={<TabTitleText>Manager Login</TabTitleText>}>
+                {loginForm}
+            </Tab>
+            <Tab eventKey={2} title={<TabTitleText>Operation Login</TabTitleText>}>
+                {loginForm}
+            </Tab>
+        </Tabs>
+
     </LoginPage>;
 };
