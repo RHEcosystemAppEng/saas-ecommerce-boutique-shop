@@ -40,4 +40,22 @@ echo "The shop url is "http://${ROUTE}""
 oc apply -f ${PWD}/boutique-quota.yaml
 #
 # Apply autoscaling for the frontend service
-oc apply -f ${PWD}/frontend-hpa.yaml
+oc apply -f ${PWD}/autoscaler/frontend-hpa.yaml
+
+# Apply autoscaling for the addservice service
+oc apply -f ${PWD}/autoscaler/addservice-hpa.yaml
+
+# Apply autoscaling for the cart service
+oc apply -f ${PWD}/autoscaler/cartservice-hpa.yaml
+
+# Apply autoscaling for the checkout service
+oc apply -f ${PWD}/autoscaler/checkoutservice-hpa.yaml
+
+# Apply autoscaling for the productcatalog service
+oc apply -f ${PWD}/autoscaler/productcatalogservice-hpa.yaml
+
+# Apply autoscaling for the redis service
+oc apply -f ${PWD}/autoscaler/redisservice-hpa.yaml
+
+# Apply autoscaling for the shipping service
+oc apply -f ${PWD}/autoscaler/shippingservice-hpa.yaml
