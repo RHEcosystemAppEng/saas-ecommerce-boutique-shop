@@ -26,9 +26,9 @@ import {
 import redHatLogo from '../../images/Logo-Red_Hat.png';
 import avatar from '../../images/avatar.png';
 import {DashboardTable} from '../DashboardTable'
-import { useParams } from 'react-router-dom';
-import {useNavigate} from "react-router-dom"
+import {useNavigate, useParams, Link} from 'react-router-dom';
 import {clearLocalStorage} from "../../Utils/Helper";
+
 const Dashboard = () => {
 
     const navigate = useNavigate();
@@ -46,6 +46,7 @@ const Dashboard = () => {
 
     const userDropdownItems = [
         <DropdownGroup key="group 2">
+            <DropdownItem key="group 2 update" href={"/update-limits"}>Update Resource Limits</DropdownItem>
             <DropdownItem key="group 2 logout" onClick={clearLocalStorageData}>Logout</DropdownItem>
         </DropdownGroup>
     ];
@@ -103,6 +104,7 @@ const Dashboard = () => {
                     </TextContent>
                 </PageSection>
             }
+            style={{height:"100vh"}}
         >
             <PageSection>
                 <Panel>

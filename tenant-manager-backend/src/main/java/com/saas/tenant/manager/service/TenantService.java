@@ -6,6 +6,7 @@ import com.saas.tenant.manager.repository.SubscriptionRepository;
 import com.saas.tenant.manager.repository.TenantRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ public class TenantService {
 
     public Tenant save(String email, String pwd, String tenantName, String orgName, String address, String phone, String contactPerson){
         Tenant newTenant = new Tenant();
+        newTenant.setTenantKey(generateTenantKey());
         newTenant.setTenantUserName(tenantName);
         newTenant.setOrgName(orgName);
         newTenant.setAddress(address);
@@ -38,6 +40,10 @@ public class TenantService {
         return tenantRepository.findUserByEmailAndPasswordAndStatus(email, pwd, status);
     }
 
+    public List<?> getTierCounts() {
+        return tenantRepository.getTierCount();
+    }
+
     public Optional<Tenant> findLatestTenant(Tenant oldTenant) {
 
         Optional<Tenant> byId = tenantRepository.findById(oldTenant.getId());
@@ -47,14 +53,16 @@ public class TenantService {
     }
 
     public Optional<Tenant> getTenantById(Long tenantId) {
-        Optional<Tenant> byId = tenantRepository.findById(tenantId);
-//        Set<Subscription> subscriptions = subscriptionRepository.findAllByTenantId(tenantId);
-//        byId.get().setSubscriptionSet(subscriptions);
-        return byId;
+        return tenantRepository.findById(tenantId);
     }
 
     public boolean isEmailAlreadyExists(String email) {
         Optional<Tenant> optionalTenant = tenantRepository.findByEmail(email);
         return optionalTenant.isPresent();
+    }
+
+    private String generateTenantKey(){
+        String tmpStr = System.currentTimeMillis() + "";
+        return tmpStr.substring(0, 10);
     }
 }

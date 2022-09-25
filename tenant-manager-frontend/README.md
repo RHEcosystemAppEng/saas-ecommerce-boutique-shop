@@ -25,6 +25,16 @@ Please refer to [this repository](https://github.com/RHEcosystemAppEng/saas-tena
 git clone https://github.com/RHEcosystemAppEng/saas-tenant-manager-ui.git
 cd tenant-manager-ui
 npm install
+```
+
+Define the saas-manager-backend url as an environment variable.
+
+| Variable Name |        Description         | Example |
+| :---: |:--------------------------:| :---: |
+| `REACT_APP_BACKEND_URI` | Tenant Manager Backend URL | localhost:8081 |
+
+Start the application by running:
+```shell
 npm run start
 ```
 

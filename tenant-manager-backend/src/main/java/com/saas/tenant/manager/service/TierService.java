@@ -9,12 +9,19 @@ public class TierService {
         switch (tier) {
             case "free":
                 return 0.0;
-            case "silver" :
-                return (avgNumOfShoppers/100.0)*10;
-            case "gold" :
-                return (avgNumOfShoppers/100.0)*20;
+            case "silver":
+                return (avgNumOfShoppers / 100.0) * 10;
+            case "gold":
+                return (avgNumOfShoppers / 100.0) * 20;
         }
 
         return 0.0;
+    }
+
+    public int[] calculateInstanceCount(String tier, int avgNumOfShoppers, int peakNumOfShoppers) {
+        int min = avgNumOfShoppers / 50;
+        int max = peakNumOfShoppers / 50;
+
+        return new int[]{min, max};
     }
 }

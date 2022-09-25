@@ -27,10 +27,8 @@ public class Subscription {
     @Column(name = "service_level")
     private String serviceLevel;
     private String url;
-    private String avgConcurrentShoppers;
-    private String peakConcurrentShoppers;
-    private String fromTime;
-    private String toTime;
+    @Column(name = "domain_url")
+    private String domainUrl;
     private String status;
 
     @CreatedDate

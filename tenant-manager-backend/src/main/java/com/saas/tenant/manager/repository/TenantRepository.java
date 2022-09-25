@@ -1,6 +1,7 @@
 package com.saas.tenant.manager.repository;
 
 import com.saas.tenant.manager.model.Tenant;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.transaction.Transactional;
@@ -18,5 +19,8 @@ public interface TenantRepository extends CrudRepository<Tenant, Long> {
     Optional<Tenant> findById(Long id);
 
     Optional<Tenant> findByEmail(String email);
+
+    @Query( nativeQuery = true, value = "SELECT s.service_level, COUNT(*) FROM tenant_db.tenant t, tenant_db.subscription s WHERE t.id = s.tenant GROUP BY s.service_level")
+    List<?> getTierCount();
 
 }

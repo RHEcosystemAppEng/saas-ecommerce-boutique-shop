@@ -21,19 +21,12 @@ public class SubscriptionService {
     }
 
     public Subscription save(Tenant tenant,
-                             String serviceLevel,
-                             String avgConcurrentShoppers,
-                             String peakConcurrentShoppers,
-                             String fromTime, String toTime) {
+                             String serviceLevel) {
 
         Subscription subscription = new Subscription();
         subscription.setTenantName(tenant.getTenantUserName());
         subscription.setTenant(tenant);
         subscription.setServiceLevel(serviceLevel);
-        subscription.setAvgConcurrentShoppers(avgConcurrentShoppers);
-        subscription.setPeakConcurrentShoppers(peakConcurrentShoppers);
-        subscription.setFromTime(fromTime);
-        subscription.setToTime(toTime);
         subscription.setStatus("Pending");
         subscription.setCreatedDate(Instant.now());
 
@@ -43,7 +36,7 @@ public class SubscriptionService {
                 System.currentTimeMillis();
 
         try {
-            ProcessBuilder pb = new ProcessBuilder("./src/main/resources/ocp/create-namespace.sh", namespaceName);
+            ProcessBuilder pb = new ProcessBuilder("./src/main/resources/boutique_files/create-namespace.sh", namespaceName);
             Process p = pb.start();
             InputStream is = p.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
