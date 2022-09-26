@@ -29,7 +29,7 @@ oc apply -f ${PWD}/all-in-one.yaml
 # **Need to create logic to monitor the website until the service is up and running**
 #
 # Expose the frontend service
-oc expose svc frontend --name=$1-route --hostname=$2.pebcac.org
+oc expose svc frontend --name=$1-route # --hostname=$2.pebcac.org
 #
 # Get the url for the website
 ROUTE=`oc get route | cut -d" " -f4`
@@ -43,10 +43,19 @@ oc apply -f ${PWD}/boutique-quota.yaml
 oc apply -f ${PWD}/autoscaler/frontend-hpa.yaml
 
 # Apply autoscaling for the addservice service
-oc apply -f ${PWD}/autoscaler/addservice-hpa.yaml
+oc apply -f ${PWD}/autoscaler/adservice-hpa.yaml
 
 # Apply autoscaling for the cart service
 oc apply -f ${PWD}/autoscaler/cartservice-hpa.yaml
+
+# Apply autoscaling for the currency service
+oc apply -f ${PWD}/autoscaler/currencyservice-hpa.yaml
+
+# Apply autoscaling for the email service
+oc apply -f ${PWD}/autoscaler/emailservice-hpa.yaml
+
+# Apply autoscaling for the payment service
+oc apply -f ${PWD}/autoscaler/paymentservice-hpa.yaml
 
 # Apply autoscaling for the checkout service
 oc apply -f ${PWD}/autoscaler/checkoutservice-hpa.yaml
@@ -56,6 +65,9 @@ oc apply -f ${PWD}/autoscaler/productcatalogservice-hpa.yaml
 
 # Apply autoscaling for the redis service
 oc apply -f ${PWD}/autoscaler/redisservice-hpa.yaml
+
+# Apply autoscaling for the recommendation service
+oc apply -f ${PWD}/autoscaler/recommendservice-hpa.yaml
 
 # Apply autoscaling for the shipping service
 oc apply -f ${PWD}/autoscaler/shippingservice-hpa.yaml
