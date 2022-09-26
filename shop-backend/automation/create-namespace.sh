@@ -2,7 +2,7 @@
 
 # Remove the export variable if it already exists, set the new variable, then export it.
 unset NAMESPACE
-NAMESPACE=$1
+NAMESPACE=boutique
 export NAMESPACE
 #
 # Check if the namespace already exists
@@ -32,7 +32,7 @@ oc apply -f ${PWD}/all-in-one.yaml
 oc expose svc frontend --name=$1-route # --hostname=$2.pebcac.org
 #
 # Get the url for the website
-ROUTE=`oc get route | cut -d" " -f4`
+ROUTE=`oc get route | cut -d" " -f4 | xargs`
 #for i in `curl -kvv $ROUTE`; do grep "HTTP\/1.1 200"
 echo "The shop url is "http://${ROUTE}""
 #
