@@ -53,6 +53,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: tenant-controller-mysql-password
+  namespace: saas-boutique
 type: opaque
 stringData:
   MYSQL_ROOT_PASSWORD: redhat
@@ -79,6 +80,8 @@ spec:
       containers:
         - name: mysql
           image: mysql:5.7
+          args:
+            - "--ignore-db-dir=lost+found"
           ports:
             - containerPort: 3306
           volumeMounts:
@@ -162,7 +165,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8080
+      targetPort: 8081
 
 ---
 
@@ -181,3 +184,49 @@ spec:
     termination: edge
     insecureEdgeTerminationPolicy: Allow
   wildcardPolicy: None
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-manager-frontend
+  namespace: saas-boutique
+  labels:
+    app.kubernetes.io/name: tenant-manager-frontend
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tenant-manager-frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tenant-manager-frontend
+    spec:
+      containers:
+        - name: tenant-manager-frontend
+          image: quay.io/jnirosha/tenant-manager-frontend:latest
+          imagePullPolicy: Always
+          env:
+            - name: REACT_APP_BACKEND_URI
+              value: tenant-controller-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenant-frontend-service
+  namespace: saas-boutique
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: tenant-manager-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
