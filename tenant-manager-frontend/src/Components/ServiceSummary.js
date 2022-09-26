@@ -45,7 +45,7 @@ export class ServiceSummary extends React.Component {
     };
 
     getSelectedTier = () => {
-        return localStorage.getItem("tier") || "";
+        return localStorage.getItem("tier") || this.props.tier || "";
     }
     render() {
         return <Form>

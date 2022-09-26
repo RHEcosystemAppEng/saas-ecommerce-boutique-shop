@@ -21,14 +21,18 @@ import {
 import readHatLogo from "../../images/Logo-Red_Hat.png";
 import {ServiceDetailsForm} from "../ServiceDetailsForm";
 import {ServiceSummary} from "../ServiceSummary";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {clearLocalStorage} from "../../Utils/Helper";
 
-export const UpdateResources = () => {
+export const UpdateResources = (props) => {
     const navigate = useNavigate();
     const [isPrimaryLoading, setIsPrimaryLoading] = React.useState(false);
     const [isBtnDisabled, setIsBtnDisabled] = React.useState(false);
     const [resourceData, setResourceData] = React.useState([]);
+    const [tier, setTier] = React.useState("");
+    const [peakConcurrentShoppers, setPeakConcurrentShoppers] = React.useState(0);
+    const [avgConcurrentShoppers, setAvgConcurrentShoppers] = React.useState(0);
+    const { id } = useParams();
 
     useEffect(() => {
         getResourceData()
@@ -39,8 +43,12 @@ export const UpdateResources = () => {
             .get("/get-current-request/"+localStorage.getItem("tenantKey"))
             .then((res) => {
                 setResourceData(res.data)
+                setTier(res.data.newTier)
+                setAvgConcurrentShoppers(res.data.avgConcurrentShoppers)
+                setPeakConcurrentShoppers(res.data.peakConcurrentShoppers)
                 localStorage.setItem("peakConcurrentShoppers", res.data.peakConcurrentShoppers);
                 localStorage.setItem("avgConcurrentShoppers", res.data.avgConcurrentShoppers);
+                localStorage.setItem("tier", res.data.newTier);
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))
@@ -51,6 +59,7 @@ export const UpdateResources = () => {
         setIsPrimaryLoading(!isPrimaryLoading)
         const formData = {
             "tenantName": localStorage.getItem("tenantName") || "",
+            "tier": localStorage.getItem("tier") || "",
             "avgConcurrentShoppers": localStorage.getItem("avgConcurrentShoppers") || null,
             "peakConcurrentShoppers": localStorage.getItem("peakConcurrentShoppers") || null,
         }
@@ -84,12 +93,12 @@ export const UpdateResources = () => {
         {
             id: 1,
             name: 'Service Details',
-            component: <ServiceDetailsForm/>
+            component: <ServiceDetailsForm peakConcurrentShoppers={peakConcurrentShoppers} avgConcurrentShoppers={avgConcurrentShoppers}/>
         },
         {
             id: 2,
             name: 'Summary',
-            component: <ServiceSummary/>,
+            component: <ServiceSummary tier={tier}/>,
             nextButtonText: 'Finish'
         }
     ];
@@ -105,14 +114,7 @@ export const UpdateResources = () => {
                                 <Button variant="primary" type="submit" onClick={onNext}>
                                     Next
                                 </Button>
-                                <Button
-                                    variant="secondary"
-                                    onClick={onBack}
-                                    className={activeStep.name === 'Business Information' ? 'pf-m-disabled' : ''}
-                                >
-                                    Back
-                                </Button>
-                                <a href="/login">
+                                <a href={"/dashboard/"+id}>
                                     <Button variant="link">
                                         Cancel
                                     </Button>
@@ -140,8 +142,7 @@ export const UpdateResources = () => {
                             </Button>
                             <Button variant="link"
                                     isDisabled={isBtnDisabled}
-                                    onClick={() => goToStepByName('Business Information')}>Go to
-                                Beginning</Button>
+                                    onClick={onBack}>Back</Button>
                         </>
                     );
                 }}
@@ -157,6 +158,7 @@ export const UpdateResources = () => {
                     <Page
                         header={Header}
                         mainContainerId={pageId}
+                        style={{height:"100vh"}}
                     >
                         <PageSection variant={PageSectionVariants.light}>
                             <TextContent>

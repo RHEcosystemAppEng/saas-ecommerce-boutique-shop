@@ -34,9 +34,11 @@ public class SubscriptionService {
 
         String namespaceName = savedSubscription.getTenantName().replaceAll("\\s", "-") +
                 System.currentTimeMillis();
+        String directoryPath = "./src/main/resources/boutique_files";
 
         try {
-            ProcessBuilder pb = new ProcessBuilder("./src/main/resources/boutique_files/create-namespace.sh", namespaceName);
+//            System.out.println("JUDE ADDED FILE PATH==="+Paths.get(SubscriptionService.class.getProtectionDomain().getCodeSource().getLocation().getPath()));
+            ProcessBuilder pb = new ProcessBuilder( directoryPath+"/create-namespace.sh", namespaceName, directoryPath);
             Process p = pb.start();
             InputStream is = p.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));

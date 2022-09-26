@@ -4,6 +4,7 @@ import {Register} from "./Components/pages/Register"
 import {UpdateResources} from "./Components/pages/UpdateResources"
 import Dashboard from "./Components/pages/Dashboard"
 import ManagerDashboard from "./Components/pages/ManagerDashboard"
+import OpsDashboard from "./Components/pages/OpsDashboard"
 
 function App() {
     return (
@@ -12,9 +13,10 @@ function App() {
                     <Routes>
                         <Route path="/*" element={<Login/>}/>
                         <Route path="/register" element={<Register/>}/>
-                        <Route path="/update-limits" element={<UpdateResources/>}/>
+                        <Route path="/update-limits/:id" element={<UpdateResources/>}/>
                         <Route path="/dashboard/:id" element={<Dashboard/>}/>
                         <Route path="/mgr-dashboard" element={<ManagerDashboard/>}/>
+                        <Route path="/ops-dashboard" element={<OpsDashboard/>}/>
                     </Routes>
                 </BrowserRouter>
         </div>

@@ -9,4 +9,3 @@ spec:
     pods: '24'
     requests.cpu: '4'
     requests.memory: 6Gi
-

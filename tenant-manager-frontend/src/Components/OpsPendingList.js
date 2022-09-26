@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {TableComposable, Tbody, Td, Thead, Tr} from "@patternfly/react-table";
 import axios from "../axios-middleware";
 
-export const ManagerPendingList = () => {
+export const OpsPendingList = () => {
     const [pendingData, setPendingData] = React.useState([]);
 
     useEffect(() => {
@@ -34,6 +34,7 @@ export const ManagerPendingList = () => {
                     <Td modifier="wrap">Prev. Max Instances</Td>
                     <Td modifier="wrap">New Min Instances</Td>
                     <Td modifier="wrap">New Max Instances</Td>
+                    <Td modifier="wrap">Action</Td>
                 </Tr>
             </Thead>
             <Tbody>

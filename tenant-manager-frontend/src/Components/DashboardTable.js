@@ -1,11 +1,9 @@
 import React, {useEffect} from 'react';
 import {Caption, TableComposable, Tbody, Td, Tr} from '@patternfly/react-table';
 import axios from "../axios-middleware";
-import {Link} from "react-router-dom";
 
 
 export const DashboardTable = (props) => {
-    console.log("Tenant ID=" + props.tenantId)
     const [tenant, setTenant] = React.useState({});
     const [subscription, setSubscription] = React.useState({});
 

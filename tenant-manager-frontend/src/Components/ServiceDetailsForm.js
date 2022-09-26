@@ -2,12 +2,13 @@ import React from 'react';
 import {Flex, FlexItem, Form, FormGroup, Popover, TextInput, TimePicker} from '@patternfly/react-core';
 import HelpIcon from '@patternfly/react-icons/dist/esm/icons/help-icon';
 
-export const ServiceDetailsForm = () => {
+export const ServiceDetailsForm = (props) => {
     const [avgConcurrentShoppers, setAvgConcurrentShoppers] = React.useState(() => {
-        return localStorage.getItem("avgConcurrentShoppers") || 0;
+        return localStorage.getItem("avgConcurrentShoppers") || props.avgConcurrentShoppers || 0;
     });
     const [peakConcurrentShoppers, setPeakConcurrentShoppers] = React.useState(() => {
-        return localStorage.getItem("peakConcurrentShoppers") || 0;
+        return localStorage.getItem("peakConcurrentShoppers") || props.peakConcurrentShoppers ||
+        0;
     });
     const [fromTime, setFromTime] = React.useState(() => {
         return localStorage.getItem("fromTime") || "";

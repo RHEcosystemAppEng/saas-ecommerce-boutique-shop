@@ -82,6 +82,18 @@ public class TenantManager {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
+    @PostMapping("/ops-login")
+    public ResponseEntity<String> submitOperationLogin(@RequestBody Map<String, String> reqBody) {
+        String email = reqBody.get("email");
+        String password = reqBody.get("password");
+        if (email.equals("admin") && password.equals("redhat")) {
+            JsonObject respObj = new JsonObject();
+            respObj.addProperty("loggedInUserName", "Tenant Manager");
+            return ResponseEntity.ok(respObj.toString());
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<String> submitSignup(@RequestBody Map<String, String> reqBody) {
         String email = reqBody.get("email");
@@ -139,9 +151,30 @@ public class TenantManager {
     @PostMapping("/resource-request")
     public ResponseEntity<String> createResourceRequest(@RequestBody Map<String, String> reqBody) {
 
+        String tenantName = reqBody.get("tenantName");
         String avgConcurrentShoppers = reqBody.get("avgConcurrentShoppers");
         String peakConcurrentShoppers = reqBody.get("peakConcurrentShoppers");
-        return ResponseEntity.ok(String.valueOf("1"));
+        String tier = reqBody.get("tier");
+        ResourceRequest resourceRequest = resourceRequestService.getLastValidResourceRequest(tenantName);
+        resourceRequest.setOldMaxInstances(resourceRequest.getNewMaxInstances());
+        resourceRequest.setOldMinInstances(resourceRequest.getNewMinInstances());
+
+        resourceRequest.setId(null);
+        resourceRequest.setCreatedDate(null);
+        resourceRequest.setUpdatedDate(null);
+        resourceRequest.setAvgConcurrentShoppers(avgConcurrentShoppers);
+        resourceRequest.setPeakConcurrentShoppers(peakConcurrentShoppers);
+        int[] instanceCount = tierService.calculateInstanceCount(tier,
+                Integer.parseInt(avgConcurrentShoppers), Integer.parseInt(peakConcurrentShoppers));
+        resourceRequest.setNewMinInstances(String.valueOf(instanceCount[0]));
+        resourceRequest.setNewMaxInstances(String.valueOf(instanceCount[1]));
+        ResourceRequest savedResourceRequest = resourceRequestService.createResourceRequest(resourceRequest);
+
+        JsonObject respObj = new JsonObject();
+        System.out.println("Jude ADDED" + savedResourceRequest.getTenant().getId());
+        respObj.addProperty("id", savedResourceRequest.getTenant().getId());
+        respObj.addProperty("loggedInUserName", savedResourceRequest.getTenant().getTenantUserName());
+        return ResponseEntity.ok(respObj.toString());
     }
 
     @GetMapping("/getTierCounts")

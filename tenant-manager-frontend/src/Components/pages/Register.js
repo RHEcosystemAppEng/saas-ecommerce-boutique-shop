@@ -180,6 +180,7 @@ export const Register = (props) => {
                     <Page
                         header={Header}
                         mainContainerId={pageId}
+                        style={{height:"100vh"}}
                     >
                         <PageSection variant={PageSectionVariants.light}>
                             <TextContent>

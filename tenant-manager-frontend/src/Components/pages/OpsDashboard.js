@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {
     Avatar,
     Brand,
+    Divider,
     Dropdown,
     DropdownGroup,
     DropdownItem,
@@ -10,12 +11,13 @@ import {
     MastheadBrand,
     MastheadContent,
     MastheadMain,
+    Nav,
+    NavItem,
+    NavList,
     Page,
     PageSection,
     PageSectionVariants,
-    Panel,
-    PanelMain,
-    PanelMainBody,
+    PageSidebar,
     Text,
     TextContent,
     Toolbar,
@@ -25,17 +27,25 @@ import {
 } from '@patternfly/react-core';
 import redHatLogo from '../../images/Logo-Red_Hat.png';
 import avatar from '../../images/avatar.png';
-import {DashboardTable} from '../DashboardTable'
-import {useNavigate, useParams, Link} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {clearLocalStorage} from "../../Utils/Helper";
+import {ManagerDataList} from "../ManagerDataList";
+import {ManagerPendingList} from "../ManagerPendingList";
 
-const Dashboard = () => {
+const OpsDashboard = () => {
 
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [activeItem, setActiveItem] = useState(0);
     const { id } = useParams();
     const onDropdownSelect = event => {
         setIsDropdownOpen(!isDropdownOpen)
+    };
+
+    const onNavSelect = result => {
+        this.setState({
+            activeItem: result.itemId
+        });
     };
 
     const clearLocalStorageData = () => {
@@ -46,7 +56,6 @@ const Dashboard = () => {
 
     const userDropdownItems = [
         <DropdownGroup key="group 2">
-            <DropdownItem key="group 2 update" href={"/update-limits/"+id}>Update Resource Limits</DropdownItem>
             <DropdownItem key="group 2 logout" onClick={clearLocalStorageData}>Logout</DropdownItem>
         </DropdownGroup>
     ];
@@ -91,32 +100,51 @@ const Dashboard = () => {
         </Masthead>
     );
 
+    const PageNav = (
+        <Nav onSelect={onNavSelect} aria-label="Nav">
+            <NavList>
+                <NavItem href="#" itemId={0} isActive={activeItem === 0}>
+                    System panel
+                </NavItem>
+            </NavList>
+        </Nav>
+    );
+
+    const Sidebar = <PageSidebar nav={PageNav} />;
+    const pageId = 'main-content-page-layout-tertiary-nav';
     return (
         <Page
             header={Header}
-            additionalGroupedContent={
-                <PageSection variant={PageSectionVariants.light}>
-                    <TextContent>
-                        <Text component="h1">Subscription Information</Text>
-                        <Text component="p">
-                            You have the following subscription registered to your account.
-                        </Text>
-                    </TextContent>
-                </PageSection>
-            }
+            sidebar={Sidebar}
+            isManagedSidebar
+            isTertiaryNavWidthLimited
+            isBreadcrumbWidthLimited
+            mainContainerId={pageId}
+            isTertiaryNavGrouped
+            breadcrumbProps={{
+                stickyOnBreakpoint: {
+                    md: 'top'
+                }
+            }}
             style={{height:"100vh"}}
         >
-            <PageSection>
-                <Panel>
-                    <PanelMain>
-                        <PanelMainBody>
-                            <DashboardTable tenantId={id}/>
-                        </PanelMainBody>
-                    </PanelMain>
-                </Panel>
+            <PageSection variant={PageSectionVariants.light}>
+                <TextContent>
+                    <Text component="h1">Tenant Summary</Text>
+                    <Text component="p">
+                        Aggregated Silver and Gold Tier tenant data
+                    </Text>
+                </TextContent>
+            </PageSection>
+            <PageSection isWidthLimited>
+                <ManagerDataList />
+            </PageSection>
+            <Divider/>
+            <PageSection isWidthLimited>
+                <ManagerPendingList />
             </PageSection>
         </Page>
     );
 }
 
-export default Dashboard
+export default OpsDashboard

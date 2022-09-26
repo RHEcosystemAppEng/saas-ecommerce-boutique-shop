@@ -193,7 +193,7 @@ export const Login = () => {
                  aria-label="Tooltip ref content - users">
                 {loginForm}
             </Tab>
-            <Tab eventKey={1} title={<TabTitleText>Manager Login</TabTitleText>}>
+            <Tab eventKey={1} title={<TabTitleText>Business Login</TabTitleText>}>
                 {loginForm}
             </Tab>
             <Tab eventKey={2} title={<TabTitleText>Operation Login</TabTitleText>}>
