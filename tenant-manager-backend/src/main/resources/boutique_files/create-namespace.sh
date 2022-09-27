@@ -19,25 +19,38 @@ export PWD
 #  name: ${NAMESPACE}" | oc apply -f -
 #fi
 oc create ns $NAMESPACE
+echo "Namespace created"
 #
 # Modify privileges for the default service account in scc. This step needs to be reviewed as the gives the service account too much privileges.
 oc create sa tenant-controller-sa -n boutique
+echo "Mocked sa created"
 
 oc adm policy add-scc-to-user privileged -z default -n boutique
+echo "oc adm policy add-scc-to-user privileged -z default -n boutique"
+
 oc adm policy add-scc-to-user privileged -z default -n saas-boutique
+echo "oc adm policy add-scc-to-user privileged -z default -n saas-boutique"
+
 oc adm policy add-scc-to-user privileged -z tenant-controller-sa -n saas-boutique
+echo "oc adm policy add-scc-to-user privileged -z tenant-controller-sa -n saas-boutique"
+
 oc adm policy add-scc-to-user privileged -z tenant-controller-sa -n boutique
+echo "oc adm policy add-scc-to-user privileged -z tenant-controller-sa -n boutique"
 #
 # Change into the new Namespace
 oc project ${NAMESPACE}
+echo "oc project ${NAMESPACE}"
+
 #
 # Deploy the all-in-one application stack
 oc apply -f ${PWD}/all-in-one.yaml
+echo "oc apply -f ${PWD}/all-in-one.yaml"
 #
 # **Need to create logic to monitor the website until the service is up and running**
 #
 # Expose the frontend service
-oc expose svc frontend --name=$1-route # --hostname=$2.pebcac.org
+oc expose svc frontend --name=$NAMESPACE-route # --hostname=$2.pebcac.org
+echo "oc expose svc frontend --name=$NAMESPACE-route"
 #
 # Sleep statement to allow for the frontend service to come online
 sleep 10
