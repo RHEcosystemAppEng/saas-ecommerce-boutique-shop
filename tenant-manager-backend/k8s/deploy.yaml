@@ -139,7 +139,7 @@ spec:
       serviceAccountName: tenant-controller-sa
       containers:
         - name: tenant-manager-backend
-          image: quay.io/pdred/backend:latest
+          image: quay.io/jnirosha/tenant-manager-backend:latest
           imagePullPolicy: Always
           env:
             - name: MYSQL_ROOT_PASSWORD
@@ -228,9 +228,9 @@ spec:
       serviceAccountName: nginx-sa
       containers:
         - name: tenant-manager-frontend
-          image: quay.io/pdred/frontend:latest
+          image: quay.io/jnirosha/tenant-manager-frontend:latest
           imagePullPolicy: Always
-          env: 
+          env:
             - name: REACT_APP_BACKEND_URI
               value: https://tenant-controller-route-saas-boutique.apps.ocp.pebcac.org/
 
