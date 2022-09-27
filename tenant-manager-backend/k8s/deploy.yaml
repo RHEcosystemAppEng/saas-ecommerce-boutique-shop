@@ -250,5 +250,24 @@ spec:
     app.kubernetes.io/name: tenant-manager-frontend
   ports:
     - protocol: TCP
+      name: tenant-manager-frontend-port
       port: 80
       targetPort: 8080
+
+---
+
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: tenant-frontend-route
+  namespace: saas-boutique
+spec:
+  to:
+    kind: Service
+    name: tenant-frontend-service
+  port:
+    targetPort: tenant-manager-frontend-port
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Allow
+  wildcardPolicy: None
