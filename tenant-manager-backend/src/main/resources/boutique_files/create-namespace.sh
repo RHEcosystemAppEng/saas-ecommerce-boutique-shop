@@ -3,9 +3,9 @@
 # Remove the export variable if it already exists, set the new variable, then export it.
 unset NAMESPACE
 NAMESPACE=boutique
-#PWD=$2
+PWD=$2
 export NAMESPACE
-#export PWD
+export PWD
 #
 # Check if the namespace already exists
 #if oc get namespace -o json | jq -r ".items[].metadata.name" | grep $NAMESPACE; then \
