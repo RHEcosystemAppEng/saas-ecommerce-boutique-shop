@@ -8,7 +8,9 @@ import com.saas.tenant.manager.service.ResourceRequestService;
 import com.saas.tenant.manager.service.SubscriptionService;
 import com.saas.tenant.manager.service.TenantService;
 import com.saas.tenant.manager.service.TierService;
+import org.springframework.data.annotation.AccessType;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -43,6 +45,11 @@ public class TenantManager {
     public ResponseEntity<Tenant> getTenant(@PathVariable String id) {
         Optional<Tenant> optionalTenant = tenantService.getTenantById(Long.valueOf(id));
         return ResponseEntity.ok(optionalTenant.get());
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<String> getHealthEndpoint() {
+        return ResponseEntity.ok("Hello from the app!");
     }
 
     @GetMapping("/email/{email}")
@@ -137,7 +144,7 @@ public class TenantManager {
         return ResponseEntity.ok(respObj.toString());
     }
 
-    @PostMapping("/price-calculation")
+    @PostMapping(value = "/price-calculation", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> priceCalc(@RequestBody Map<String, String> reqBody) {
 
         String serviceLevel = reqBody.get("serviceLevel");
