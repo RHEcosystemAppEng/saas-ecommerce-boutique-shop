@@ -34,7 +34,7 @@ public class SubscriptionService {
 
         String namespaceName = savedSubscription.getTenantName().replaceAll("\\s", "-") +
                 System.currentTimeMillis();
-        String directoryPath = "/boutique_files";
+        String directoryPath = "/usr/app/boutique_files";
 
         try {
             ProcessBuilder pb = new ProcessBuilder( directoryPath+"/create-namespace.sh", namespaceName, directoryPath);

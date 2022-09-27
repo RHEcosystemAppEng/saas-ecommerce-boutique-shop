@@ -164,6 +164,7 @@ spec:
     app.kubernetes.io/name: tenant-manager-backend
   ports:
     - protocol: TCP
+      name: tenant-backend-port
       port: 80
       targetPort: 8081
 
@@ -179,7 +180,7 @@ spec:
     kind: Service
     name: tenant-controller-service
   port:
-    targetPort: 8080
+    targetPort: tenant-backend-port
   tls:
     termination: edge
     insecureEdgeTerminationPolicy: Allow
@@ -187,6 +188,26 @@ spec:
 
 ---
 
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nginx-sa
+  namespace: saas-boutique
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: 'nginx-anyuid'
+subjects:
+  - kind: ServiceAccount
+    name: nginx-sa
+    namespace: saas-boutique
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: 'system:openshift:scc:anyuid'
+
+---
 
 apiVersion: apps/v1
 kind: Deployment
@@ -207,13 +228,14 @@ spec:
       labels:
         app.kubernetes.io/name: tenant-manager-frontend
     spec:
+      serviceAccountName: nginx-sa
       containers:
         - name: tenant-manager-frontend
           image: quay.io/jnirosha/tenant-manager-frontend:latest
           imagePullPolicy: Always
           env:
             - name: REACT_APP_BACKEND_URI
-              value: tenant-controller-service
+              value: https://tenant-controller-route-saas-boutique.apps.mw-ocp4.cloud.lab.eng.bos.redhat.com
 
 ---
 
