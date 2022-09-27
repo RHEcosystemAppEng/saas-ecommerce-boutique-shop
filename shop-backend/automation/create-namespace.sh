@@ -3,19 +3,22 @@
 # Remove the export variable if it already exists, set the new variable, then export it.
 unset NAMESPACE
 NAMESPACE=boutique
+PWD=$2
 export NAMESPACE
+export PWD
 #
 # Check if the namespace already exists
-if oc get namespace -o json | jq -r ".items[].metadata.name" | grep $NAMESPACE; then \
-  echo "The Namespace $NAMESPACE already exists"
-else
+#if oc get namespace -o json | jq -r ".items[].metadata.name" | grep $NAMESPACE; then \
+#  echo "The Namespace $NAMESPACE already exists"
+#else
 #
 # Create the Namespace
-echo "apiVersion: v1
-kind: Namespace
-metadata:
-  name: ${NAMESPACE}" | oc apply -f -
-fi
+#echo "apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: ${NAMESPACE}" | oc apply -f -
+#fi
+oc create ns $NAMESPACE
 #
 # Modify privileges for the defaut service account in scc. This step needs to be reviewed as the gives the service account too much privileges.
 oc adm policy add-scc-to-user privileged -z default -n $1
@@ -31,10 +34,12 @@ oc apply -f ${PWD}/all-in-one.yaml
 # Expose the frontend service
 oc expose svc frontend --name=$1-route # --hostname=$2.pebcac.org
 #
+# Sleep statement to allow for the frontend service to come online
+sleep 10
+#
 # Get the url for the website
 ROUTE=`oc get route | cut -d" " -f4 | xargs`
 #for i in `curl -kvv $ROUTE`; do grep "HTTP\/1.1 200"
-echo "The shop url is "http://${ROUTE}""
 #
 # Apply a quota to the namespace
 oc apply -f ${PWD}/boutique-quota.yaml
@@ -71,3 +76,6 @@ oc apply -f ${PWD}/autoscaler/recommendservice-hpa.yaml
 
 # Apply autoscaling for the shipping service
 oc apply -f ${PWD}/autoscaler/shippingservice-hpa.yaml
+
+# Validation of the route
+echo "The shop url is "http://${ROUTE}""
