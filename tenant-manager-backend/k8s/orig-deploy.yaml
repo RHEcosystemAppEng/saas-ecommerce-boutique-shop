@@ -231,11 +231,11 @@ spec:
       serviceAccountName: nginx-sa
       containers:
         - name: tenant-manager-frontend
-          image: quay.io/pdred/frontend:latest
+          image: quay.io/jnirosha/tenant-manager-frontend:latest
           imagePullPolicy: Always
-          env: 
+          env:
             - name: REACT_APP_BACKEND_URI
-              value: https://tenant-controller-route-saas-boutique.apps.ocp.pebcac.org/
+              value: https://tenant-controller-route-saas-boutique.apps.mw-ocp4.cloud.lab.eng.bos.redhat.com
 
 ---
 
