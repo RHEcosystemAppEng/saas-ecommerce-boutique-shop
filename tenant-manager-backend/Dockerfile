@@ -18,7 +18,7 @@ COPY ./src/main/resources/boutique_files/ boutique_files
 
 RUN chmod +x boutique_files/*.sh
 
-USER 1001
+USER 1000
 
 CMD ["java","-jar","saas-tenant-manager-1.0.0-spring-boot.jar"]
 

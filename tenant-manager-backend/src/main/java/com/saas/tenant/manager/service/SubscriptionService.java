@@ -45,6 +45,7 @@ public class SubscriptionService {
             String line = null;
             String lastLine = "";
             while ((line = reader.readLine()) != null) {
+                System.out.println(line);
                 lastLine = line;
             }
             if (lastLine.contains("http:")) {
