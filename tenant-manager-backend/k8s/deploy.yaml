@@ -28,6 +28,7 @@ rules:
       - delete
       - update
       - watch
+      - use
 
 ---
 
