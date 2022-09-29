@@ -139,7 +139,7 @@ spec:
       serviceAccountName: tenant-controller-sa
       containers:
         - name: tenant-manager-backend
-          image: quay.io/jnirosha/tenant-manager-backend:latest
+          image: quay.io/pdred/backend:latest
           imagePullPolicy: Always
           env:
             - name: MYSQL_ROOT_PASSWORD
