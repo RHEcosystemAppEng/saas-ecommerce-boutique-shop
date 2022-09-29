@@ -50,8 +50,8 @@ public class SubscriptionService {
             }
             if (lastLine.contains("http:")) {
                 String routeUrl = lastLine.substring(lastLine.indexOf("http:"));
-                System.out.println("URL --->" + routeUrl);
-                savedSubscription.setUrl(routeUrl);
+                System.out.println("URL --->" + routeUrl.trim());
+                savedSubscription.setUrl(routeUrl.trim());
                 savedSubscription.setStatus("Active");
             } else {
                 System.out.println("URL couldn't fetch from the FreshRSS crd!!!");
