@@ -32,13 +32,13 @@ oc apply -f ${PWD}/all-in-one.yaml
 # **Need to create logic to monitor the website until the service is up and running**
 #
 # Expose the frontend service
-oc expose svc frontend --name=$NAMESPACE-route # --hostname=$2.pebcac.org
+oc expose svc frontend --name=$NAMESPACE-route --hostname=$3.apps.mw-ocp4.cloud.lab.eng.bos.redhat.com
 #
 # Sleep statement to allow for the frontend service to come online
-sleep 10
+sleep 6
 #
 # Get the url for the website
-ROUTE=`oc get route | cut -d" " -f4 | xargs`
+ROUTE=`oc get route | cut -d" " -f4`
 #for i in `curl -kvv $ROUTE`; do grep "HTTP\/1.1 200"
 #
 # Apply a quota to the namespace
