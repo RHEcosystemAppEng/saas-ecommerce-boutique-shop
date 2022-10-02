@@ -8,7 +8,7 @@ import com.saas.tenant.manager.service.ResourceRequestService;
 import com.saas.tenant.manager.service.SubscriptionService;
 import com.saas.tenant.manager.service.TenantService;
 import com.saas.tenant.manager.service.TierService;
-import org.springframework.data.annotation.AccessType;
+import com.saas.tenant.manager.util.ResourceRequestUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,11 +34,14 @@ public class TenantManager {
     private final TierService tierService;
 
     private final ResourceRequestService resourceRequestService;
-    public TenantManager(TenantService tenantService, SubscriptionService subscriptionService, TierService tierService, ResourceRequestService resourceRequestService) {
+
+    private final ResourceRequestUtil resourceRequestUtil;
+    public TenantManager(TenantService tenantService, SubscriptionService subscriptionService, TierService tierService, ResourceRequestService resourceRequestService, ResourceRequestUtil resourceRequestUtil) {
         this.tenantService = tenantService;
         this.subscriptionService = subscriptionService;
         this.tierService = tierService;
         this.resourceRequestService = resourceRequestService;
+        this.resourceRequestUtil = resourceRequestUtil;
     }
 
     @GetMapping("/tenant/{id}")
@@ -158,17 +161,15 @@ public class TenantManager {
     @PostMapping("/resource-request")
     public ResponseEntity<String> createResourceRequest(@RequestBody Map<String, String> reqBody) {
 
-        String tenantName = reqBody.get("tenantName");
+        String tenantKey = reqBody.get("tenantKey");
         String avgConcurrentShoppers = reqBody.get("avgConcurrentShoppers");
         String peakConcurrentShoppers = reqBody.get("peakConcurrentShoppers");
         String tier = reqBody.get("tier");
-        ResourceRequest resourceRequest = resourceRequestService.getLastValidResourceRequest(tenantName);
+        ResourceRequest currentResourceRequest = resourceRequestService.getLastValidResourceRequest(tenantKey);
+        ResourceRequest resourceRequest = resourceRequestUtil.getNewCopy(currentResourceRequest);
         resourceRequest.setOldMaxInstances(resourceRequest.getNewMaxInstances());
         resourceRequest.setOldMinInstances(resourceRequest.getNewMinInstances());
 
-        resourceRequest.setId(null);
-        resourceRequest.setCreatedDate(null);
-        resourceRequest.setUpdatedDate(null);
         resourceRequest.setAvgConcurrentShoppers(avgConcurrentShoppers);
         resourceRequest.setPeakConcurrentShoppers(peakConcurrentShoppers);
         int[] instanceCount = tierService.calculateInstanceCount(tier,
@@ -180,6 +181,7 @@ public class TenantManager {
         JsonObject respObj = new JsonObject();
         System.out.println("Jude ADDED" + savedResourceRequest.getTenant().getId());
         respObj.addProperty("id", savedResourceRequest.getTenant().getId());
+        respObj.addProperty("key", savedResourceRequest.getTenant().getTenantKey());
         respObj.addProperty("loggedInUserName", savedResourceRequest.getTenant().getTenantUserName());
         return ResponseEntity.ok(respObj.toString());
     }

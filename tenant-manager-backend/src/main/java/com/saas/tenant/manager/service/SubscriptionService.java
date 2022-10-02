@@ -35,9 +35,12 @@ public class SubscriptionService {
         String namespaceName = savedSubscription.getTenantName().replaceAll("\\s", "-") +
                 System.currentTimeMillis();
         String directoryPath = "/usr/app/boutique_files";
-
+        String domainName = "tao-online-shop";
         try {
-            ProcessBuilder pb = new ProcessBuilder( directoryPath+"/create-namespace.sh", namespaceName, directoryPath);
+            ProcessBuilder pb = new ProcessBuilder( directoryPath+"/create-namespace.sh",
+                    namespaceName,
+                    directoryPath,
+                    domainName);
             Process p = pb.start();
             InputStream is = p.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -49,9 +52,9 @@ public class SubscriptionService {
                 lastLine = line;
             }
             if (lastLine.contains("http:")) {
-                String routeUrl = lastLine.substring(lastLine.indexOf("http:"));
-                System.out.println("URL --->" + routeUrl.trim());
-                savedSubscription.setUrl(routeUrl.trim());
+                String routeUrl = lastLine.substring(lastLine.indexOf("http:")).replaceAll("\\s", "");
+                System.out.println("URL --->" + routeUrl);
+                savedSubscription.setUrl(routeUrl);
                 savedSubscription.setStatus("Active");
             } else {
                 System.out.println("URL couldn't fetch from the FreshRSS crd!!!");

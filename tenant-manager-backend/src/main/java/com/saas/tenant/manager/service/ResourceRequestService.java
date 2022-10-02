@@ -6,7 +6,6 @@ import com.saas.tenant.manager.repository.ResourceRequestRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ResourceRequestService {
@@ -29,8 +28,7 @@ public class ResourceRequestService {
         return resourceRequestRepository.findLatestActiveRequestByTenantKey(tenantKey, Constants.REQUEST_STATUS_INITIAL, Constants.REQUEST_STATUS_APPROVED);
     }
 
-    public ResourceRequest getLastValidResourceRequest(String tenantName) {
-        Optional<ResourceRequest> optionalResourceRequest = resourceRequestRepository.findByTenantNameOrderByUpdatedDateDesc(tenantName);
-        return optionalResourceRequest.get();
+    public ResourceRequest getLastValidResourceRequest(String tenantKey) {
+        return resourceRequestRepository.findByTenantKeyOrderByUpdatedDateDesc(tenantKey);
     }
 }
