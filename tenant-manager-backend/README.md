@@ -29,3 +29,5 @@ who is willing to provide their software solutions to their customer in a tenant
   ```
 oc apply -f k8s/deploy.yaml
 ```
+If the frontend is not running, you can run it locally with the following command: 
+- npm install && npm run start

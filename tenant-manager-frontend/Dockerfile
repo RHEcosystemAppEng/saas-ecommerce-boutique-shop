@@ -5,6 +5,9 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY .env ./
 COPY package-lock.json ./
+COPY ./src/ /src
+COPY ./public/ /public
+
 
 # installing git cos https://github.com/mbrn/material-table/issues/2109
 RUN apk add git
@@ -19,6 +22,6 @@ COPY --from=build /app/build /usr/share/nginx/html
 # new
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]
