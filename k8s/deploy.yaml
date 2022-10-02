@@ -148,6 +148,16 @@ spec:
                 secretKeyRef:
                   name: tenant-controller-mysql-password
                   key: MYSQL_ROOT_PASSWORD
+          readinessProbe:
+            exec:
+              command:
+                - curl -v telnet://tenant-controller-db-service:3306
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
 
 ---
 
@@ -266,3 +276,4 @@ spec:
     termination: edge
     insecureEdgeTerminationPolicy: Allow
   wildcardPolicy: None
+
