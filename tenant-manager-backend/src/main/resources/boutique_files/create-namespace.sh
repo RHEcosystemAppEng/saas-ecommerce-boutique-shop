@@ -32,7 +32,7 @@ oc apply -f ${PWD}/all-in-one.yaml
 # **Need to create logic to monitor the website until the service is up and running**
 #
 # Expose the frontend service
-oc expose svc frontend --name=$NAMESPACE-route --hostname=$3.apps.mw-ocp4.cloud.lab.eng.bos.redhat.com
+oc expose svc frontend --name=$NAMESPACE --hostname=$3.apps.ocp.pebcac.org
 #
 # Sleep statement to allow for the frontend service to come online
 sleep 6
