@@ -44,6 +44,7 @@ export const Register = (props) => {
             "phone": localStorage.getItem("phone") || "",
             "contactPerson": localStorage.getItem("contactName") || "",
             "serviceLevel": localStorage.getItem("tier") || "",
+            "hostName": localStorage.getItem("hostName") || "",
             "avgConcurrentShoppers": localStorage.getItem("avgConcurrentShoppers") || null,
             "peakConcurrentShoppers": localStorage.getItem("peakConcurrentShoppers") || null,
             "fromTime": localStorage.getItem("fromTime") || null,

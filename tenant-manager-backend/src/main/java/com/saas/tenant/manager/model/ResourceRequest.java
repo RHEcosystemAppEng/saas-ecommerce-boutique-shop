@@ -42,6 +42,7 @@ public class ResourceRequest {
     private String newTier;
     @Column(name = "requesting_tier")
     private String requestingTier;
+    private String hostName;
     private String avgConcurrentShoppers;
     private String peakConcurrentShoppers;
     private String fromTime;

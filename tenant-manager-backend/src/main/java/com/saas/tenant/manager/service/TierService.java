@@ -7,11 +7,11 @@ public class TierService {
 
     public double calculatePrice(String tier, int avgNumOfShoppers, int peakNumOfShoppers, int hours) {
         switch (tier) {
-            case "free":
+            case "Free":
                 return 0.0;
-            case "silver":
+            case "Silver":
                 return (avgNumOfShoppers / 100.0) * 10;
-            case "gold":
+            case "Gold":
                 return (avgNumOfShoppers / 100.0) * 20;
         }
 

@@ -10,8 +10,10 @@ export class ServiceSummary extends React.Component {
             unexpectedError: false,
             price: "Calculating..."
         };
-        this.fetchPricingData();
+    }
 
+    componentDidMount() {
+        this.fetchPricingData();
     }
 
     fetchPricingData = () => {
@@ -24,10 +26,12 @@ export class ServiceSummary extends React.Component {
             "toTime": localStorage.getItem("toTime") || null
         }
 
+        console.log('before sending:' + JSON.stringify(formData))
         axios
             .post("/price-calculation", formData)
             .then((res) => {
                 try {
+                    console.log('after sending:' + JSON.stringify(res.data))
                     localStorage.setItem("calculatedPrice", res.data)
                     this.setState({
                         price: res.data

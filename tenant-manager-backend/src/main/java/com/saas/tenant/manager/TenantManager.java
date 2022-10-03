@@ -114,6 +114,7 @@ public class TenantManager {
         String phone = reqBody.get("phone");
         String contactPerson = reqBody.get("contactPerson");
         String serviceLevel = reqBody.get("serviceLevel");
+        String hostName = reqBody.get("hostName");
         String avgConcurrentShoppers = reqBody.get("avgConcurrentShoppers");
         String peakConcurrentShoppers = reqBody.get("peakConcurrentShoppers");
         String fromTime = reqBody.get("fromTime");
@@ -127,6 +128,7 @@ public class TenantManager {
         resourceRequest.setNewTier(serviceLevel);
         resourceRequest.setNewMinInstances(avgConcurrentShoppers);
         resourceRequest.setStatus(Constants.REQUEST_STATUS_INITIAL);
+        resourceRequest.setHostName(hostName);
         resourceRequest.setAvgConcurrentShoppers(avgConcurrentShoppers);
         resourceRequest.setPeakConcurrentShoppers(peakConcurrentShoppers);
         resourceRequest.setFromTime(fromTime);
@@ -137,7 +139,7 @@ public class TenantManager {
         resourceRequest.setNewMaxInstances(String.valueOf(instanceCount[1]));
 
         resourceRequestService.createResourceRequest(resourceRequest);
-        subscriptionService.save(oldTenant, serviceLevel);
+        subscriptionService.save(oldTenant, hostName, serviceLevel);
         Optional<Tenant> latestTenant = tenantService.findLatestTenant(oldTenant);
 
         JsonObject respObj = new JsonObject();

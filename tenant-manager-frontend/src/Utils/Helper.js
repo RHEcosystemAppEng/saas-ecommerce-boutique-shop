@@ -7,6 +7,7 @@ function clearLocalStorage() {
     localStorage.removeItem("orgAddress")
     localStorage.removeItem("phone")
     localStorage.removeItem("contactName")
+    localStorage.removeItem("hostName")
     localStorage.removeItem("tier")
     localStorage.removeItem("avgConcurrentShoppers")
     localStorage.removeItem("peakConcurrentShoppers")

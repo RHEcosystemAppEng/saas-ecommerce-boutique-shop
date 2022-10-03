@@ -37,15 +37,15 @@ export const TierSelection = () => {
         setSilverTier(false);localStorage.removeItem("silverTier");
         setGoldTier(false);localStorage.removeItem("goldTier");
         switch (tier) {
-            case "free" :
+            case "Free" :
                 setFreeTier(true);
                 localStorage.setItem("freeTier", true);
                 break;
-            case "silver" :
+            case "Silver" :
                 setSilverTier(true);
                 localStorage.setItem("silverTier", true);
                 break;
-            case "gold" :
+            case "Gold" :
                 setGoldTier(true);
                 localStorage.setItem("goldTier", true);
                 break;
@@ -60,31 +60,31 @@ export const TierSelection = () => {
             <FlexItem style={styles.cardContainerStyle}
                       alignSelf={{default: 'alignSelfStretch'}}>
                 <Card style={styles.cardStyle} isSelectableRaised={true} isSelected={freeTier}
-                      onSelectableInputChange={() => onSelectTier("free")}>
+                      onSelectableInputChange={() => onSelectTier("Free")}>
                     <CardTitle component="h4">Free</CardTitle>
                     <CardBody>Free Tier allows 5 concurrent shoppers, <br/><br/> there is no technical support. <br/><br/> 30 day free
                         trial. </CardBody>
                     <CardFooter style={styles.footer}>
-                        <Button variant="primary" isLarge onClick={() => onSelectTier("free")}>Subscribe</Button>
+                        <Button variant="primary" isLarge onClick={() => onSelectTier("Free")}>Subscribe</Button>
                     </CardFooter>
                 </Card>
             </FlexItem>
             <FlexItem style={styles.cardContainerStyle}
                       alignSelf={{default: 'alignSelfStretch'}}>
                 <Card style={styles.cardStyle} isSelectableRaised={true} isSelected={silverTier}
-                      onSelectableInputChange={() => onSelectTier("silver")}>
+                      onSelectableInputChange={() => onSelectTier("Silver")}>
                     <CardTitle component="h4">Silver</CardTitle>
                     <CardBody>Silver Tier, provide reliable service with technical support. <br/><br/> The price will be on the
                         usage, <br/><br/> $10/ month service fee to support every 100 concurrent online shoppers. </CardBody>
                     <CardFooter style={styles.footer}>
-                        <Button variant="primary" isLarge onClick={() => onSelectTier("silver")}>Subscribe</Button>
+                        <Button variant="primary" isLarge onClick={() => onSelectTier("Silver")}>Subscribe</Button>
                     </CardFooter>
                 </Card>
             </FlexItem>
             <FlexItem style={styles.cardContainerStyle}
                       alignSelf={{default: 'alignSelfStretch'}}>
                 <Card style={styles.cardStyle} isSelectableRaised={true} isSelected={goldTier}
-                      onSelectableInputChange={() => onSelectTier("gold")}>
+                      onSelectableInputChange={() => onSelectTier("Gold")}>
                     <CardTitle component="h4">Gold</CardTitle>
                     <CardBody>
                         Gold Tier. provides the best shopping experience with quick page response time. <br/><br/> This tier is
@@ -92,7 +92,7 @@ export const TierSelection = () => {
                         design. <br/><br/>The price will be $20/month for every 100 concurrent shoppers.
                     </CardBody>
                     <CardFooter style={styles.footer}>
-                        <Button variant="primary" isLarge onClick={() => onSelectTier("gold")}>Subscribe</Button>
+                        <Button variant="primary" isLarge onClick={() => onSelectTier("Gold")}>Subscribe</Button>
                     </CardFooter>
                 </Card>
             </FlexItem>

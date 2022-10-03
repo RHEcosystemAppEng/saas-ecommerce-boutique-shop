@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import axios from "../../axios-middleware"
 import {
     Brand,
@@ -24,41 +24,19 @@ import {ServiceSummary} from "../ServiceSummary";
 import {useNavigate, useParams} from "react-router-dom";
 import {clearLocalStorage} from "../../Utils/Helper";
 
-export const UpdateResources = (props) => {
+export const UpdateResources = () => {
     const navigate = useNavigate();
     const [isPrimaryLoading, setIsPrimaryLoading] = React.useState(false);
     const [isBtnDisabled, setIsBtnDisabled] = React.useState(false);
-    const [resourceData, setResourceData] = React.useState([]);
-    const [tier, setTier] = React.useState("");
-    const [peakConcurrentShoppers, setPeakConcurrentShoppers] = React.useState(0);
-    const [avgConcurrentShoppers, setAvgConcurrentShoppers] = React.useState(0);
+    const [isEdited, setIsEdited] = React.useState(false);
     const { id } = useParams();
 
-    useEffect(() => {
-        getResourceData()
-    }, [])
 
-    const getResourceData = () => {
-        axios
-            .get("/get-current-request/"+localStorage.getItem("tenantKey"))
-            .then((res) => {
-                setResourceData(res.data)
-                setTier(res.data.newTier)
-                setAvgConcurrentShoppers(res.data.avgConcurrentShoppers)
-                setPeakConcurrentShoppers(res.data.peakConcurrentShoppers)
-                localStorage.setItem("peakConcurrentShoppers", res.data.peakConcurrentShoppers);
-                localStorage.setItem("avgConcurrentShoppers", res.data.avgConcurrentShoppers);
-                localStorage.setItem("tier", res.data.newTier);
-            })
-            .catch((err) => {
-                console.error(JSON.stringify(err))
-            })
-    }
     const validateAndSubmitData = k => {
         setIsBtnDisabled(true)
         setIsPrimaryLoading(!isPrimaryLoading)
         const formData = {
-            "tenantName": localStorage.getItem("tenantName") || "",
+            "tenantKey": localStorage.getItem("tenantKey") || "",
             "tier": localStorage.getItem("tier") || "",
             "avgConcurrentShoppers": localStorage.getItem("avgConcurrentShoppers") || null,
             "peakConcurrentShoppers": localStorage.getItem("peakConcurrentShoppers") || null,
@@ -93,15 +71,28 @@ export const UpdateResources = (props) => {
         {
             id: 1,
             name: 'Service Details',
-            component: <ServiceDetailsForm peakConcurrentShoppers={peakConcurrentShoppers} avgConcurrentShoppers={avgConcurrentShoppers}/>
+            component: <ServiceDetailsForm isEdited={isEdited} markDataChanged={setIsEdited}/>
         },
         {
             id: 2,
             name: 'Summary',
-            component: <ServiceSummary tier={tier}/>,
+            component: <ServiceSummary/>,
             nextButtonText: 'Finish'
         }
     ];
+
+    const nextHandler = (onNext) => {
+        setIsEdited(true)
+        return onNext;
+    }
+
+    const cancelHandler = () => {
+        localStorage.removeItem("hostName")
+        localStorage.removeItem("avgConcurrentShoppers")
+        localStorage.removeItem("peakConcurrentShoppers")
+        localStorage.removeItem("tier")
+        navigate("/dashboard/"+id)
+    }
 
     const CustomFooter = (
         <WizardFooter>
@@ -111,11 +102,11 @@ export const UpdateResources = (props) => {
                     if (activeStep.name !== 'Summary') {
                         return (
                             <>
-                                <Button variant="primary" type="submit" onClick={onNext}>
+                                <Button variant="primary" type="submit" onClick={nextHandler(onNext)}>
                                     Next
                                 </Button>
                                 <a href={"/dashboard/"+id}>
-                                    <Button variant="link">
+                                    <Button variant="link" onClick={cancelHandler}>
                                         Cancel
                                     </Button>
                                 </a>

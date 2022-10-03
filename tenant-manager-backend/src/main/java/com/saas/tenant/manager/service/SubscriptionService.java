@@ -21,6 +21,7 @@ public class SubscriptionService {
     }
 
     public Subscription save(Tenant tenant,
+                             String hostName,
                              String serviceLevel) {
 
         Subscription subscription = new Subscription();
@@ -35,12 +36,11 @@ public class SubscriptionService {
         String namespaceName = savedSubscription.getTenantName().replaceAll("\\s", "-") +
                 System.currentTimeMillis();
         String directoryPath = "/usr/app/boutique_files";
-        String domainName = "tao-online-shop";
         try {
             ProcessBuilder pb = new ProcessBuilder( directoryPath+"/create-namespace.sh",
                     namespaceName,
                     directoryPath,
-                    domainName);
+                    hostName);
             Process p = pb.start();
             InputStream is = p.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
