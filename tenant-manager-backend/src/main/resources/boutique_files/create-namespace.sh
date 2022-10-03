@@ -2,7 +2,7 @@
 
 # Remove the export variable if it already exists, set the new variable, then export it.
 unset NAMESPACE
-NAMESPACE=boutique
+NAMESPACE=$1
 PWD=$2
 export NAMESPACE
 export PWD
