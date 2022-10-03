@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: checkout-autoscaler
-  namespace: boutique
+  
 spec:
   maxReplicas: 3
   metrics:
