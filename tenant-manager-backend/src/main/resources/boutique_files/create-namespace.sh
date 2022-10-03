@@ -44,38 +44,41 @@ ROUTE=`oc get route | cut -d" " -f4`
 # Apply a quota to the namespace
 oc apply -f ${PWD}/boutique-quota.yaml
 #
+# Apply a limit in the namespace
+oc apply -f ${PWD}/limit-range-v1.yaml
+#
 # Apply autoscaling for the frontend service
-oc apply -f ${PWD}/autoscaler/frontend-hpa.yaml
+oc apply -f ${PWD}/frontend-hpa.yaml
 
 # Apply autoscaling for the addservice service
-oc apply -f ${PWD}/autoscaler/adservice-hpa.yaml
+oc apply -f ${PWD}/adservice-hpa.yaml
 
 # Apply autoscaling for the cart service
-oc apply -f ${PWD}/autoscaler/cartservice-hpa.yaml
+oc apply -f ${PWD}/cartservice-hpa.yaml
 
 # Apply autoscaling for the currency service
-oc apply -f ${PWD}/autoscaler/currencyservice-hpa.yaml
+oc apply -f ${PWD}/currencyservice-hpa.yaml
 
 # Apply autoscaling for the email service
-oc apply -f ${PWD}/autoscaler/emailservice-hpa.yaml
+oc apply -f ${PWD}/emailservice-hpa.yaml
 
 # Apply autoscaling for the payment service
-oc apply -f ${PWD}/autoscaler/paymentservice-hpa.yaml
+oc apply -f ${PWD}/paymentservice-hpa.yaml
 
 # Apply autoscaling for the checkout service
-oc apply -f ${PWD}/autoscaler/checkoutservice-hpa.yaml
+oc apply -f ${PWD}/checkoutservice-hpa.yaml
 
 # Apply autoscaling for the productcatalog service
-oc apply -f ${PWD}/autoscaler/productcatalogservice-hpa.yaml
+oc apply -f ${PWD}/productcatalogservice-hpa.yaml
 
 # Apply autoscaling for the redis service
-oc apply -f ${PWD}/autoscaler/redisservice-hpa.yaml
+oc apply -f ${PWD}/redisservice-hpa.yaml
 
 # Apply autoscaling for the recommendation service
-oc apply -f ${PWD}/autoscaler/recommendservice-hpa.yaml
+oc apply -f ${PWD}/recommendservice-hpa.yaml
 
 # Apply autoscaling for the shipping service
-oc apply -f ${PWD}/autoscaler/shippingservice-hpa.yaml
+oc apply -f ${PWD}/shippingservice-hpa.yaml
 
 # Validation of the route
 echo "The shop url is "http://${ROUTE}""
