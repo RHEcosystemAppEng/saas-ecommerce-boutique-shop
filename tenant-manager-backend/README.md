@@ -16,9 +16,9 @@ who is willing to provide their software solutions to their customer in a tenant
 
 ### Installation Steps
 
-. In the tenant-manager-backend, execte the following
+. In the tenant-manager-backend, execute the following
   - mvn clean install -DskipTests
-  - build the dcker image
+  - build the docker image
   - push the docker image
   - change to the tenant-manager-frontend folder
   - modify the .env file for the correct path of the cluster that this is running on
@@ -26,7 +26,7 @@ who is willing to provide their software solutions to their customer in a tenant
   - do the docker push
   - deploy the ui with the following:
  
-  ```
+```
 oc apply -f k8s/deploy.yaml
 ```
 If the frontend is not running, you can run it locally with the following command: 
