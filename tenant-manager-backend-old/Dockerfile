@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/openjdk-11-runtime:1.10-1
+FROM openjdk:8-jdk-alpine
 
 WORKDIR /usr/app
 
