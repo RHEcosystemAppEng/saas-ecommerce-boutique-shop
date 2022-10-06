@@ -1,7 +1,9 @@
 package org.acme.saas.model.draft;
 
-import java.io.Serializable;
+import lombok.Builder;
 
+import java.io.Serializable;
+@Builder
 public class TokenData {
     // todo rename it to TenantKey
     String key;

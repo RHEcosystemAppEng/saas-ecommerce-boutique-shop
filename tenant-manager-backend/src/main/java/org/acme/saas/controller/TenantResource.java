@@ -4,9 +4,11 @@ import io.smallrye.mutiny.Uni;
 import org.acme.saas.model.Tenant;
 import org.acme.saas.model.draft.TenantDraft;
 import org.acme.saas.model.draft.TokenData;
+import org.acme.saas.model.draft.TokenData.TokenDataBuilder;
 import org.acme.saas.service.TenantService;
 
 import javax.inject.Inject;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -17,10 +19,34 @@ public class TenantResource {
     @Inject
     TenantService tenantService;
 
-    @POST
+    @GET
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Tenant> test(TenantDraft tenantDraft) {
-        return tenantService.save(tenantDraft);
+    public Uni<String> healthEndpoint() {
+        return Uni.createFrom().item("ok");
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Tenant> getTenantById(Long id) {
+        return tenantService.getTenantById(id);
+    }
+
+
+    @GET
+    @Path("/login")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<TokenData> login(String email, String password) {
+        TokenDataBuilder tokenDataBuilder = TokenData.builder();
+        tenantService.findTenant(email, password).subscribe().with(
+                tenant -> {
+                    tokenDataBuilder.Id(tenant.getId());
+                    tokenDataBuilder.key(tenant.getTenantKey());
+                    tokenDataBuilder.loggedInUserName(tenant.getTenantUserName());
+                }
+        );
+        return Uni.createFrom().item(tokenDataBuilder.build());
     }
 
     @POST
@@ -28,18 +54,24 @@ public class TenantResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<TokenData> signUp(TenantDraft tenantDraft) {
 
+        TokenDataBuilder tokenDataBuilder = TokenData.builder();
         Uni<Tenant> savedTenantUni = tenantService.save(tenantDraft);
-        TokenData data = new TokenData();
-        Uni<TokenData> tokenDataUni = Uni.createFrom().item(data);
 
         savedTenantUni.subscribe().with(
                 tenant -> {
-                    data.setId(tenant.getId());
-                    data.setKey(tenant.getTenantKey());
-                    data.setLoggedInUserName(tenant.getTenantUserName());
+                    tokenDataBuilder.Id(tenant.getId());
+                    tokenDataBuilder.key(tenant.getTenantKey());
+                    tokenDataBuilder.loggedInUserName(tenant.getTenantUserName());
                 }
         );
 
-        return tokenDataUni;
+        return Uni.createFrom().item(tokenDataBuilder.build());
+    }
+
+    @GET
+    @Path("/email/{email}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Boolean> isEmailAlreadyInUse(String email) {
+        return tenantService.isEmailAlreadyInUse(email);
     }
 }

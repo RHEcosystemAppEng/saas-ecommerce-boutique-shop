@@ -9,13 +9,26 @@ import org.acme.saas.repository.TenantRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Objects;
 
 @ApplicationScoped
 public class TenantService {
 
     @Inject
-    private TenantRepository tenantRepository;
+    TenantRepository tenantRepository;
 
+    public Uni<Tenant> getTenantById(Long id) {
+        return tenantRepository.findById(id);
+    }
+
+    public Uni<Boolean> isEmailAlreadyInUse(String email) {
+        return tenantRepository.find("email", email)
+               .firstResult()
+                .map(Objects::nonNull);
+    }
+    public Uni<Tenant> findTenant(String email, String password) {
+        return tenantRepository.findTenantByEmailAndPassword(email, password);
+    }
     @ReactiveTransactional
     public Uni<Tenant> save(TenantDraft tenantDraft) {
         Tenant tenant = TenantMapper.INSTANCE.tenantDraftToTenant(tenantDraft);
