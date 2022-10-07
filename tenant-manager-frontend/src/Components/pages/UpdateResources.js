@@ -32,7 +32,7 @@ export const UpdateResources = () => {
     const { id } = useParams();
 
 
-    const validateAndSubmitData = k => {
+    const validateAndSubmitData = () => {
         setIsBtnDisabled(true)
         setIsPrimaryLoading(!isPrimaryLoading)
         const formData = {
@@ -47,6 +47,7 @@ export const UpdateResources = () => {
             .then((res) => {
                 clearLocalStorage()
                 localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
+                localStorage.setItem("tenantKey", res.data.key)
                 navigate("/dashboard/"+res.data.id)
             })
             .catch((err) => {

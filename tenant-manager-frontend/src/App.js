@@ -1,4 +1,5 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom"
+import PrivateRoutes from "./Components/util/PrivateRoutes";
 import {Login} from "./Components/pages/Login"
 import {Register} from "./Components/pages/Register"
 import {UpdateResources} from "./Components/pages/UpdateResources"
@@ -13,10 +14,12 @@ function App() {
                     <Routes>
                         <Route path="/*" element={<Login/>}/>
                         <Route path="/register" element={<Register/>}/>
-                        <Route path="/update-limits/:id" element={<UpdateResources/>}/>
-                        <Route path="/dashboard/:id" element={<Dashboard/>}/>
-                        <Route path="/mgr-dashboard" element={<ManagerDashboard/>}/>
-                        <Route path="/ops-dashboard" element={<OpsDashboard/>}/>
+                        <Route element={<PrivateRoutes/>}>
+                            <Route path="/update-limits/:id" element={<UpdateResources/>}/>
+                            <Route path="/dashboard/:id" element={<Dashboard/>}/>
+                            <Route path="/mgr-dashboard" element={<ManagerDashboard/>}/>
+                            <Route path="/ops-dashboard" element={<OpsDashboard/>}/>
+                        </Route>
                     </Routes>
                 </BrowserRouter>
         </div>

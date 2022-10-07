@@ -56,6 +56,7 @@ export const Register = (props) => {
             .then((res) => {
                 clearLocalStorage()
                 localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
+                localStorage.setItem("tenantKey", res.data.key)
                 navigate("/dashboard/"+res.data.id)
             })
             .catch((err) => {

@@ -14,6 +14,7 @@ function clearLocalStorage() {
     localStorage.removeItem("fromTime")
     localStorage.removeItem("toTime")
     localStorage.removeItem("loggedInUserName")
+    localStorage.removeItem("calculatedPrice")
     localStorage.removeItem("freeTier")
     localStorage.removeItem("silverTier")
     localStorage.removeItem("goldTier")
