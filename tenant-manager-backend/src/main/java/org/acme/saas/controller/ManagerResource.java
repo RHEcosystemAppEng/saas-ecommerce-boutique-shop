@@ -9,14 +9,14 @@ import javax.ws.rs.core.Response;
 @Path("/manager")
 public class ManagerResource {
 
-    @POST
-    @Path("/login")
-    public Response login(String username, String password) {
-        if (username.equals("admin") && password.equals("redhat")) {
-            JsonObject respObj = new JsonObject();
-            respObj.put("loggedInUserName", "Tenant Manager");
-            return Response.ok(respObj).build();
-        }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
-    }
+//    @POST
+//    @Path("/login")
+//    public Response login(String username, String password) {
+//        if (username.equals("admin") && password.equals("redhat")) {
+//            JsonObject respObj = new JsonObject();
+//            respObj.put("loggedInUserName", "Tenant Manager");
+//            return Response.ok(respObj).build();
+//        }
+//        return Response.status(Response.Status.UNAUTHORIZED).build();
+//    }
 }
