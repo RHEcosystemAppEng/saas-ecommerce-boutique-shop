@@ -1,5 +1,6 @@
 package org.acme.saas;
 
+import io.smallrye.mutiny.Uni;
 import org.acme.saas.repository.TenantRepository;
 
 import javax.inject.Inject;
@@ -16,8 +17,8 @@ public class GreetingResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String hello() {
-        return "Hello from RESTEasy Reactive";
+    public Uni<String> hello() {
+        return Uni.createFrom().item("Hello from RESTEasy Reactive");
     }
 
 
