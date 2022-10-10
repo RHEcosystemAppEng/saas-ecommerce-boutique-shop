@@ -29,7 +29,7 @@ export const UpdateResources = () => {
     const [isPrimaryLoading, setIsPrimaryLoading] = React.useState(false);
     const [isBtnDisabled, setIsBtnDisabled] = React.useState(false);
     const [isEdited, setIsEdited] = React.useState(false);
-    const { id } = useParams();
+    const { key } = useParams();
 
 
     const validateAndSubmitData = () => {
@@ -43,12 +43,12 @@ export const UpdateResources = () => {
         }
 
         axios
-            .post("/resource-request", formData)
+            .post("/request/resource", formData)
             .then((res) => {
                 clearLocalStorage()
                 localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
                 localStorage.setItem("tenantKey", res.data.key)
-                navigate("/dashboard/"+res.data.id)
+                navigate("/dashboard/"+res.data.key)
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))
@@ -92,7 +92,7 @@ export const UpdateResources = () => {
         localStorage.removeItem("avgConcurrentShoppers")
         localStorage.removeItem("peakConcurrentShoppers")
         localStorage.removeItem("tier")
-        navigate("/dashboard/"+id)
+        navigate("/dashboard/"+key)
     }
 
     const CustomFooter = (
@@ -106,7 +106,7 @@ export const UpdateResources = () => {
                                 <Button variant="primary" type="submit" onClick={nextHandler(onNext)}>
                                     Next
                                 </Button>
-                                <a href={"/dashboard/"+id}>
+                                <a href={"/dashboard/"+key}>
                                     <Button variant="link" onClick={cancelHandler}>
                                         Cancel
                                     </Button>

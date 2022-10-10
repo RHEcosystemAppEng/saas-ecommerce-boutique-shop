@@ -42,8 +42,8 @@ export const Register = (props) => {
             "orgName": localStorage.getItem("orgName") || "",
             "address": localStorage.getItem("orgAddress") || "",
             "phone": localStorage.getItem("phone") || "",
-            "contactPerson": localStorage.getItem("contactName") || "",
-            "serviceLevel": localStorage.getItem("tier") || "",
+            "contactName": localStorage.getItem("contactName") || "",
+            "tier": localStorage.getItem("tier") || "",
             "hostName": localStorage.getItem("hostName") || "",
             "avgConcurrentShoppers": localStorage.getItem("avgConcurrentShoppers") || null,
             "peakConcurrentShoppers": localStorage.getItem("peakConcurrentShoppers") || null,
@@ -52,12 +52,12 @@ export const Register = (props) => {
         }
 
         axios
-            .post("/signup", formData)
+            .post("/tenant/signup", formData)
             .then((res) => {
                 clearLocalStorage()
                 localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
                 localStorage.setItem("tenantKey", res.data.key)
-                navigate("/dashboard/"+res.data.id)
+                navigate("/dashboard/"+res.data.key)
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))

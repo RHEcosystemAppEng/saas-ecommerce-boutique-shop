@@ -34,9 +34,9 @@ export const BusinessInfoForm = () => {
     const handleEmailChange = email => {
         localStorage.setItem("email", email);
         axios
-            .get("/email/"+email)
+            .get("/tenant/email/"+email)
             .then((res) => {
-                if (res.status === 200)
+                if (res.data === false)
                     setEmailState(ValidatedOptions.success)
                 else
                     setEmailState(ValidatedOptions.error)

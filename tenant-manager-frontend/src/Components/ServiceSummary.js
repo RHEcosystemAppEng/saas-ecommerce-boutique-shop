@@ -19,7 +19,7 @@ export class ServiceSummary extends React.Component {
     fetchPricingData = () => {
 
         const formData = {
-            "serviceLevel": localStorage.getItem("tier") || "",
+            "tier": localStorage.getItem("tier") || "",
             "avgConcurrentShoppers": localStorage.getItem("avgConcurrentShoppers") || null,
             "peakConcurrentShoppers": localStorage.getItem("peakConcurrentShoppers") || null,
             "fromTime": localStorage.getItem("fromTime") || null,
@@ -28,7 +28,7 @@ export class ServiceSummary extends React.Component {
 
         console.log('before sending:' + JSON.stringify(formData))
         axios
-            .post("/price-calculation", formData)
+            .post("/subscribe/calculate-price", formData)
             .then((res) => {
                 try {
                     console.log('after sending:' + JSON.stringify(res.data))

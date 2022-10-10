@@ -40,15 +40,15 @@ export const ServiceDetailsForm = (props) => {
 
     const getResourceData = () => {
         axios
-            .get("/get-current-request/"+localStorage.getItem("tenantKey"))
+            .get("/subscribe/"+localStorage.getItem("tenantKey"))
             .then((res) => {
-                setHostName(res.data.hostName)
-                setAvgConcurrentShoppers(res.data.avgConcurrentShoppers)
-                setPeakConcurrentShoppers(res.data.peakConcurrentShoppers)
-                localStorage.setItem("hostName", res.data.hostName);
-                localStorage.setItem("avgConcurrentShoppers", res.data.avgConcurrentShoppers);
-                localStorage.setItem("peakConcurrentShoppers", res.data.peakConcurrentShoppers);
-                localStorage.setItem("tier", res.data.newTier);
+                setHostName(res.data.request.hostName)
+                setAvgConcurrentShoppers(res.data.request.avgConcurrentShoppers)
+                setPeakConcurrentShoppers(res.data.request.peakConcurrentShoppers)
+                localStorage.setItem("hostName", res.data.request.hostName);
+                localStorage.setItem("avgConcurrentShoppers", res.data.request.avgConcurrentShoppers);
+                localStorage.setItem("peakConcurrentShoppers", res.data.request.peakConcurrentShoppers);
+                localStorage.setItem("tier", res.data.request.tier);
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))

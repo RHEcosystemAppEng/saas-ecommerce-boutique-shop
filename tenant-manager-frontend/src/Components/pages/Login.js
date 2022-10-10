@@ -65,11 +65,11 @@ export const Login = () => {
 
     const manageTenantLogin = (formData) => {
         axios
-            .post("/login", formData)
+            .post("/tenant/login", formData)
             .then((res) => {
                 localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
                 localStorage.setItem("tenantKey", res.data.key)
-                navigate("/dashboard/" + res.data.id)
+                navigate("/dashboard/" + res.data.key)
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))

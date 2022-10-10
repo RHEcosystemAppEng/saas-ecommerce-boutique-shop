@@ -33,7 +33,7 @@ const Dashboard = () => {
 
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const { id } = useParams();
+    const { key } = useParams();
     const onDropdownSelect = event => {
         setIsDropdownOpen(!isDropdownOpen)
     };
@@ -46,7 +46,7 @@ const Dashboard = () => {
 
     const userDropdownItems = [
         <DropdownGroup key="group 2">
-            <DropdownItem key="group 2 update" href={"/update-limits/"+id}>Update Resource Limits</DropdownItem>
+            <DropdownItem key="group 2 update" href={"/update-limits/"+key}>Update Resource Limits</DropdownItem>
             <DropdownItem key="group 2 logout" onClick={clearLocalStorageData}>Logout</DropdownItem>
         </DropdownGroup>
     ];
@@ -110,7 +110,7 @@ const Dashboard = () => {
                 <Panel>
                     <PanelMain>
                         <PanelMainBody>
-                            <DashboardTable tenantId={id}/>
+                            <DashboardTable tenantKey={key}/>
                         </PanelMainBody>
                     </PanelMain>
                 </Panel>

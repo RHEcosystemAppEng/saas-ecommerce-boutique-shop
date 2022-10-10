@@ -13,11 +13,11 @@ export const DashboardTable = (props) => {
 
     const getTenantData = () => {
         axios
-            .get("/tenant/"+ props.tenantId)
+            .get("/tenant/"+ props.tenantKey)
             .then((res) => {
                 console.log(res.data)
                 setTenant(res.data)
-                setSubscription(res.data.subscriptionSet[0])
+                setSubscription(res.data.subscriptions[0])
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))
@@ -34,7 +34,7 @@ export const DashboardTable = (props) => {
                 </Tr>
                 <Tr key="2">
                     <Td>Tenant Name</Td>
-                    <Td>{tenant.tenantUserName}</Td>
+                    <Td>{tenant.tenantName}</Td>
                 </Tr>
                 <Tr key="3">
                     <Td>Organization</Td>
@@ -42,7 +42,7 @@ export const DashboardTable = (props) => {
                 </Tr>
                 <Tr key="4">
                     <Td>Subscription Tier</Td>
-                    <Td>{subscription.serviceLevel}</Td>
+                    <Td>{subscription.tier}</Td>
                 </Tr>
                 <Tr key="5">
                     <Td>Subscription URL</Td>
