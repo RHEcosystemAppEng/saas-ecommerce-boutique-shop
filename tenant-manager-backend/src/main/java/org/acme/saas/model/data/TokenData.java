@@ -1,4 +1,4 @@
-package org.acme.saas.model.draft;
+package org.acme.saas.model.data;
 
 import lombok.Builder;
 @Builder

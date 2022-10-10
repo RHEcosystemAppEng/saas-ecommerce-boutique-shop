@@ -9,6 +9,10 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class TenantRepository implements PanacheRepository<Tenant> {
 
+    public Uni<Tenant> findByTenantKey(String tenantKey) {
+        return find("tenantKey= ?1", tenantKey).firstResult();
+    }
+
     public Uni<Tenant> findTenantByEmailAndPassword(String email, String password) {
         return find("email= ?1 and password = ?2", email, password).firstResult();
     }
