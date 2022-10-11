@@ -14,8 +14,6 @@
 # docker run -i --rm -p 8080:8080 quarkus/tenant-manager-backend
 #
 ###
-FROM quay.io/pdred/backend-base:latest as build
-#
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
 WORKDIR /work/
 RUN chown 1001 /work \
