@@ -80,7 +80,7 @@ The `quarkus` command takes care of generating the deployment files and deploy t
 ## Validation
 Run this comand to send a trigger Cloud Event that generates a SaaS deployment on the `abc` namespace (will be created if missing):
 ```bash
-export KSVC_URL=$(oc get ksvc tenant-provisioner -n saas-provisioner -ojsonpath='{ .status.address.url }')
+export KSVC_URL=$(oc get ksvc tenant-provisioner -n saas-provisioner -ojsonpath='{ .status.url }')
 curl -v -k "$KSVC_URL" \
 -X POST \
 -H "Ce-Id: 1234" \
