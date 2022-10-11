@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.acme.saas.provisioner.event.NewTenantRequest;
+import org.acme.saas.provisioner.event.ProvisioningEventNotifier;
 import org.acme.saas.provisioner.event.ProvisioningRequestStatus;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
@@ -22,7 +23,7 @@ public class ProvisioningFunction {
     ProvisioningService provisioningService;
 
     @Funq
-    @CloudEventMapping(trigger = NewTenantRequest.EVENT_TYPE, responseSource = "provisioner", responseType = ProvisioningRequestStatus.EVENT_TYPE)
+    @CloudEventMapping(trigger = NewTenantRequest.EVENT_TYPE, responseSource = ProvisioningEventNotifier.EVENT_SOURCE, responseType = ProvisioningRequestStatus.EVENT_TYPE)
     @Transactional
     public ProvisioningRequestStatus provision(CloudEvent<NewTenantRequest> event) {
         NewTenantRequest newTenantRequest = event.data();

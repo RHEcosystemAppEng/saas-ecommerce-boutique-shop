@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -16,12 +17,11 @@ import io.cloudevents.CloudEvent;
 import io.cloudevents.CloudEventData;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.core.data.PojoCloudEventData;
-import io.cloudevents.jackson.JsonFormat;
 
 @ApplicationScoped
 public class ProvisioningEventNotifier {
+    public static final String EVENT_SOURCE = "tenant-provisioner";
     private static final Logger log = Logger.getLogger(ProvisioningEventNotifier.class);
-
     @ConfigProperty(name = "k-sink")
     String brokerUrl;
 
@@ -34,10 +34,10 @@ public class ProvisioningEventNotifier {
 
     public void emitProvisioningStatus(NewTenantRequest newTenantRequest, ProvisioningRequestStatus.Status status) {
         CloudEvent event = CloudEventBuilder.v1()
-                .withSource(URI.create("provisioner"))
+                .withSource(URI.create(EVENT_SOURCE))
                 .withType(ProvisioningRequestStatus.EVENT_TYPE)
                 .withId(UUID.randomUUID().toString())
-                .withDataContentType(JsonFormat.CONTENT_TYPE)
+                .withDataContentType(MediaType.APPLICATION_JSON)
                 .withData(createProvisioningStatus(newTenantRequest, status))
                 .build();
         log.infof("Emitting provisioning request event for %s/%s, with status %s to %s", newTenantRequest.getTenantName(),
@@ -56,12 +56,13 @@ public class ProvisioningEventNotifier {
     public void emitResourceProvisioningStatus(NewTenantRequest newTenantRequest, String resourceName, String resourcetype,
             ResourceProvisioningStatus.Status status) {
         CloudEvent event = CloudEventBuilder.v1()
-                .withSource(URI.create("provisioner"))
+                .withSource(URI.create(EVENT_SOURCE))
                 .withType(ResourceProvisioningStatus.EVENT_TYPE)
                 .withId(UUID.randomUUID().toString())
-                .withDataContentType(JsonFormat.CONTENT_TYPE)
+                .withDataContentType(MediaType.APPLICATION_JSON)
                 .withData(createResourceProvisioningStatus(newTenantRequest, resourceName, resourcetype, status))
                 .build();
+        log.debugf("Emitting %s", event);
         log.infof("Emitting resouce provisioning event for %s/%s, with status %s to %s", resourceName, resourcetype, status,
                 brokerUrl);
         eventNotifier.emit(event);

@@ -17,6 +17,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.acme.saas.provisioner.event.NewTenantRequest;
+import org.acme.saas.provisioner.event.ProvisioningEventNotifier;
 import org.acme.saas.provisioner.event.ProvisioningRequestStatus;
 import org.acme.saas.provisioner.event.ResourceProvisioningStatus;
 import org.hamcrest.Matchers;
@@ -83,7 +84,7 @@ public class NewTenantRequestTest {
                 .then().statusCode(200)
                 .header("ce-id", notNullValue())
                 .header("ce-type", ProvisioningRequestStatus.EVENT_TYPE)
-                .header("ce-source", "provisioner")
+                .header("ce-source", ProvisioningEventNotifier.EVENT_SOURCE)
                 .extract().as(ProvisioningRequestStatus.class);
 
         assertThat(response, is(notNullValue()));
@@ -92,7 +93,7 @@ public class NewTenantRequestTest {
         assertThat(response.getStatus(), is(ProvisioningRequestStatus.Status.Completed));
 
         sink.verify(6, postRequestedFor(urlEqualTo("/"))
-                .withHeader("ce-source", WireMock.equalTo("provisioner")));
+                .withHeader("ce-source", WireMock.equalTo(ProvisioningEventNotifier.EVENT_SOURCE)));
 
         List<ServeEvent> allServeEvents = sink.getAllServeEvents();
         allServeEvents = Lists.reverse(allServeEvents);

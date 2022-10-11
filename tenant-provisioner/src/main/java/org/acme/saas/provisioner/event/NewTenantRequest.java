@@ -8,7 +8,7 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @Jacksonized
 public class NewTenantRequest {
-    public final static String EVENT_TYPE = "org.acme.saas.provisioner.NewTenantRequest";
+    public final static String EVENT_TYPE = "org.acme.saas.provisioner.event.NewTenantRequest";
     private Long tenandId;
     private String tenantName;
 }
