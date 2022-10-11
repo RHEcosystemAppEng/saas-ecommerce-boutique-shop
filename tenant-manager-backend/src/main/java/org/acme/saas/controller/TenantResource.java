@@ -15,21 +15,21 @@ import org.acme.saas.model.draft.SubscriptionDraft;
 import org.acme.saas.model.draft.SubscriptionDraft.SubscriptionDraftBuilder;
 import org.acme.saas.model.draft.TenantDraft;
 import org.acme.saas.model.draft.TenantDraft.TenantDraftBuilder;
-import org.acme.saas.model.mappers.SubscriptionMapper;
 import org.acme.saas.model.mappers.TenantMapper;
 import org.acme.saas.service.SubscriptionService;
 import org.acme.saas.service.TenantService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.time.Duration;
-import java.util.List;
 
 @Path("/tenant")
 public class TenantResource {
@@ -67,17 +67,21 @@ public class TenantResource {
     @GET
     @Path("/{tenantKey}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<TenantDraft> getTenantById(String tenantKey) {
-        return Uni.combine().all().unis(
-                subscriptionService.findByTenantKey(tenantKey),
-                tenantService.findByTenantKey(tenantKey)
-        ).combinedWith((subscription, tenant) -> {
-            TenantDraft draft = TenantMapper.INSTANCE.tenantToTenantDraft(tenant);
-            SubscriptionDraft subscriptionDraft = SubscriptionMapper.INSTANCE
-                    .subscriptionToSubscriptionDraft(subscription);
-            draft.setSubscriptions(List.of(subscriptionDraft));
-            return draft;
-        });
+    public Uni<TenantDraft> getTenantById(@PathParam("tenantKey") String tenantKey) {
+        System.out.println("Inside the method");
+        return tenantService.findByTenantKey(tenantKey)
+                .onItem().ifNotNull().transform(TenantMapper.INSTANCE::tenantToTenantDraft)
+                .onItem().ifNull().failWith(ForbiddenException::new);
+//        return Uni.combine().all().unis(
+//                subscriptionService.findByTenantKey(tenantKey),
+//                tenantService.findByTenantKey(tenantKey)
+//        ).combinedWith((subscription, tenant) -> {
+//            TenantDraft draft = TenantMapper.INSTANCE.tenantToTenantDraft(tenant);
+//            SubscriptionDraft subscriptionDraft = SubscriptionMapper.INSTANCE
+//                    .subscriptionToSubscriptionDraft(subscription);
+//            draft.setSubscriptions(List.of(subscriptionDraft));
+//            return draft;
+//        });
 
     }
 

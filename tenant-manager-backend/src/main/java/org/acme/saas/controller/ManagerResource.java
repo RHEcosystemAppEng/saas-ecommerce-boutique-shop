@@ -1,31 +1,49 @@
 package org.acme.saas.controller;
 
-import io.vertx.core.json.JsonObject;
+import io.smallrye.mutiny.Uni;
+import org.acme.saas.model.data.LoginData;
+import org.acme.saas.model.data.SummaryData;
+import org.acme.saas.model.data.TokenData;
+import org.acme.saas.service.SubscriptionService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/manager")
 public class ManagerResource {
+
+    @Inject
+    SubscriptionService subscriptionService;
 
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(JsonObject requestBody) {
-        String email = requestBody.getString("email");
-        String password = requestBody.getString("password");
+    public Uni<TokenData> login(LoginData loginData) {
 
-        if (email != null && email.equals("admin") &&
-                password != null && password.equals("redhat")) {
-            JsonObject respObj = new JsonObject();
-            respObj.put("loggedInUserName", "Tenant Manager");
-            return Response.ok(respObj).build();
+        if (loginData != null && loginData.getEmail() != null && loginData.getEmail().equals("admin") &&
+                loginData.getPassword() != null && loginData.getPassword().equals("redhat")) {
+
+            TokenData tokenData = new TokenData();
+            tokenData.setLoggedInUserName("Tenant Manager");
+            return Uni.createFrom().item(tokenData);
         }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        return Uni.createFrom().failure(() -> new NotAuthorizedException("Invalid credentials"));
     }
+
+    @GET
+    @Path("/summary")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<List<SummaryData>> getSubscriptionSummary(){
+        return subscriptionService.getSubscriptionSummary();
+    }
+
 }

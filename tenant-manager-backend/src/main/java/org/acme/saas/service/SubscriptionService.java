@@ -2,7 +2,9 @@ package org.acme.saas.service;
 
 import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
 import io.smallrye.mutiny.Uni;
+import org.acme.saas.model.Request;
 import org.acme.saas.model.Subscription;
+import org.acme.saas.model.data.SummaryData;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.draft.SubscriptionDraft;
 import org.acme.saas.model.draft.TenantDraft;
@@ -12,6 +14,7 @@ import org.acme.saas.repository.SubscriptionRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
+import java.util.List;
 
 @ApplicationScoped
 public class SubscriptionService {
@@ -85,4 +88,10 @@ public class SubscriptionService {
                 })
                 .onItem().ifNull().failWith(InternalServerErrorException::new);
     }
+
+
+    public Uni<List<SummaryData>> getSubscriptionSummary() {
+        return subscriptionRepository.getSubscriptionSummary();
+    }
+
 }

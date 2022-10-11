@@ -1,7 +1,12 @@
 package org.acme.saas.model.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TokenData {
     // todo rename it to TenantKey
     String key;

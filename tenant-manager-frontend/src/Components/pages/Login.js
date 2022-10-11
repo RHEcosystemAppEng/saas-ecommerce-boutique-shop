@@ -79,7 +79,7 @@ export const Login = () => {
 
     const manageManagerLogin = (formData) => {
         axios
-            .post("/mgr-login", formData)
+            .post("/manager/login", formData)
             .then((res) => {
                 localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
                 navigate("/mgr-dashboard")

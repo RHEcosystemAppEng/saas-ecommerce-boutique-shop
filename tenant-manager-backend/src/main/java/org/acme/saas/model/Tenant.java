@@ -5,9 +5,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,8 +31,9 @@ public class Tenant {
     private String email;
     private String password;
     private String status;
-//    @OneToMany(mappedBy = "tenant")
-//    private List<Subscription> subscriptions;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="tenantKey")
+    private List<Subscription> subscriptions;
 //
 //    public List<Subscription> getSubscriptions() {
 //        return subscriptions;

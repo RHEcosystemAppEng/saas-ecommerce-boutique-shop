@@ -1,23 +1,26 @@
 package org.acme.saas.controller;
 
-import io.vertx.core.json.JsonObject;
-import org.jboss.resteasy.reactive.RestForm;
+import io.smallrye.mutiny.Uni;
+import org.acme.saas.model.data.LoginData;
+import org.acme.saas.model.data.TokenData;
 
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
 
 @Path("/ops")
 public class OpsResource {
 
     @POST
     @Path("/login")
-    public Response login(@RestForm String email, @RestForm String password) {
-        if (email.equals("admin") && password.equals("redhat")) {
-            JsonObject respObj = new JsonObject();
-            respObj.put("loggedInUserName", "Tenant Manager");
-            return Response.ok(respObj).build();
+    public Uni<TokenData> login(LoginData loginData) {
+        if (loginData != null && loginData.getEmail() != null && loginData.getEmail().equals("admin") &&
+                loginData.getPassword() != null && loginData.getPassword().equals("redhat")) {
+
+            TokenData tokenData = new TokenData();
+            tokenData.setLoggedInUserName("Operations Manager");
+            return Uni.createFrom().item(tokenData);
         }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        return Uni.createFrom().failure(() -> new NotAuthorizedException("Invalid credentials"));
     }
 }

@@ -1,6 +1,7 @@
 package org.acme.saas.service;
 
 import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
+import io.quarkus.runtime.util.StringUtil;
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.common.Constants;
 import org.acme.saas.model.Subscription;
@@ -32,7 +33,7 @@ public class TenantService {
         String alphanumeric = seed.replaceAll("\\s", "").toLowerCase();
         if (alphanumeric.length() > 5)
             alphanumeric = alphanumeric.substring(0, 6);
-        String beforeCut = alphanumeric + System.currentTimeMillis();
+        String beforeCut = alphanumeric + new StringBuilder().append(System.currentTimeMillis()).reverse();
 
         return beforeCut.substring(0, 11);
     }

@@ -11,13 +11,14 @@ export const ManagerDataList = () => {
 
     const getTierData = () => {
         axios
-            .get("/getTierCounts")
+            .get("/manager/summary")
             .then((res) => {
                 const receivedData = []
-                res.data.forEach( arr => {
+                res.data.forEach( item => {
                     const tmp = []
-                    tmp[0] = arr[0].charAt(0).toUpperCase() + arr[0].slice(1);
-                    tmp[1] = arr[1]
+                    tmp[0] = item.tier;
+                    tmp[1] = item.totalSubscriptions;
+                    tmp[2] = item.aggregatedShoppers;
                     receivedData.push(tmp)
                 })
                 setTierData(receivedData)
@@ -33,6 +34,7 @@ export const ManagerDataList = () => {
                 <Tr key="0">
                     <Td>Tier</Td>
                     <Td>Total Subscriptions</Td>
+                    <Td>Aggregated Shopper Count</Td>
                 </Tr>
             </Thead>
             <Tbody>
@@ -40,6 +42,7 @@ export const ManagerDataList = () => {
                     <Tr key={index}>
                         <Td>{arr[0]}</Td>
                         <Td>{arr[1]}</Td>
+                        <Td>{arr[2]}</Td>
                     </Tr>
                 )}
             </Tbody>
