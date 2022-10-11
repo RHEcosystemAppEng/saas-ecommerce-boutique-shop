@@ -32,9 +32,16 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.google.common.collect.Lists;
 
+import io.fabric8.kubernetes.api.model.apps.DeploymentList;
+import io.fabric8.kubernetes.api.model.autoscaling.v2beta2.HorizontalPodAutoscalerList;
+import io.fabric8.openshift.client.NamespacedOpenShiftClient;
+import io.fabric8.openshift.client.server.mock.OpenShiftServer;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.kubernetes.client.OpenShiftTestServer;
+import io.quarkus.test.kubernetes.client.WithOpenShiftTestServer;
 import io.restassured.RestAssured;
 
+@WithOpenShiftTestServer
 @QuarkusTest
 public class NewTenantRequestTest {
     private static final Logger log = Logger.getLogger(NewTenantRequestTest.class);
@@ -42,6 +49,9 @@ public class NewTenantRequestTest {
 
     @Inject
     ObjectMapper mapper;
+
+    @OpenShiftTestServer
+    private OpenShiftServer mockOpenShiftServer;
 
     @BeforeAll
     public static void startSink() {
@@ -59,7 +69,9 @@ public class NewTenantRequestTest {
 
     @Test
     public void testNewTenantRequest() throws JsonProcessingException {
-        NewTenantRequest newTenantRequest = NewTenantRequest.builder().tenandId(1L).tenantName("AAA").build();
+        String tenantName = "AAA";
+        String namespace = tenantName.toLowerCase();
+        NewTenantRequest newTenantRequest = NewTenantRequest.builder().tenandId(1L).tenantName(tenantName).build();
 
         ProvisioningRequestStatus response = RestAssured.given().contentType("application/json")
                 .header("ce-specversion", "1.0")
@@ -97,30 +109,37 @@ public class NewTenantRequestTest {
         ResourceProvisioningStatus resourceProvisioningStatus = mapper.readValue(event.getRequest().getBodyAsString(),
                 ResourceProvisioningStatus.class);
         assertThat(resourceProvisioningStatus.getStatus(), Matchers.equalTo(ResourceProvisioningStatus.Status.Initiated));
-        assertThat(resourceProvisioningStatus.getResourceName(), Matchers.equalTo("AAA"));
+        assertThat(resourceProvisioningStatus.getResourceName(), Matchers.equalTo("app.yaml"));
 
         event = allServeEvents.get(2);
         assertThat(event.getRequest().header("ce-type").values().get(0), containsString(ResourceProvisioningStatus.EVENT_TYPE));
         resourceProvisioningStatus = mapper.readValue(event.getRequest().getBodyAsString(), ResourceProvisioningStatus.class);
         assertThat(resourceProvisioningStatus.getStatus(), Matchers.equalTo(ResourceProvisioningStatus.Status.Completed));
-        assertThat(resourceProvisioningStatus.getResourceName(), Matchers.equalTo("AAA"));
+        assertThat(resourceProvisioningStatus.getResourceName(), Matchers.equalTo("app.yaml"));
 
         event = allServeEvents.get(3);
         assertThat(event.getRequest().header("ce-type").values().get(0), containsString(ResourceProvisioningStatus.EVENT_TYPE));
         resourceProvisioningStatus = mapper.readValue(event.getRequest().getBodyAsString(), ResourceProvisioningStatus.class);
         assertThat(resourceProvisioningStatus.getStatus(), Matchers.equalTo(ResourceProvisioningStatus.Status.Initiated));
-        assertThat(resourceProvisioningStatus.getResourceName(), Matchers.equalTo("BBB"));
+        assertThat(resourceProvisioningStatus.getResourceName(), Matchers.equalTo("hpa.yaml"));
 
         event = allServeEvents.get(4);
         assertThat(event.getRequest().header("ce-type").values().get(0), containsString(ResourceProvisioningStatus.EVENT_TYPE));
         resourceProvisioningStatus = mapper.readValue(event.getRequest().getBodyAsString(), ResourceProvisioningStatus.class);
         assertThat(resourceProvisioningStatus.getStatus(), Matchers.equalTo(ResourceProvisioningStatus.Status.Completed));
-        assertThat(resourceProvisioningStatus.getResourceName(), Matchers.equalTo("BBB"));
+        assertThat(resourceProvisioningStatus.getResourceName(), Matchers.equalTo("hpa.yaml"));
 
         event = allServeEvents.get(5);
         assertThat(event.getRequest().header("ce-type").values().get(0), containsString(ProvisioningRequestStatus.EVENT_TYPE));
         provisioningRequestStatus = mapper.readValue(event.getRequest().getBodyAsString(),
                 ProvisioningRequestStatus.class);
         assertThat(provisioningRequestStatus.getStatus(), Matchers.equalTo(ProvisioningRequestStatus.Status.Completed));
+
+        NamespacedOpenShiftClient namespacedOpenShiftClient = mockOpenShiftServer.getOpenshiftClient().inNamespace(namespace);
+        DeploymentList deployments = namespacedOpenShiftClient.apps().deployments().list();
+        assertThat(deployments.getItems(), hasSize(1));
+
+        HorizontalPodAutoscalerList hpas = namespacedOpenShiftClient.autoscaling().v2beta2().horizontalPodAutoscalers().list();
+        assertThat(hpas.getItems(), hasSize(1));
     }
 }

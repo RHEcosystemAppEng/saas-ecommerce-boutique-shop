@@ -1,4 +1,4 @@
-package org.acme.saas.provisioner;
+package org.acme.saas.provisioner.event;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
