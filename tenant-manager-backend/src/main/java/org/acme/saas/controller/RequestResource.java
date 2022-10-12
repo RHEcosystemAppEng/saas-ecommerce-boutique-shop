@@ -3,6 +3,7 @@ package org.acme.saas.controller;
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.common.Constants;
 import org.acme.saas.model.data.RequestData;
+import org.acme.saas.model.data.RequestChangeData;
 import org.acme.saas.model.data.TokenData;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.service.RequestService;
@@ -10,11 +11,13 @@ import org.acme.saas.service.TenantService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/request")
 public class RequestResource {
@@ -24,6 +27,13 @@ public class RequestResource {
 
     @Inject
     TenantService tenantService;
+
+    @GET
+    @Path("/pending")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<List<RequestChangeData>> getPendingRequests() {
+        return requestService.getRequestChangeData();
+    }
 
     @POST
     @Path("/resource")

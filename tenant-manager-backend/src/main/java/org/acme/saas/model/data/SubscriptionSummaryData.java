@@ -11,7 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SummaryData {
+public class SubscriptionSummaryData {
 
     private String tier;
     private long totalSubscriptions;

@@ -68,7 +68,6 @@ public class TenantResource {
     @Path("/{tenantKey}")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<TenantDraft> getTenantById(@PathParam("tenantKey") String tenantKey) {
-        System.out.println("Inside the method");
         return tenantService.findByTenantKey(tenantKey)
                 .onItem().ifNotNull().transform(TenantMapper.INSTANCE::tenantToTenantDraft)
                 .onItem().ifNull().failWith(ForbiddenException::new);
@@ -127,6 +126,7 @@ public class TenantResource {
         RequestDraftBuilder requestDraftBuilder = RequestDraft.builder();
         requestDraftBuilder.tenantKey(tenantKey);
         requestDraftBuilder.hostName(registerData.getHostName());
+        requestDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);
         requestDraftBuilder.tier(registerData.getTier());
         requestDraftBuilder.avgConcurrentShoppers(registerData.getAvgConcurrentShoppers());
         requestDraftBuilder.peakConcurrentShoppers(registerData.getPeakConcurrentShoppers());
@@ -138,6 +138,7 @@ public class TenantResource {
         int[] instanceCount = subscriptionService.calculateInstanceCount(requestDraft);
         SubscriptionDraftBuilder subscriptionDraftBuilder = SubscriptionDraft.builder();
         subscriptionDraftBuilder.tenantKey(tenantKey);
+        subscriptionDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);
         subscriptionDraftBuilder.tier(registerData.getTier());
         subscriptionDraftBuilder.minInstanceCount(instanceCount[0]);
         subscriptionDraftBuilder.maxInstanceCount(instanceCount[1]);

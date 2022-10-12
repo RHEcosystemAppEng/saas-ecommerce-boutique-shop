@@ -2,6 +2,7 @@ package org.acme.saas.controller;
 
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.model.data.PriceData;
+import org.acme.saas.model.data.SubscriptionSummaryData;
 import org.acme.saas.model.draft.SubscriptionDraft;
 import org.acme.saas.model.mappers.SubscriptionMapper;
 import org.acme.saas.service.SubscriptionService;
@@ -14,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/subscribe")
 public class SubscriptionResource {
@@ -40,4 +42,12 @@ public class SubscriptionResource {
                 .transform(SubscriptionMapper.INSTANCE::subscriptionToSubscriptionDraft)
                 .onItem().ifNull().failWith(NotFoundException::new);
     }
+
+    @GET
+    @Path("/summary")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<List<SubscriptionSummaryData>> getSubscriptionSummary(){
+        return subscriptionService.getSubscriptionSummary();
+    }
+
 }

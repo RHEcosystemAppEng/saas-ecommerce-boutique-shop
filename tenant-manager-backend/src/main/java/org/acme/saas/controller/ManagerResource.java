@@ -2,26 +2,17 @@ package org.acme.saas.controller;
 
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.model.data.LoginData;
-import org.acme.saas.model.data.SummaryData;
 import org.acme.saas.model.data.TokenData;
-import org.acme.saas.service.SubscriptionService;
 
-import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 @Path("/manager")
 public class ManagerResource {
-
-    @Inject
-    SubscriptionService subscriptionService;
 
     @POST
     @Path("/login")
@@ -37,13 +28,6 @@ public class ManagerResource {
             return Uni.createFrom().item(tokenData);
         }
         return Uni.createFrom().failure(() -> new NotAuthorizedException("Invalid credentials"));
-    }
-
-    @GET
-    @Path("/summary")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Uni<List<SummaryData>> getSubscriptionSummary(){
-        return subscriptionService.getSubscriptionSummary();
     }
 
 }

@@ -20,6 +20,7 @@ public class Request {
     private long id;
     private String tenantKey;
     private String hostName;
+    private String serviceName;
     private String tier;
     private int avgConcurrentShoppers;
     private int peakConcurrentShoppers;

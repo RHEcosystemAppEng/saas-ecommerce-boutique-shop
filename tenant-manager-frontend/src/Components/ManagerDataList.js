@@ -11,7 +11,7 @@ export const ManagerDataList = () => {
 
     const getTierData = () => {
         axios
-            .get("/manager/summary")
+            .get("/subscribe/summary")
             .then((res) => {
                 const receivedData = []
                 res.data.forEach( item => {

@@ -2,9 +2,8 @@ package org.acme.saas.service;
 
 import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
 import io.smallrye.mutiny.Uni;
-import org.acme.saas.model.Request;
 import org.acme.saas.model.Subscription;
-import org.acme.saas.model.data.SummaryData;
+import org.acme.saas.model.data.SubscriptionSummaryData;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.draft.SubscriptionDraft;
 import org.acme.saas.model.draft.TenantDraft;
@@ -14,6 +13,10 @@ import org.acme.saas.repository.SubscriptionRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 @ApplicationScoped
@@ -57,21 +60,21 @@ public class SubscriptionService {
                     String directoryPath = "/usr/app/boutique_files";
 
                     System.out.println("Calling the shell script here!");
-//                    try {
-//                        ProcessBuilder pb = new ProcessBuilder(directoryPath + "/create-namespace.sh",
-//                                namespaceName,
-//                                directoryPath,
-//                                requestDraft.getHostName());
-//                        Process p = pb.start();
-//                        InputStream is = p.getInputStream();
-//                        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//
-//                        String line = null;
-//                        String lastLine = "";
-//                        while ((line = reader.readLine()) != null) {
-//                            System.out.println(line);
-//                            lastLine = line;
-//                        }
+                    try {
+                        ProcessBuilder pb = new ProcessBuilder("/Users/jnirosha/IdeaProjects/saas-ecommerce-boutique-shop/tenant-manager-backend/test.sh",
+                                namespaceName,
+                                directoryPath,
+                                requestDraft.getHostName());
+                        Process p = pb.start();
+                        InputStream is = p.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+                        String line = null;
+                        String lastLine = "";
+                        while ((line = reader.readLine()) != null) {
+                            System.out.println(line);
+                            lastLine = line;
+                        }
 //                        if (lastLine.contains("http:")) {
 //                            String routeUrl = lastLine.substring(lastLine.indexOf("http:")).replaceAll("\\s", "");
 //                            System.out.println("URL --->" + routeUrl);
@@ -80,9 +83,9 @@ public class SubscriptionService {
 //                        } else {
 //                            System.out.println("URL couldn't fetch from the create-namespace.sh output!!!");
 //                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                     return subscriptionRepository.persist(subscription);
                 })
@@ -90,7 +93,7 @@ public class SubscriptionService {
     }
 
 
-    public Uni<List<SummaryData>> getSubscriptionSummary() {
+    public Uni<List<SubscriptionSummaryData>> getSubscriptionSummary() {
         return subscriptionRepository.getSubscriptionSummary();
     }
 

@@ -103,6 +103,7 @@ class TenantResourceTest {
         TenantDraft responseTenantDraft = fetchTenantResponse.as(TenantDraft.class);
         LOG.debugf("Response is %s", responseTenantDraft);
         assertThat(responseTenantDraft.getTenantKey(), is(responseToken.getKey()));
+        assertThat(responseTenantDraft.getSubscriptions().size(), is(1));
 
     }
 }
