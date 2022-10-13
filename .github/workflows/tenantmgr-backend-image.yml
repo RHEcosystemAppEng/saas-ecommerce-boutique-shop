@@ -7,7 +7,7 @@ env:
   IMAGE_REPOSITORY: ecosystem-appeng
   IMAGE_NAME: saas-tenant-manager-backend
 jobs:
-  build-image-and-push:
+  build-image-and-push-backend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -24,4 +24,20 @@ jobs:
         docker login "${{ env.IMAGE_REGISTRY }}" --username="${{ secrets.REGISTRY_USERNAME }}" --password="${{ secrets.REGISTRY_PASSWORD }}"
 
         docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} ./tenant-manager-backend
+        docker push ${IMAGE_FULL}
+  build-image-and-push-frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and publish docker image
+      env:
+        IMAGE_NAME: saas-tenant-manager-frontend
+      run: |
+        BUILD_VERSION=latest
+        echo Build version is: ${BUILD_VERSION}
+        IMAGE_FULL=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:${BUILD_VERSION}
+        echo Building image: ${IMAGE_FULL}
+        docker login "${{ env.IMAGE_REGISTRY }}" --username="${{ secrets.REGISTRY_USERNAME }}" --password="${{ secrets.REGISTRY_PASSWORD }}"
+
+        docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} ./tenant-manager-frontend
         docker push ${IMAGE_FULL}
