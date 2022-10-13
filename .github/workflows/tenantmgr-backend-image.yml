@@ -14,6 +14,10 @@ jobs:
     - name: Change working directory
       run: |
         cd ./tenant-manager-backend
+    - name: Install Maven
+      run: sudo apt install -y maven
+    - name: Maven clean 
+      run: mvn clean install -DskipTests
     - name: Build and publish docker image
       run: |
         BUILD_VERSION=latest
