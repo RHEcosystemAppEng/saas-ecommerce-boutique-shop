@@ -53,7 +53,7 @@ public class RequestResource {
                 .onItem().ifNull().failWith(NotFoundException::new)
                 .map(tenant -> {
                     TokenData.TokenDataBuilder tokenDataBuilder = TokenData.builder();
-                    tokenDataBuilder.key(tenant.getTenantId());
+                    tokenDataBuilder.key(tenant.getTenantKey());
                     tokenDataBuilder.Id(tenant.getId());
                     tokenDataBuilder.loggedInUserName(tenant.getTenantName());
                     return tokenDataBuilder.build();

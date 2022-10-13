@@ -149,7 +149,7 @@ public class TenantResource {
                 tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft);
 
         return subscriptionUni.onItem().ifNotNull()
-                .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build()))
+                .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build(), subscription))
                 .flatMap(Function.identity())
                 .onItem().transform(tenant -> {
                     TokenDataBuilder tokenDataBuilder = TokenData.builder();

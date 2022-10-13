@@ -13,6 +13,7 @@ import org.acme.saas.repository.TenantRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -54,15 +55,12 @@ public class TenantService {
     }
 
     @ReactiveTransactional
-    public Uni<Tenant> createNewTenant(TenantDraft tenantDraft) {
+    public Uni<Tenant> createNewTenant(TenantDraft tenantDraft, Subscription subscription) {
         Tenant tenant = TenantMapper.INSTANCE.tenantDraftToTenant(tenantDraft);
         tenant.setStatus(Constants.TENANT_STATUS_ACTIVE);
+        tenant.setSubscriptions(List.of(subscription));
 
-        return subscriptionService.findAllByTenantKey(tenant.getTenantId())
-                .onItem().transform(subscriptions -> {
-                    tenant.setSubscriptions(subscriptions);
-                    return tenantRepository.persist(tenant);
-                }).flatMap(Function.identity());
+        return tenantRepository.persist(tenant);
     }
 
     @ReactiveTransactional

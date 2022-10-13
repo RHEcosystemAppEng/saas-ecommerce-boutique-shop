@@ -22,8 +22,7 @@ import java.util.List;
 public class Tenant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String tenantKey;
     private String tenantName;
@@ -36,6 +35,5 @@ public class Tenant {
     private String status;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "tenantKey")
     private List<Subscription> subscriptions = new ArrayList<>();
 }
