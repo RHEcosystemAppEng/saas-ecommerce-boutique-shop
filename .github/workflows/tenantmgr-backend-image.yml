@@ -1,6 +1,6 @@
 name: Tenant Manager Backend image build and push to Quay
 on:
-  release:
+  push:
     branches: [ "main" ]
     types: [published]
     tags:
