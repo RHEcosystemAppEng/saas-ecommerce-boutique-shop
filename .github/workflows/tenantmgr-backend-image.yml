@@ -17,9 +17,6 @@ jobs:
     - name: Change working directory
       run: |
         cd ./tenant-manager-backend
-    - name: Maven Clean
-      run: |
-        mvn clean install -DskipTests
     - name: Build and publish docker image
       run: |
         BUILD_VERSION=${{  github.ref_name }}
