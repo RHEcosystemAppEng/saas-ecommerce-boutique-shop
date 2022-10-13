@@ -23,5 +23,5 @@ jobs:
         echo Building image: ${IMAGE_FULL}
         docker login "${{ env.IMAGE_REGISTRY }}" --username="${{ secrets.REGISTRY_USERNAME }}" --password="${{ secrets.REGISTRY_PASSWORD }}"
 
-        docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} .
+        docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} ./tenant-manager-backend
         docker push ${IMAGE_FULL}
