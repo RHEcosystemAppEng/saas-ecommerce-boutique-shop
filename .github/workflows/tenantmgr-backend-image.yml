@@ -9,7 +9,10 @@ env:
 jobs:
   build-image-and-push:
     runs-on: ubuntu-latest
-    working-directory: saas-tenant-manager-backend
+    defaults:
+      run:
+        shell: bash
+        working-directory: saas-tenant-manager-backend
     steps:
     - uses: actions/checkout@v3
     - name: Install Maven
