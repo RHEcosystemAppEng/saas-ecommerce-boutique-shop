@@ -12,7 +12,11 @@ import java.util.List;
 @ApplicationScoped
 public class SubscriptionRepository implements PanacheRepository<Subscription> {
 
-    public Uni<Subscription> findByTenantKey(String tenantKey) {
+    public Uni<List<Subscription>> findAllByTenantKey(String tenantKey) {
+        return find("tenantKey= ?1", tenantKey).list();
+    }
+
+    public Uni<Subscription> findFirstByTenantKey(String tenantKey) {
         return find("tenantKey= ?1", tenantKey).firstResult();
     }
 

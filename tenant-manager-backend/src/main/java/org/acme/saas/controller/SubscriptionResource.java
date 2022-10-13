@@ -37,7 +37,7 @@ public class SubscriptionResource {
     @Path("/{tenantKey}")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<SubscriptionDraft> getSubscriptionByTenantKey(String tenantKey) {
-        return subscriptionService.findByTenantKey(tenantKey)
+        return subscriptionService.findFirstByTenantKey(tenantKey)
                 .onItem().ifNotNull()
                 .transform(SubscriptionMapper.INSTANCE::subscriptionToSubscriptionDraft)
                 .onItem().ifNull().failWith(NotFoundException::new);

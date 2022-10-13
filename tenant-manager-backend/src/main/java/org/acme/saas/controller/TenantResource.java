@@ -4,7 +4,6 @@ import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.common.Constants;
 import org.acme.saas.model.Subscription;
-import org.acme.saas.model.Tenant;
 import org.acme.saas.model.data.LoginData;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.TokenData;
@@ -30,6 +29,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.time.Duration;
+import java.util.function.Function;
 
 @Path("/tenant")
 public class TenantResource {
@@ -69,7 +69,8 @@ public class TenantResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<TenantDraft> getTenantById(@PathParam("tenantKey") String tenantKey) {
         return tenantService.findByTenantKey(tenantKey)
-                .onItem().ifNotNull().transform(TenantMapper.INSTANCE::tenantToTenantDraft)
+                .onItem().invoke(tenant -> System.out.println("Soon after object fetch: "+tenant.getSubscriptions()))
+                .onItem().transform(TenantMapper.INSTANCE::tenantToTenantDraft)
                 .onItem().ifNull().failWith(ForbiddenException::new);
 //        return Uni.combine().all().unis(
 //                subscriptionService.findByTenantKey(tenantKey),
@@ -121,7 +122,7 @@ public class TenantResource {
         tenantDraftBuilder.contactName(registerData.getContactName());
         tenantDraftBuilder.status(Constants.TENANT_STATUS_ACTIVE);
 
-        Uni<Tenant> savedTenantUni = tenantService.createNewTenant(tenantDraftBuilder.build());
+
 
         RequestDraftBuilder requestDraftBuilder = RequestDraft.builder();
         requestDraftBuilder.tenantKey(tenantKey);
@@ -147,13 +148,23 @@ public class TenantResource {
         Uni<Subscription> subscriptionUni = subscriptionService.createNewSubscription(
                 tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft);
 
+        return subscriptionUni.onItem().ifNotNull()
+                .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build()))
+                .flatMap(Function.identity())
+                .onItem().transform(tenant -> {
+                    TokenDataBuilder tokenDataBuilder = TokenData.builder();
+                    tokenDataBuilder.Id(tenant.getId());
+                    tokenDataBuilder.key(tenant.getTenantKey());
+                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
+                    return tokenDataBuilder.build();
+                });
 //        return Uni.combine().all().unis(savedTenantUni, subscriptionUni)
 //                .combinedWith((tenant, subscription) -> {
-//                    subscription.setTenant(tenant);
 //
-//                    List<Subscription> subscriptions = new ArrayList<>();
+//                    List<Subscription> subscriptions = tenant.getSubscriptions();
 //                    subscriptions.add(subscription);
-//                    return tenantService.updateTenantSubscriptions(tenant, subscriptions);
+////                    return tenantService.updateTenantSubscriptions(tenant, subscriptions);
+//                    return Uni.createFrom().item(tenant);
 //                })
 //                .flatMap(Function.identity())
 //                .onItem().ifNotNull().transform(tenant -> {
@@ -163,13 +174,13 @@ public class TenantResource {
 //                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
 //                    return tokenDataBuilder.build();
 //                });
-        return Uni.combine().all().unis(savedTenantUni, subscriptionUni)
-                .combinedWith((tenant, subscription) -> {
-                    TokenDataBuilder tokenDataBuilder = TokenData.builder();
-                    tokenDataBuilder.Id(tenant.getId());
-                    tokenDataBuilder.key(tenant.getTenantKey());
-                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
-                    return tokenDataBuilder.build();
-                });
+//        return Uni.combine().all().unis(savedTenantUni, subscriptionUni)
+//                .combinedWith((tenant, subscription) -> {
+//                    TokenDataBuilder tokenDataBuilder = TokenData.builder();
+//                    tokenDataBuilder.Id(tenant.getId());
+//                    tokenDataBuilder.key(tenant.getTenantKey());
+//                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
+//                    return tokenDataBuilder.build();
+//                });
     }
 }

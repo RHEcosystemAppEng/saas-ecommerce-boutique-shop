@@ -29,8 +29,13 @@ public class SubscriptionService {
     SubscriptionRepository subscriptionRepository;
 
     @ReactiveTransactional
-    public Uni<Subscription> findByTenantKey(String tenantKey) {
-        return subscriptionRepository.findByTenantKey(tenantKey);
+    public Uni<Subscription> findFirstByTenantKey(String tenantKey) {
+        return subscriptionRepository.findFirstByTenantKey(tenantKey);
+    }
+
+    @ReactiveTransactional
+    public Uni<List<Subscription>> findAllByTenantKey(String tenantKey) {
+        return subscriptionRepository.findAllByTenantKey(tenantKey);
     }
     public double calculatePrice(String tier, int avgConcurrentShoppers) {
         return switch (tier) {

@@ -2,7 +2,9 @@ package org.acme.saas.repository;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.smallrye.mutiny.Uni;
+import org.acme.saas.model.Subscription;
 import org.acme.saas.model.Tenant;
+import org.hibernate.reactive.mutiny.Mutiny;
 
 import javax.enterprise.context.ApplicationScoped;
 

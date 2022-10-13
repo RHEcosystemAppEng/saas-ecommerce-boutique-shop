@@ -1,7 +1,6 @@
 package org.acme.saas.service;
 
 import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
-import io.quarkus.runtime.util.StringUtil;
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.common.Constants;
 import org.acme.saas.model.Subscription;
@@ -15,12 +14,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Function;
 
 @ApplicationScoped
 public class TenantService {
 
     @Inject
     TenantRepository tenantRepository;
+
+    @Inject
+    SubscriptionService subscriptionService;
 
     @ReactiveTransactional
     public Uni<Tenant> login(LoginData loginData) {
@@ -54,7 +57,12 @@ public class TenantService {
     public Uni<Tenant> createNewTenant(TenantDraft tenantDraft) {
         Tenant tenant = TenantMapper.INSTANCE.tenantDraftToTenant(tenantDraft);
         tenant.setStatus(Constants.TENANT_STATUS_ACTIVE);
-        return tenantRepository.persist(tenant);
+
+        return subscriptionService.findAllByTenantKey(tenant.getTenantId())
+                .onItem().transform(subscriptions -> {
+                    tenant.setSubscriptions(subscriptions);
+                    return tenantRepository.persist(tenant);
+                }).flatMap(Function.identity());
     }
 
     @ReactiveTransactional

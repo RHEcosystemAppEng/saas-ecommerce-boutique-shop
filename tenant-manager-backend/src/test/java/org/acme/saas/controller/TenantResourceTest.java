@@ -55,7 +55,7 @@ class TenantResourceTest {
         assertThat("Request record is not persisted in the database",
                 Objects.nonNull(requestRepository.findByTenantKey(responseToken.getKey()).await().indefinitely()));
         assertThat("Subscription record is not persisted in the database",
-                Objects.nonNull(subscriptionRepository.findByTenantKey(responseToken.getKey()).await().indefinitely()));
+                Objects.nonNull(subscriptionRepository.findAllByTenantKey(responseToken.getKey()).await().indefinitely()));
     }
 
     @Test
