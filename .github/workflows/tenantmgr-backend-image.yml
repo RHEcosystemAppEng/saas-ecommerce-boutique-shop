@@ -9,15 +9,12 @@ env:
 jobs:
   build-image-and-push:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: /home/runner/work/saas-ecommerce-boutique-shop/saas-tenant-manager-backend
     steps:
     - uses: actions/checkout@v3
     - name: Install Maven
       run: sudo apt install -y maven
     - name: Maven clean 
-      run: mvn clean install -DskipTests
+      run: mvn -f ./tenant-manager-backend/pom.xml clean install -DskipTests
     - name: Build and publish docker image
       run: |
         BUILD_VERSION=latest
