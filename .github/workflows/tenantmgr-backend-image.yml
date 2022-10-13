@@ -2,9 +2,6 @@ name: Tenant Manager Backend image build and push to Quay
 on:
   push:
     branches: [ "main" ]
-    types: [published]
-    tags:
-    - 'v*'
 env:
   IMAGE_REGISTRRY: quay.io
   IMAGE_REPOSITORY: ecosystem-appeng
