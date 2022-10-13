@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install Maven
       run: |
-        apt install -y maven
+        sudo apt install -y maven
     - name: Change working directory
       run: |
         cd ./tenant-manager-backend
