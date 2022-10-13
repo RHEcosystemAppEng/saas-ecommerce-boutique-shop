@@ -1,6 +1,7 @@
 name: Tenant Manager Backend image build and push to Quay
 on:
-  push:
+  pull_request:
+    types: [opened, edited, closed]
     branches: [ "main" ]
 env:
   IMAGE_REGISTRY: quay.io
