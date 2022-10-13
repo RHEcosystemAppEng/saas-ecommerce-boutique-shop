@@ -1,0 +1,16 @@
+com/saas/tenant/manager/SaasTenantManagerApplication$1.class
+com/saas/tenant/manager/repository/TenantRepository.class
+com/saas/tenant/manager/service/TierService.class
+com/saas/tenant/manager/repository/ResourceRequestRepository.class
+com/saas/tenant/manager/service/Test.class
+com/saas/tenant/manager/repository/SubscriptionRepository.class
+com/saas/tenant/manager/model/ResourceRequest.class
+com/saas/tenant/manager/service/TenantService.class
+com/saas/tenant/manager/SaasTenantManagerApplication.class
+com/saas/tenant/manager/model/Tenant.class
+com/saas/tenant/manager/TenantManager.class
+com/saas/tenant/manager/model/Subscription.class
+com/saas/tenant/manager/service/ResourceRequestService.class
+com/saas/tenant/manager/util/ResourceRequestUtil.class
+com/saas/tenant/manager/service/SubscriptionService.class
+com/saas/tenant/manager/Constants.class
