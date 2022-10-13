@@ -3,7 +3,7 @@ on:
   push:
     branches: [ "main" ]
 env:
-  IMAGE_REGISTRRY: quay.io
+  IMAGE_REGISTRY: quay.io
   IMAGE_REPOSITORY: ecosystem-appeng
   IMAGE_NAME: saas-tenant-manager-backend
 jobs:
@@ -19,11 +19,11 @@ jobs:
         cd ./tenant-manager-backend
     - name: Build and publish docker image
       run: |
-        BUILD_VERSION=${{  github.ref_name }}
+        BUILD_VERSION=0.10.1
         echo Build version is: ${BUILD_VERSION}
         IMAGE_FULL=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:${BUILD_VERSION}
         echo Building image: ${IMAGE_FULL}
-        docker login --username="${{ secrets.REGISTRY_USERNAME }}" --password="${{ secrets.REGISTRY_PASSWORD }}" ${{ env.IMAGE_REGISTRY }}
+        docker login "${{ env.IMAGE_REGISTRY }}" --username="${{ secrets.REGISTRY_USERNAME }}" --password="${{ secrets.REGISTRY_PASSWORD }}"
 
         docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} .
         docker push ${IMAGE_FULL}
