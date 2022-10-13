@@ -11,15 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Install Maven
-      run: |
-        sudo apt install -y maven
     - name: Change working directory
       run: |
         cd ./tenant-manager-backend
     - name: Build and publish docker image
       run: |
-        BUILD_VERSION=0.10.1
+        BUILD_VERSION=latest
         echo Build version is: ${BUILD_VERSION}
         IMAGE_FULL=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:${BUILD_VERSION}
         echo Building image: ${IMAGE_FULL}
