@@ -20,8 +20,8 @@ jobs:
       uses: stCarolas/setup-maven@v4.4
       with:
         maven-version: 3.8.6
-    - name: Maven clean 
-      run: mvn -f ./tenant-manager-backend/pom.xml clean install
+    - name: Build Quarkus native executable
+      run: ./tenant-manager-backend/mvnw package -Pnative
     - name: Build and publish docker image
       run: |
         BUILD_VERSION=latest
