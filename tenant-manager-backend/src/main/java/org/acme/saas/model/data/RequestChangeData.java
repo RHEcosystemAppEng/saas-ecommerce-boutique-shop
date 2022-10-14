@@ -14,12 +14,12 @@ import lombok.ToString;
 public class RequestChangeData {
 
     private String tenantKey;
-    private String TenantName;
+    private String tenantName;
     private String currentTier;
     private String newTier;
     private String serviceName;
-    private String oldMinInstances;
-    private String newMinInstances;
-    private String oldMaxInstances;
-    private String newMaxInstances;
+    private int oldMinInstances;
+    private int newMinInstances;
+    private int oldMaxInstances;
+    private int newMaxInstances;
 }

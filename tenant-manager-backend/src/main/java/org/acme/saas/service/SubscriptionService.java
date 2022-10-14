@@ -37,6 +37,7 @@ public class SubscriptionService {
     public Uni<List<Subscription>> findAllByTenantKey(String tenantKey) {
         return subscriptionRepository.findAllByTenantKey(tenantKey);
     }
+
     public double calculatePrice(String tier, int avgConcurrentShoppers) {
         return switch (tier) {
             case "Silver" -> (avgConcurrentShoppers / 100.0) * 10;
@@ -45,9 +46,9 @@ public class SubscriptionService {
         };
     }
 
-    public int[] calculateInstanceCount(RequestDraft requestDraft) {
-        int min = requestDraft.getAvgConcurrentShoppers() / 50;
-        int max = requestDraft.getPeakConcurrentShoppers() / 50;
+    public int[] calculateInstanceCount(int avgConcurrentShoppers) {
+        int min = avgConcurrentShoppers / 50;
+        int max = avgConcurrentShoppers / 50;
 
         return new int[]{min, max};
     }
@@ -66,7 +67,7 @@ public class SubscriptionService {
 
                     System.out.println("Calling the shell script here!");
                     try {
-                        ProcessBuilder pb = new ProcessBuilder("./test.sh",
+                        ProcessBuilder pb = new ProcessBuilder("/Users/jnirosha/IdeaProjects/saas-ecommerce-boutique-shop/tenant-manager-backend/test.sh",
                                 namespaceName,
                                 directoryPath,
                                 requestDraft.getHostName());

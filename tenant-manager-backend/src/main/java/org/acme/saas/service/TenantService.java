@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 @ApplicationScoped
 public class TenantService {
@@ -45,6 +44,11 @@ public class TenantService {
     @ReactiveTransactional
     public Uni<Tenant> findByTenantKey(String tenantKey) {
         return tenantRepository.findByTenantKey(tenantKey);
+    }
+
+    @ReactiveTransactional
+    public Uni<List<Tenant>> findAllActiveTenants() {
+        return tenantRepository.find("status=?1", Constants.TENANT_STATUS_ACTIVE).list();
     }
 
     @ReactiveTransactional

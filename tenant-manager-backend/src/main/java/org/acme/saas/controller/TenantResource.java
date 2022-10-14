@@ -23,6 +23,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -47,7 +48,6 @@ public class TenantResource {
                 .ticks().every(Duration.ofSeconds(1))
                 .onItem().transform(i -> i * 2)
                 .select().first(10);
-
     }
 
     @GET
@@ -69,20 +69,8 @@ public class TenantResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<TenantDraft> getTenantById(@PathParam("tenantKey") String tenantKey) {
         return tenantService.findByTenantKey(tenantKey)
-                .onItem().invoke(tenant -> System.out.println("Soon after object fetch: "+tenant.getSubscriptions()))
                 .onItem().transform(TenantMapper.INSTANCE::tenantToTenantDraft)
-                .onItem().ifNull().failWith(ForbiddenException::new);
-//        return Uni.combine().all().unis(
-//                subscriptionService.findByTenantKey(tenantKey),
-//                tenantService.findByTenantKey(tenantKey)
-//        ).combinedWith((subscription, tenant) -> {
-//            TenantDraft draft = TenantMapper.INSTANCE.tenantToTenantDraft(tenant);
-//            SubscriptionDraft subscriptionDraft = SubscriptionMapper.INSTANCE
-//                    .subscriptionToSubscriptionDraft(subscription);
-//            draft.setSubscriptions(List.of(subscriptionDraft));
-//            return draft;
-//        });
-
+                .onItem().ifNull().failWith(NotFoundException::new);
     }
 
 
@@ -122,8 +110,6 @@ public class TenantResource {
         tenantDraftBuilder.contactName(registerData.getContactName());
         tenantDraftBuilder.status(Constants.TENANT_STATUS_ACTIVE);
 
-
-
         RequestDraftBuilder requestDraftBuilder = RequestDraft.builder();
         requestDraftBuilder.tenantKey(tenantKey);
         requestDraftBuilder.hostName(registerData.getHostName());
@@ -136,7 +122,8 @@ public class TenantResource {
         requestDraftBuilder.status(Constants.REQUEST_STATUS_APPROVED);
         RequestDraft requestDraft = requestDraftBuilder.build();
 
-        int[] instanceCount = subscriptionService.calculateInstanceCount(requestDraft);
+        int[] instanceCount = subscriptionService.calculateInstanceCount(
+                requestDraft.getAvgConcurrentShoppers());
         SubscriptionDraftBuilder subscriptionDraftBuilder = SubscriptionDraft.builder();
         subscriptionDraftBuilder.tenantKey(tenantKey);
         subscriptionDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);
@@ -158,29 +145,5 @@ public class TenantResource {
                     tokenDataBuilder.loggedInUserName(tenant.getTenantName());
                     return tokenDataBuilder.build();
                 });
-//        return Uni.combine().all().unis(savedTenantUni, subscriptionUni)
-//                .combinedWith((tenant, subscription) -> {
-//
-//                    List<Subscription> subscriptions = tenant.getSubscriptions();
-//                    subscriptions.add(subscription);
-////                    return tenantService.updateTenantSubscriptions(tenant, subscriptions);
-//                    return Uni.createFrom().item(tenant);
-//                })
-//                .flatMap(Function.identity())
-//                .onItem().ifNotNull().transform(tenant -> {
-//                    TokenDataBuilder tokenDataBuilder = TokenData.builder();
-//                    tokenDataBuilder.Id(tenant.getId());
-//                    tokenDataBuilder.key(tenant.getTenantKey());
-//                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
-//                    return tokenDataBuilder.build();
-//                });
-//        return Uni.combine().all().unis(savedTenantUni, subscriptionUni)
-//                .combinedWith((tenant, subscription) -> {
-//                    TokenDataBuilder tokenDataBuilder = TokenData.builder();
-//                    tokenDataBuilder.Id(tenant.getId());
-//                    tokenDataBuilder.key(tenant.getTenantKey());
-//                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
-//                    return tokenDataBuilder.build();
-//                });
     }
 }
