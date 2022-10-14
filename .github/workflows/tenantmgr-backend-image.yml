@@ -21,7 +21,7 @@ jobs:
       with:
         maven-version: 3.8.6
     - name: Build Quarkus native executable
-      run: ./tenant-manager-backend/mvnw package -Pnative
+      run: mvn package -Pnative
     - name: Build and publish docker image
       run: |
         BUILD_VERSION=latest
