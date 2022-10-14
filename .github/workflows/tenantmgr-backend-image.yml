@@ -12,13 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Install Maven
-      run: sudo apt install -y maven
     - name: Setup Java JDK
       uses: actions/setup-java@v3.5.1
       with:
         java-version: 17
         java-package: jdk
+        distribution: 'corretto'
+    - name: Install Maven
+      run: sudo apt install -y maven
     - name: Maven clean 
       run: mvn -f ./tenant-manager-backend/pom.xml clean install -DskipTests
     - name: Build and publish docker image
