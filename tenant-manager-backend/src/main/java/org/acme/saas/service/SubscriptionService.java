@@ -67,7 +67,7 @@ public class SubscriptionService {
 
                     System.out.println("Calling the shell script here!");
                     try {
-                        ProcessBuilder pb = new ProcessBuilder("/Users/jnirosha/IdeaProjects/saas-ecommerce-boutique-shop/tenant-manager-backend/test.sh",
+                        ProcessBuilder pb = new ProcessBuilder("/usr/app/boutique_files/create-namespace.sh",
                                 namespaceName,
                                 directoryPath,
                                 requestDraft.getHostName());
