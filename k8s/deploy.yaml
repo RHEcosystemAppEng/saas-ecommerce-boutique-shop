@@ -140,8 +140,10 @@ spec:
       serviceAccountName: tenant-controller-sa
       containers:
         - name: tenant-manager-backend
-          image: quay.io/pdred/backend:latest
+          image: quay.io/ecosystem-appeng/saas-tenant-manager-backend:latest
           imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: true
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -229,7 +231,7 @@ spec:
       serviceAccountName: nginx-sa
       containers:
         - name: tenant-manager-frontend
-          image: quay.io/pdred/frontend:latest
+          image: quay.io/ecosystem-appeng/saas-tenant-manager-frontend:latest
           imagePullPolicy: Always
 
 ---
