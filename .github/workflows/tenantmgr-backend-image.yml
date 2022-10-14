@@ -20,8 +20,10 @@ jobs:
       uses: stCarolas/setup-maven@v4.4
       with:
         maven-version: 3.8.6
+    - name: cd to project dir
+      run: cd tenant-manager-backend
     - name: Build Quarkus native executable
-      run: cd tenant-manager-backend && mvn package -Pnative
+      run: mvn package -Pnative
     - name: Build and publish docker image
       run: |
         BUILD_VERSION=latest
