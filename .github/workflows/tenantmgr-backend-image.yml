@@ -21,7 +21,7 @@ jobs:
       with:
         maven-version: 3.8.6
     - name: Build Quarkus native executable
-      run: mvn package -Pnative
+      run: cd tenant-manager-backend && mvn package -Pnative
     - name: Build and publish docker image
       run: |
         BUILD_VERSION=latest
@@ -30,7 +30,6 @@ jobs:
         echo Building image: ${IMAGE_FULL}
         docker login "${{ env.IMAGE_REGISTRY }}" --username="${{ secrets.REGISTRY_USERNAME }}" --password="${{ secrets.REGISTRY_PASSWORD }}"
         
-        cd tenant-manager-backend
         docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} -f ./src/main/docker/Dockerfile.native .
         docker push ${IMAGE_FULL}
   build-image-and-push-frontend:
