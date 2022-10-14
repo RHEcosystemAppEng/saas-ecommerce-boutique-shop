@@ -3,6 +3,9 @@ on:
   pull_request:
     types: [opened, edited, closed]
     branches: [ "main" ]
+  push:
+    branches:
+      - *
 env:
   IMAGE_REGISTRY: quay.io
   IMAGE_REPOSITORY: ecosystem-appeng
