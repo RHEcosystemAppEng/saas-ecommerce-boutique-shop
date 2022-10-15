@@ -26,4 +26,7 @@ COPY --chown=1001:root target/*-runner /work/application
 EXPOSE 8080
 USER 1001
 
+ENV YAML_FILES_LOCATION=/usr/app/boutique_files
+ENV SCRIPT_FILE=/usr/app/boutique_files/create-namespace.sh
+
 CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
