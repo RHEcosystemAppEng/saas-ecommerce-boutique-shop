@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_CFF3B476-5335-4039-AF18-D38D3FB87DBE" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_58B31FD1-8496-4EBC-B1F9-2A8685BFC167" name="CostComputation" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_CFF3B476-5335-4039-AF18-D38D3FB87DBE">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_54A00C8B-168C-452E-8A49-3E4464F112A5" name="Tier" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_1DE3693E-0DFE-4C08-B70D-5AA893EB4FD7" name="Tier">
+    <dmn:extensionElements/>
+    <dmn:variable id="_04432316-D5BE-4421-B63A-9F63F7D722F2" name="Tier" typeRef="Tier"/>
+  </dmn:inputData>
+  <dmn:inputData id="_9587EB99-9C15-4480-8AD6-CEF7DCCA1356" name="Average Concurrent Shoppers">
+    <dmn:extensionElements/>
+    <dmn:variable id="_314D6E7E-60B7-41E7-A0CB-21CE5BDB5A1A" name="Average Concurrent Shoppers" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:decision id="_6CA73552-463A-4C51-8FA3-77D1B69AF64F" name="Calculated Price">
+    <dmn:extensionElements/>
+    <dmn:variable id="_36B30096-5E3F-4336-9467-65312C503AF2" name="Calculated Price" typeRef="number"/>
+    <dmn:informationRequirement id="_708CD9AC-A630-45A1-BBDF-D862CED99226">
+      <dmn:requiredInput href="#_1DE3693E-0DFE-4C08-B70D-5AA893EB4FD7"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_EAB5C34D-3246-4F58-AF98-EA3C8A10DE48">
+      <dmn:requiredInput href="#_9587EB99-9C15-4480-8AD6-CEF7DCCA1356"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="_C9F1BC1B-101D-4CA0-93F2-47EC2E17ADAE">
+      <dmn:requiredKnowledge href="#_FC2499E1-F219-4CBD-B080-19CE187ED1D9"/>
+    </dmn:knowledgeRequirement>
+    <dmn:decisionTable id="_30382213-34DC-4767-8742-8365DDA1275C" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_8B0CFEB4-B503-4617-B484-5560A8320403">
+        <dmn:inputExpression id="_DD14778B-AFCA-482E-85BF-F89C07B01189" typeRef="number">
+          <dmn:text>Average Concurrent Shoppers</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_C1B335F0-C342-4AD4-BE09-7EAEAD26BEE3"/>
+      <dmn:annotation name="Note"/>
+      <dmn:rule id="_6D6849AE-1247-45BD-B3D4-28589FB8C8A7">
+        <dmn:inputEntry id="_5CE26498-C40F-48B8-9926-667C3F91ADBF">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_C5C6C6A0-84C2-40E5-AF3A-DF97AF2F3754">
+          <dmn:text>Average Concurrent Shoppers / 100.0 * Cost Per Hundred Units( Tier )</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Cost computed</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:businessKnowledgeModel id="_FC2499E1-F219-4CBD-B080-19CE187ED1D9" name="Cost Per Hundred Units">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C8DDEF47-84DB-44B3-AFE9-062DB4EA045A" name="Cost Per Hundred Units" typeRef="number"/>
+    <dmn:encapsulatedLogic id="_4DDEC65D-7B88-4FE2-B2A4-04DF99CE1466" kind="FEEL">
+      <dmn:formalParameter id="_F5C71271-E64F-4C81-B48C-43E6E6333CBF" name="Tier" typeRef="Tier"/>
+      <dmn:decisionTable id="_64603E92-2A55-4FB2-9531-A2D2F18C0C28" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+        <dmn:input id="_9A401738-8D48-45F1-8FA0-102D96FA17CF">
+          <dmn:inputExpression id="_729468F5-79CE-4867-A305-FFEAA015A4A9" typeRef="Tier">
+            <dmn:text>Tier</dmn:text>
+          </dmn:inputExpression>
+        </dmn:input>
+        <dmn:output id="_DB32796D-7961-49A6-9430-3BF4A42C83A7"/>
+        <dmn:annotation name="Note"/>
+        <dmn:rule id="_63B89DC5-B0B6-4ED7-8B1C-7F9D4E7BEE8D">
+          <dmn:inputEntry id="_09170F94-9474-40C2-84FF-9FD1FD172DE5">
+            <dmn:text>"Free"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_3CFAEAD9-8D63-44A3-912D-4C1060D9A9DE">
+            <dmn:text>0</dmn:text>
+          </dmn:outputEntry>
+          <dmn:annotationEntry>
+            <dmn:text>30 days trial</dmn:text>
+          </dmn:annotationEntry>
+        </dmn:rule>
+        <dmn:rule id="_A8652646-96CF-4BAB-8DED-6C01A69390E5">
+          <dmn:inputEntry id="_C7F27BB6-BA48-49B0-990A-9DF89F8FF098">
+            <dmn:text>"Silver"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_3D27E468-03B7-4E7B-900E-89591A51EF0A">
+            <dmn:text>10</dmn:text>
+          </dmn:outputEntry>
+          <dmn:annotationEntry>
+            <dmn:text/>
+          </dmn:annotationEntry>
+        </dmn:rule>
+        <dmn:rule id="_39B3E8B7-FE8A-4438-9118-587A453EFAB9">
+          <dmn:inputEntry id="_BD11B5F6-E47F-4B7D-BBD8-D3C2A9A2E91D">
+            <dmn:text>"Gold"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_2464FD20-F753-4279-BDC3-8E039A76EAF5">
+            <dmn:text>20</dmn:text>
+          </dmn:outputEntry>
+          <dmn:annotationEntry>
+            <dmn:text/>
+          </dmn:annotationEntry>
+        </dmn:rule>
+        <dmn:rule id="_C2AB78E9-2221-40C8-8879-D6B7353CC9C5">
+          <dmn:inputEntry id="_9F4079DB-764D-4310-BA75-162235EBAF35">
+            <dmn:text>"Premium"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_EC53171F-33D4-418B-95C3-948BC90BEF19">
+            <dmn:text>30</dmn:text>
+          </dmn:outputEntry>
+          <dmn:annotationEntry>
+            <dmn:text/>
+          </dmn:annotationEntry>
+        </dmn:rule>
+      </dmn:decisionTable>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_0AAC4137-475F-4FF6-A6B1-B6673B0E5C0E" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_30382213-34DC-4767-8742-8365DDA1275C">
+            <kie:width>50</kie:width>
+            <kie:width>194</kie:width>
+            <kie:width>526</kie:width>
+            <kie:width>399</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_64603E92-2A55-4FB2-9531-A2D2F18C0C28">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>215</kie:width>
+            <kie:width>403</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_4DDEC65D-7B88-4FE2-B2A4-04DF99CE1466">
+            <kie:width>50</kie:width>
+            <kie:width>788</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_1DE3693E-0DFE-4C08-B70D-5AA893EB4FD7" dmnElementRef="_1DE3693E-0DFE-4C08-B70D-5AA893EB4FD7" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="686.2990654205607" y="326" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_9587EB99-9C15-4480-8AD6-CEF7DCCA1356" dmnElementRef="_9587EB99-9C15-4480-8AD6-CEF7DCCA1356" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="387" y="324" width="130" height="52"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_6CA73552-463A-4C51-8FA3-77D1B69AF64F" dmnElementRef="_6CA73552-463A-4C51-8FA3-77D1B69AF64F" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="667" y="107" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_FC2499E1-F219-4CBD-B080-19CE187ED1D9" dmnElementRef="_FC2499E1-F219-4CBD-B080-19CE187ED1D9" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="894" y="297" width="189" height="54"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_708CD9AC-A630-45A1-BBDF-D862CED99226" dmnElementRef="_708CD9AC-A630-45A1-BBDF-D862CED99226">
+        <di:waypoint x="736.2990654205607" y="351"/>
+        <di:waypoint x="717" y="157"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_EAB5C34D-3246-4F58-AF98-EA3C8A10DE48" dmnElementRef="_EAB5C34D-3246-4F58-AF98-EA3C8A10DE48">
+        <di:waypoint x="452" y="350"/>
+        <di:waypoint x="717" y="157"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_C9F1BC1B-101D-4CA0-93F2-47EC2E17ADAE" dmnElementRef="_C9F1BC1B-101D-4CA0-93F2-47EC2E17ADAE">
+        <di:waypoint x="988.5" y="324"/>
+        <di:waypoint x="717" y="157"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
