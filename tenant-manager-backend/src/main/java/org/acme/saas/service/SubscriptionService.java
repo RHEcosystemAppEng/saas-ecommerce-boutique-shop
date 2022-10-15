@@ -9,6 +9,8 @@ import org.acme.saas.model.draft.SubscriptionDraft;
 import org.acme.saas.model.draft.TenantDraft;
 import org.acme.saas.model.mappers.SubscriptionMapper;
 import org.acme.saas.repository.SubscriptionRepository;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -21,6 +23,12 @@ import java.util.List;
 
 @ApplicationScoped
 public class SubscriptionService {
+    private Logger log = Logger.getLogger(SubscriptionService.class);
+
+    @ConfigProperty(name = "org.acme.saas.service.SubscriptionService.filesLocation")
+    String filesLocation;
+    @ConfigProperty(name = "org.acme.saas.service.SubscriptionService.scriptFile")
+    String scriptFile;
 
     @Inject
     RequestService requestService;
@@ -63,13 +71,12 @@ public class SubscriptionService {
                     subscription.setRequest(request);
 
                     String namespaceName = tenantDraft.getTenantName().replaceAll("\\s", "-");
-                    String directoryPath = "/usr/app/boutique_files";
 
-                    System.out.println("Calling the shell script here!");
+                    log.infof("Calling the shell script %s", scriptFile);
                     try {
-                        ProcessBuilder pb = new ProcessBuilder("/usr/app/boutique_files/create-namespace.sh",
+                        ProcessBuilder pb = new ProcessBuilder(scriptFile,
                                 namespaceName,
-                                directoryPath,
+                                filesLocation,
                                 requestDraft.getHostName());
                         Process p = pb.start();
                         InputStream is = p.getInputStream();
