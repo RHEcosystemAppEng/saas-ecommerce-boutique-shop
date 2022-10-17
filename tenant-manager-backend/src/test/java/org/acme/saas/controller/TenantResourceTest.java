@@ -1,6 +1,7 @@
 package org.acme.saas.controller;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.response.Response;
 import org.acme.saas.model.data.LoginData;
 import org.acme.saas.model.data.RegisterData;
@@ -9,8 +10,12 @@ import org.acme.saas.model.draft.TenantDraft;
 import org.acme.saas.repository.RequestRepository;
 import org.acme.saas.repository.SubscriptionRepository;
 import org.acme.saas.repository.TenantRepository;
+import org.acme.saas.restclient.RulesClient;
+import org.acme.saas.service.RulesClientStub;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.hamcrest.Matchers;
 import org.jboss.logging.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
@@ -28,6 +33,10 @@ class TenantResourceTest {
 
     private static final Logger LOG = Logger.getLogger(TenantResourceTest.class);
 
+    @InjectMock
+    @RestClient
+    RulesClient rulesClient;
+
     @Inject
     TenantRepository tenantRepository;
 
@@ -36,6 +45,11 @@ class TenantResourceTest {
 
     @Inject
     SubscriptionRepository subscriptionRepository;
+
+    @BeforeEach
+    void mockRestClient() {
+        RulesClientStub.initMock(rulesClient);
+    }
 
     @Test
     void signUpNewTenant() {

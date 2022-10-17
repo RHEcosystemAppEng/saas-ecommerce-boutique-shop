@@ -32,6 +32,8 @@ public class SubscriptionService {
 
     @Inject
     RequestService requestService;
+    @Inject
+    RulesService rulesService;
 
     @Inject
     SubscriptionRepository subscriptionRepository;
@@ -47,22 +49,16 @@ public class SubscriptionService {
     }
 
     public double calculatePrice(String tier, int avgConcurrentShoppers) {
-        return switch (tier) {
-            case "Silver" -> (avgConcurrentShoppers / 100.0) * 10;
-            case "Gold" -> (avgConcurrentShoppers / 100.0) * 20;
-            default -> 0.0;
-        };
+        return rulesService.calculatePrice(tier, avgConcurrentShoppers);
     }
 
-    public int[] calculateInstanceCount(int avgConcurrentShoppers) {
-        int min = avgConcurrentShoppers / 50;
-        int max = avgConcurrentShoppers / 50;
-
-        return new int[]{min, max};
+    public int[] calculateInstanceCount(int avgConcurrentShoppers, int peakConcurrentShoppers) {
+        return rulesService.calculateInstanceCount(avgConcurrentShoppers, peakConcurrentShoppers);
     }
 
     @ReactiveTransactional
-    public Uni<Subscription> createNewSubscription(TenantDraft tenantDraft, SubscriptionDraft subscriptionDraft, RequestDraft requestDraft) {
+    public Uni<Subscription> createNewSubscription(TenantDraft tenantDraft, SubscriptionDraft subscriptionDraft,
+                                                   RequestDraft requestDraft) {
 
         return requestService.createNewRequest(requestDraft)
                 .onItem().ifNotNull().transformToUni(request -> {

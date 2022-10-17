@@ -2,11 +2,16 @@ package org.acme.saas.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.response.Response;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.SubscriptionSummaryData;
 import org.acme.saas.model.data.TokenData;
+import org.acme.saas.restclient.RulesClient;
+import org.acme.saas.service.RulesClientStub;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -15,12 +20,23 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.acme.saas.util.CommonUtil.createNewTenant;
 import static org.acme.saas.util.CommonUtil.getDummyRegisterData;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 class SubscriptionResourceTest {
 
     private static final Logger LOG = Logger.getLogger(ManagerResourceTest.class);
+
+    @InjectMock
+    @RestClient
+    RulesClient rulesClient;
+
+    @BeforeEach
+    void mockRestClient() {
+        RulesClientStub.initMock(rulesClient);
+    }
 
     @Test
     void getSubscriptionSummary() {
@@ -78,7 +94,8 @@ class SubscriptionResourceTest {
         List<SubscriptionSummaryData> subscriptionSummaryDataList = new ArrayList<>();
         final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
         for (Object raw : rawList) {
-            final SubscriptionSummaryData subscriptionSummaryData = mapper.convertValue(raw, SubscriptionSummaryData.class);
+            final SubscriptionSummaryData subscriptionSummaryData = mapper.convertValue(raw,
+                    SubscriptionSummaryData.class);
             subscriptionSummaryDataList.add(subscriptionSummaryData);
         }
         assertEquals(subscriptionSummaryDataList.size(), 2);
