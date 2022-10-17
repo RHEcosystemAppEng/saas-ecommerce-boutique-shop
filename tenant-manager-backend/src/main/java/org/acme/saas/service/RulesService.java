@@ -1,8 +1,8 @@
 package org.acme.saas.service;
 
 import io.smallrye.common.annotation.Blocking;
+import io.smallrye.mutiny.Uni;
 import org.acme.saas.restclient.CostComputationBody;
-import org.acme.saas.restclient.CostComputationResponse;
 import org.acme.saas.restclient.ProvisionPlanBody;
 import org.acme.saas.restclient.ProvisionPlanResponse;
 import org.acme.saas.restclient.RulesClient;
@@ -20,22 +20,26 @@ public class RulesService {
     RulesClient rulesClient;
 
     @Blocking
-    public double calculatePrice(String tier, int avgConcurrentShoppers) {
-        CostComputationResponse price =
-                rulesClient.costComputation(CostComputationBody.builder().tier(tier).avgAverageConcurrentShoppers(avgConcurrentShoppers).build());
-        log.infof("Calculated price for %s/%d is: %s", tier, avgConcurrentShoppers, price);
-        if (price.getCalculatedPrice() != null) {
-            return price.getCalculatedPrice().doubleValue();
-        }
-
-        throw new NotFoundException();
+    public Uni<Double> calculatePrice(String tier, int avgConcurrentShoppers) {
+        return
+                rulesClient.costComputation(CostComputationBody.builder().tier(tier).avgAverageConcurrentShoppers(avgConcurrentShoppers).build()).
+                        onItem().transformToUni(costComputationResponse -> {
+                            Double price = costComputationResponse.getCalculatedPrice();
+                            log.infof("Calculated price for %s/%d is: %s", tier, avgConcurrentShoppers, price);
+                            return Uni.createFrom().item(price);
+                        });
     }
 
     @Blocking
-    public int[] calculateInstanceCount(int avgConcurrentShoppers, int peakConcurrentShoppers) {
-        ProvisionPlanResponse provisionPlan =
-                rulesClient.provisionPlan(ProvisionPlanBody.builder().avgConcurrentShoppers(avgConcurrentShoppers).peakConcurrentShoppers(peakConcurrentShoppers).build());
-        log.infof("Calculated replicas for %d/%d is: %s", avgConcurrentShoppers, peakConcurrentShoppers, provisionPlan);
-        return new int[]{provisionPlan.getReplicas().getMinReplicas(), provisionPlan.getReplicas().getMaxReplicas()};
+    public Uni<int[]> calculateInstanceCount(int avgConcurrentShoppers, int peakConcurrentShoppers) {
+        return
+                rulesClient.provisionPlan(ProvisionPlanBody.builder().avgConcurrentShoppers(avgConcurrentShoppers).peakConcurrentShoppers(peakConcurrentShoppers).build()).
+                        onItem().ifNotNull().transformToUni(provisionPlanResponse -> {
+                            log.infof("Calculated replicas for %d/%d is: %s", avgConcurrentShoppers,
+                                    peakConcurrentShoppers, provisionPlanResponse);
+                            ProvisionPlanResponse.ComputedReplicas replicas = provisionPlanResponse.getReplicas();
+                            return Uni.createFrom().item(new int[]{replicas.getMinReplicas(),
+                                    replicas.getMaxReplicas()});
+                        }).onItem().ifNull().failWith(NotFoundException::new);
     }
 }

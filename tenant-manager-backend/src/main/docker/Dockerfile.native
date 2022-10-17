@@ -28,5 +28,5 @@ USER 1001
 
 ENV YAML_FILES_LOCATION=/usr/app/boutique_files
 ENV SCRIPT_FILE=/usr/app/boutique_files/create-namespace.sh
-
+ENV RULES_SERVICE_URL=http://tenant-manager-rules.saas-rules.svc.cluster.local
 CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]

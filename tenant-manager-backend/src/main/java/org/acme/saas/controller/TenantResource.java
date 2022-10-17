@@ -17,10 +17,10 @@ import org.acme.saas.model.draft.TenantDraft.TenantDraftBuilder;
 import org.acme.saas.model.mappers.TenantMapper;
 import org.acme.saas.service.SubscriptionService;
 import org.acme.saas.service.TenantService;
+import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
@@ -34,6 +34,8 @@ import java.util.function.Function;
 
 @Path("/tenant")
 public class TenantResource {
+    private Logger log = Logger.getLogger(TenantResource.class);
+
     @Inject
     TenantService tenantService;
 
@@ -122,28 +124,33 @@ public class TenantResource {
         requestDraftBuilder.status(Constants.REQUEST_STATUS_APPROVED);
         RequestDraft requestDraft = requestDraftBuilder.build();
 
-        int[] instanceCount = subscriptionService.calculateInstanceCount(
-                requestDraft.getAvgConcurrentShoppers(), requestDraft.getPeakConcurrentShoppers());
-        SubscriptionDraftBuilder subscriptionDraftBuilder = SubscriptionDraft.builder();
-        subscriptionDraftBuilder.tenantKey(tenantKey);
-        subscriptionDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);
-        subscriptionDraftBuilder.tier(registerData.getTier());
-        subscriptionDraftBuilder.minInstanceCount(instanceCount[0]);
-        subscriptionDraftBuilder.maxInstanceCount(instanceCount[1]);
-        subscriptionDraftBuilder.status(Constants.SUBSCRIPTION_STATUS_INITIAL);
+        return subscriptionService.calculateInstanceCount(
+                        registerData.getAvgConcurrentShoppers(), registerData.getPeakConcurrentShoppers()).
+                onItem().ifNotNull().transformToUni(instanceCount -> {
+                    log.debugf("Received instanceCount [%d, %d]", instanceCount[0], instanceCount[1]);
 
-        Uni<Subscription> subscriptionUni = subscriptionService.createNewSubscription(
-                tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft);
+                    SubscriptionDraftBuilder subscriptionDraftBuilder = SubscriptionDraft.builder();
+                    subscriptionDraftBuilder.tenantKey(tenantKey);
+                    subscriptionDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);
+                    subscriptionDraftBuilder.tier(registerData.getTier());
+                    subscriptionDraftBuilder.minInstanceCount(instanceCount[0]);
+                    subscriptionDraftBuilder.maxInstanceCount(instanceCount[1]);
+                    subscriptionDraftBuilder.status(Constants.SUBSCRIPTION_STATUS_INITIAL);
 
-        return subscriptionUni.onItem().ifNotNull()
-                .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build(), subscription))
-                .flatMap(Function.identity())
-                .onItem().transform(tenant -> {
-                    TokenDataBuilder tokenDataBuilder = TokenData.builder();
-                    tokenDataBuilder.Id(tenant.getId());
-                    tokenDataBuilder.key(tenant.getTenantKey());
-                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
-                    return tokenDataBuilder.build();
+                    Uni<Subscription> subscriptionUni = subscriptionService.createNewSubscription(
+                            tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft);
+
+                    return subscriptionUni.onItem().ifNotNull()
+                            .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build(),
+                                    subscription))
+                            .flatMap(Function.identity())
+                            .onItem().transform(tenant -> {
+                                TokenDataBuilder tokenDataBuilder = TokenData.builder();
+                                tokenDataBuilder.Id(tenant.getId());
+                                tokenDataBuilder.key(tenant.getTenantKey());
+                                tokenDataBuilder.loggedInUserName(tenant.getTenantName());
+                                return tokenDataBuilder.build();
+                            });
                 });
     }
 }

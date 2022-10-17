@@ -43,14 +43,16 @@ public class RequestRepository implements PanacheRepository<Request> {
                     .collect(Collectors.groupingBy(Tenant::getTenantKey));
 
             for (Request request : pendingRequests) {
-                int[] instanceCount = subscriptionService.calculateInstanceCount(request.getAvgConcurrentShoppers(), request.getPeakConcurrentShoppers());
+                Uni<int[]> instanceCountUni = subscriptionService.calculateInstanceCount(request.getAvgConcurrentShoppers(), request.getPeakConcurrentShoppers());
 
                 RequestChangeData changeData = new RequestChangeData();
                 changeData.setTenantKey(request.getTenantKey());
                 changeData.setNewTier(request.getTier());
                 changeData.setServiceName(request.getServiceName());
-                changeData.setNewMinInstances(instanceCount[0]);
-                changeData.setNewMaxInstances(instanceCount[1]);
+                instanceCountUni.onItem().ifNotNull().invoke(instanceCount -> {
+                    changeData.setNewMinInstances(instanceCount[0]);
+                    changeData.setNewMaxInstances(instanceCount[1]);
+                });
 
                 Tenant tenant = tenantMap.get(request.getTenantKey()).get(0);
                 changeData.setTenantName(tenant.getTenantName());

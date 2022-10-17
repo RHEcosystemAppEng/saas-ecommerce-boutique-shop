@@ -27,10 +27,12 @@ public class SubscriptionResource {
     @Path("/calculate-price")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String calculatePrice(PriceData priceData) {
-        double priceWithoutFormatting = subscriptionService.
-                calculatePrice(priceData.getTier(), priceData.getAvgConcurrentShoppers());
-        return String.format("%.2f", priceWithoutFormatting);
+    public Uni<String> calculatePrice(PriceData priceData) {
+        return subscriptionService.
+                calculatePrice(priceData.getTier(), priceData.getAvgConcurrentShoppers()).
+                onItem().transform(priceWithoutFormatting ->
+                        String.format("%.2f", priceWithoutFormatting)
+                );
     }
 
     @GET
@@ -46,7 +48,7 @@ public class SubscriptionResource {
     @GET
     @Path("/summary")
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<List<SubscriptionSummaryData>> getSubscriptionSummary(){
+    public Uni<List<SubscriptionSummaryData>> getSubscriptionSummary() {
         return subscriptionService.getSubscriptionSummary();
     }
 

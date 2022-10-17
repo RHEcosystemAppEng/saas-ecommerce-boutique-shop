@@ -48,11 +48,11 @@ public class SubscriptionService {
         return subscriptionRepository.findAllByTenantKey(tenantKey);
     }
 
-    public double calculatePrice(String tier, int avgConcurrentShoppers) {
+    public Uni<Double> calculatePrice(String tier, int avgConcurrentShoppers) {
         return rulesService.calculatePrice(tier, avgConcurrentShoppers);
     }
 
-    public int[] calculateInstanceCount(int avgConcurrentShoppers, int peakConcurrentShoppers) {
+    public Uni<int[]> calculateInstanceCount(int avgConcurrentShoppers, int peakConcurrentShoppers) {
         return rulesService.calculateInstanceCount(avgConcurrentShoppers, peakConcurrentShoppers);
     }
 
@@ -68,7 +68,7 @@ public class SubscriptionService {
 
                     String namespaceName = tenantDraft.getTenantName().replaceAll("\\s", "-");
 
-                    log.infof("Calling the shell script %s", scriptFile);
+                    log.infof("Calling the shell script %s from %s", scriptFile, filesLocation);
                     try {
                         ProcessBuilder pb = new ProcessBuilder(scriptFile,
                                 namespaceName,

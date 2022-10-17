@@ -38,19 +38,21 @@ class SubscriptionServiceTest {
     @ParameterizedTest
     @ArgumentsSource(CalculatePriceTestArgumentsProvider.class)
     public void calculatePrice(String tier, int avgConcurrentShoppers, double expectedPrice) {
-        double price = subscriptionService.calculatePrice(tier, avgConcurrentShoppers);
-        log.infof("Comparing expected price %f to actual %f for %s/%d", expectedPrice, price,
-                tier, avgConcurrentShoppers);
-        assertThat(price, is(expectedPrice));
+        subscriptionService.calculatePrice(tier, avgConcurrentShoppers).onItem().invoke(price -> {
+            log.infof("Comparing expected price %f to actual %f for %s/%d", expectedPrice, price,
+                    tier, avgConcurrentShoppers);
+            assertThat(price, is(expectedPrice));
+        });
     }
 
     @ParameterizedTest
     @ArgumentsSource(CalculateInstanceCountTestArgumentsProvider.class)
     public void calculateInstanceCount(int avgConcurrentShoppers, int peakConcurrentShoppers, int[] expectedReplicas) {
-        int[] replicas = subscriptionService.calculateInstanceCount(avgConcurrentShoppers, peakConcurrentShoppers);
-        log.infof("Comparing expected replicas %s to actual %s for %d/%d", expectedReplicas, replicas,
-                avgConcurrentShoppers, peakConcurrentShoppers);
-        assertThat(replicas, is(expectedReplicas));
+        subscriptionService.calculateInstanceCount(avgConcurrentShoppers, peakConcurrentShoppers).onItem().invoke(replicas -> {
+            log.infof("Comparing expected replicas %s to actual %s for %d/%d", expectedReplicas, replicas,
+                    avgConcurrentShoppers, peakConcurrentShoppers);
+            assertThat(replicas, is(expectedReplicas));
+        });
     }
 
     static class CalculatePriceTestArgumentsProvider implements ArgumentsProvider {

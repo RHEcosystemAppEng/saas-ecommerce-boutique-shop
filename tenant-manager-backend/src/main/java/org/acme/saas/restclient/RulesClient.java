@@ -1,5 +1,6 @@
 package org.acme.saas.restclient;
 
+import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -10,16 +11,16 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/")
 @ApplicationScoped
-@RegisterRestClient(baseUri = "http://localhost:8181")
+@RegisterRestClient
 public interface RulesClient {
 
     @POST
     @Path("/CostComputation")
     @Produces(MediaType.APPLICATION_JSON)
-    CostComputationResponse costComputation(CostComputationBody costComputationBody);
+    Uni<CostComputationResponse> costComputation(CostComputationBody costComputationBody);
 
     @POST
     @Path("/ProvisionPlan")
     @Produces(MediaType.APPLICATION_JSON)
-    ProvisionPlanResponse provisionPlan(ProvisionPlanBody provisionPlanBody);
+    Uni<ProvisionPlanResponse> provisionPlan(ProvisionPlanBody provisionPlanBody);
 }

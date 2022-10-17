@@ -1,5 +1,6 @@
 package org.acme.saas.service;
 
+import io.smallrye.mutiny.Uni;
 import org.acme.saas.restclient.CostComputationBody;
 import org.acme.saas.restclient.CostComputationResponse;
 import org.acme.saas.restclient.ProvisionPlanBody;
@@ -17,13 +18,13 @@ public class RulesClientStub {
             CostComputationBody costComputationBody = (CostComputationBody) i.getArguments()[0];
             double price = RulesClientStub.calculatePrice(costComputationBody.getTier(),
                     costComputationBody.getAvgAverageConcurrentShoppers());
-            return CostComputationResponse.builder().calculatedPrice(price).build();
+            return Uni.createFrom().item(CostComputationResponse.builder().calculatedPrice(price).build());
         });
         Mockito.when(mockRestClient.provisionPlan(any())).thenAnswer(i -> {
             ProvisionPlanBody provisionPlanBody = (ProvisionPlanBody) i.getArguments()[0];
             int[] replicas = RulesClientStub.calculateInstanceCount(provisionPlanBody.getAvgConcurrentShoppers(),
                     provisionPlanBody.getPeakConcurrentShoppers());
-            return ProvisionPlanResponse.builder().replicas(ProvisionPlanResponse.ComputedReplicas.builder().minReplicas(replicas[0]).maxReplicas(replicas[1]).build()).build();
+            return Uni.createFrom().item(ProvisionPlanResponse.builder().replicas(ProvisionPlanResponse.ComputedReplicas.builder().minReplicas(replicas[0]).maxReplicas(replicas[1]).build()).build());
         });
     }
 
