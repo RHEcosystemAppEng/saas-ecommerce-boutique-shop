@@ -54,7 +54,7 @@ public class RequestResource {
                 .map(tenant -> {
                     TokenData.TokenDataBuilder tokenDataBuilder = TokenData.builder();
                     tokenDataBuilder.key(tenant.getTenantKey());
-                    tokenDataBuilder.Id(tenant.getId());
+                    tokenDataBuilder.Id(tenant.id);
                     tokenDataBuilder.loggedInUserName(tenant.getTenantName());
                     return tokenDataBuilder.build();
                 });

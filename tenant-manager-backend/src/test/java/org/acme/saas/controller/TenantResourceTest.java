@@ -2,18 +2,17 @@ package org.acme.saas.controller;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.response.Response;
+import org.acme.saas.model.Request;
+import org.acme.saas.model.Subscription;
+import org.acme.saas.model.Tenant;
 import org.acme.saas.model.data.LoginData;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.TokenData;
 import org.acme.saas.model.draft.TenantDraft;
-import org.acme.saas.repository.RequestRepository;
-import org.acme.saas.repository.SubscriptionRepository;
-import org.acme.saas.repository.TenantRepository;
 import org.hamcrest.Matchers;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
 import java.util.Objects;
 
 import static io.restassured.RestAssured.given;
@@ -27,15 +26,6 @@ import static org.hamcrest.Matchers.notNullValue;
 class TenantResourceTest {
 
     private static final Logger LOG = Logger.getLogger(TenantResourceTest.class);
-
-    @Inject
-    TenantRepository tenantRepository;
-
-    @Inject
-    RequestRepository requestRepository;
-
-    @Inject
-    SubscriptionRepository subscriptionRepository;
 
     @Test
     void signUpNewTenant() {
@@ -51,11 +41,11 @@ class TenantResourceTest {
         assertThat(responseToken.getId(), Matchers.is(notNullValue()));
 
         assertThat("Tenant record is not persisted in the database",
-                Objects.nonNull(tenantRepository.findByTenantKey(responseToken.getKey()).await().indefinitely()));
+                Objects.nonNull(Tenant.findByTenantKey(responseToken.getKey()).await().indefinitely()));
         assertThat("Request record is not persisted in the database",
-                Objects.nonNull(requestRepository.findAllByTenantKey(responseToken.getKey()).await().indefinitely()));
+                Objects.nonNull(Request.findAllByTenantKey(responseToken.getKey()).await().indefinitely()));
         assertThat("Subscription record is not persisted in the database",
-                Objects.nonNull(subscriptionRepository.findAllByTenantKey(responseToken.getKey()).await().indefinitely()));
+                Objects.nonNull(Subscription.findAllByTenantKey(responseToken.getKey()).await().indefinitely()));
     }
 
     @Test

@@ -6,26 +6,21 @@ import org.acme.saas.model.Request;
 import org.acme.saas.model.data.RequestChangeData;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.mappers.RequestMapper;
-import org.acme.saas.repository.RequestRepository;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
 public class RequestService {
 
-    @Inject
-    RequestRepository repository;
-
     @ReactiveTransactional
     public Uni<Request> createNewRequest(RequestDraft requestDraft) {
         Request request = RequestMapper.INSTANCE.requestDraftToRequest(requestDraft);
-        return repository.persist(request);
+        return request.persist();
     }
 
     @ReactiveTransactional
     public Uni<List<RequestChangeData>> getRequestChangeData() {
-        return repository.getRequestChangeData();
+        return Request.getRequestChangeData();
     }
 }
