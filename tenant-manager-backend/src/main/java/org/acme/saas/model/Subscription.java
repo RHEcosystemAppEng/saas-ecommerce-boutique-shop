@@ -2,8 +2,6 @@ package org.acme.saas.model;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import io.smallrye.mutiny.Uni;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import org.acme.saas.common.Constants;
 import org.acme.saas.model.data.SubscriptionSummaryData;
@@ -13,21 +11,19 @@ import javax.persistence.OneToOne;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
 @ToString
 public class Subscription extends PanacheEntity {
 
-    private String tenantKey;
-    private String serviceName;
-    private String tier;
-    private int minInstanceCount;
-    private int maxInstanceCount;
-    private String url;
+    public String tenantKey;
+    public String serviceName;
+    public String tier;
+    public int minInstanceCount;
+    public int maxInstanceCount;
+    public String url;
 
     @OneToOne
-    private Request request;
-    private String status;
+    public Request request;
+    public String status;
 
     public static Uni<List<Subscription>> findAllByTenantKey(String tenantKey) {
         return find("tenantKey= ?1", tenantKey).list();

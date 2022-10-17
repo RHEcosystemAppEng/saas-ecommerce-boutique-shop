@@ -83,8 +83,8 @@ public class TenantResource {
                 .onItem().ifNotNull().transform(tenant -> {
                     TokenDataBuilder tokenDataBuilder = TokenData.builder();
                     tokenDataBuilder.Id(tenant.id);
-                    tokenDataBuilder.key(tenant.getTenantKey());
-                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
+                    tokenDataBuilder.key(tenant.tenantKey);
+                    tokenDataBuilder.loggedInUserName(tenant.tenantName);
                     return tokenDataBuilder.build();
                 })
                 .onItem().ifNull().failWith(() -> new NotAuthorizedException("Invalid credentials"));
@@ -141,8 +141,8 @@ public class TenantResource {
                         .onItem().transform(tenant -> {
                             TokenDataBuilder tokenDataBuilder = TokenData.builder();
                             tokenDataBuilder.Id(tenant.id);
-                            tokenDataBuilder.key(tenant.getTenantKey());
-                            tokenDataBuilder.loggedInUserName(tenant.getTenantName());
+                            tokenDataBuilder.key(tenant.tenantKey);
+                            tokenDataBuilder.loggedInUserName(tenant.tenantName);
                             return tokenDataBuilder.build();
                         })
         );

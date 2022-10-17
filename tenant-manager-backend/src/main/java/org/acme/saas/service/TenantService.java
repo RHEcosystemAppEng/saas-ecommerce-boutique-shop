@@ -57,8 +57,8 @@ public class TenantService {
     @ReactiveTransactional
     public Uni<Tenant> createNewTenant(TenantDraft tenantDraft, Subscription subscription) {
         Tenant tenant = TenantMapper.INSTANCE.tenantDraftToTenant(tenantDraft);
-        tenant.setStatus(Constants.TENANT_STATUS_ACTIVE);
-        tenant.setSubscriptions(List.of(subscription));
+        tenant.status = Constants.TENANT_STATUS_ACTIVE;
+        tenant.subscriptions = List.of(subscription);
 
         return tenant.persist();
     }

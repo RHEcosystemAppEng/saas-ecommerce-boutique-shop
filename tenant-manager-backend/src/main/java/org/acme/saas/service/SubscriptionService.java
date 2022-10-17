@@ -65,7 +65,7 @@ public class SubscriptionService {
                 .onItem().ifNotNull().transformToUni(request -> {
                     Subscription subscription = SubscriptionMapper.INSTANCE
                             .subscriptionDraftToSubscription(subscriptionDraft);
-                    subscription.setRequest(request);
+                    subscription.request = request;
 
                     String namespaceName = tenantDraft.getTenantName().replaceAll("\\s", "-");
 

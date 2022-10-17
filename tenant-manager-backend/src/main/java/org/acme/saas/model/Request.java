@@ -2,8 +2,6 @@ package org.acme.saas.model;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import io.smallrye.mutiny.Uni;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import org.acme.saas.common.Constants;
 import org.acme.saas.model.data.RequestChangeData;
@@ -18,22 +16,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
 @Entity
 @ToString
 public class Request extends PanacheEntity {
 
-    private long id;
-    private String tenantKey;
-    private String hostName;
-    private String serviceName;
-    private String tier;
-    private int avgConcurrentShoppers;
-    private int peakConcurrentShoppers;
-    private String fromTime;
-    private String toTime;
-    private String status;
+    public String tenantKey;
+    public String hostName;
+    public String serviceName;
+    public String tier;
+    public int avgConcurrentShoppers;
+    public int peakConcurrentShoppers;
+    public String fromTime;
+    public String toTime;
+    public String status;
 
     @Inject
     static TenantService tenantService;
@@ -57,26 +52,26 @@ public class Request extends PanacheEntity {
         ).combinedWith((pendingRequests, tenants) -> {
             List<RequestChangeData> data = new ArrayList<>();
             Map<String, List<Tenant>> tenantMap = tenants.stream()
-                    .collect(Collectors.groupingBy(Tenant::getTenantKey));
+                    .collect(Collectors.groupingBy(tenant -> tenant.tenantKey));
 
             for (Request request : pendingRequests) {
-                int[] instanceCount = subscriptionService.calculateInstanceCount(request.getAvgConcurrentShoppers());
+                int[] instanceCount = subscriptionService.calculateInstanceCount(request.avgConcurrentShoppers);
 
                 RequestChangeData changeData = new RequestChangeData();
-                changeData.setTenantKey(request.getTenantKey());
-                changeData.setNewTier(request.getTier());
-                changeData.setServiceName(request.getServiceName());
+                changeData.setTenantKey(request.tenantKey);
+                changeData.setNewTier(request.tier);
+                changeData.setServiceName(request.serviceName);
                 changeData.setNewMinInstances(instanceCount[0]);
                 changeData.setNewMaxInstances(instanceCount[1]);
 
-                Tenant tenant = tenantMap.get(request.getTenantKey()).get(0);
-                changeData.setTenantName(tenant.getTenantName());
+                Tenant tenant = tenantMap.get(request.tenantKey).get(0);
+                changeData.setTenantName(tenant.tenantName);
 
-                tenant.getSubscriptions().stream().limit(1)
+                tenant.subscriptions.stream().limit(1)
                         .forEach(subscription -> {
-                            changeData.setCurrentTier(subscription.getTier());
-                            changeData.setOldMinInstances(subscription.getMinInstanceCount());
-                            changeData.setOldMaxInstances(subscription.getMaxInstanceCount());
+                            changeData.setCurrentTier(subscription.tier);
+                            changeData.setOldMinInstances(subscription.minInstanceCount);
+                            changeData.setOldMaxInstances(subscription.maxInstanceCount);
                         });
 
                 data.add(changeData);
