@@ -1,9 +1,9 @@
 package org.acme.saas.controller;
 
+import io.quarkus.hibernate.reactive.panache.Panache;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.common.Constants;
-import org.acme.saas.model.Subscription;
 import org.acme.saas.model.data.LoginData;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.TokenData;
@@ -20,7 +20,6 @@ import org.acme.saas.service.TenantService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
@@ -83,9 +82,9 @@ public class TenantResource {
         return tenantService.login(loginData)
                 .onItem().ifNotNull().transform(tenant -> {
                     TokenDataBuilder tokenDataBuilder = TokenData.builder();
-                    tokenDataBuilder.Id(tenant.getId());
-                    tokenDataBuilder.key(tenant.getTenantKey());
-                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
+                    tokenDataBuilder.Id(tenant.id);
+                    tokenDataBuilder.key(tenant.tenantKey);
+                    tokenDataBuilder.loggedInUserName(tenant.tenantName);
                     return tokenDataBuilder.build();
                 })
                 .onItem().ifNull().failWith(() -> new NotAuthorizedException("Invalid credentials"));
@@ -132,18 +131,20 @@ public class TenantResource {
         subscriptionDraftBuilder.maxInstanceCount(instanceCount[1]);
         subscriptionDraftBuilder.status(Constants.SUBSCRIPTION_STATUS_INITIAL);
 
-        Uni<Subscription> subscriptionUni = subscriptionService.createNewSubscription(
-                tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft);
-
-        return subscriptionUni.onItem().ifNotNull()
-                .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build(), subscription))
-                .flatMap(Function.identity())
-                .onItem().transform(tenant -> {
-                    TokenDataBuilder tokenDataBuilder = TokenData.builder();
-                    tokenDataBuilder.Id(tenant.getId());
-                    tokenDataBuilder.key(tenant.getTenantKey());
-                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
-                    return tokenDataBuilder.build();
-                });
+        // Added to ensure a unique Transaction
+        return Panache.withTransaction(() ->
+                subscriptionService.createNewSubscription(
+                                tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft).onItem().ifNotNull()
+                        .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build(),
+                                subscription))
+                        .flatMap(Function.identity())
+                        .onItem().transform(tenant -> {
+                            TokenDataBuilder tokenDataBuilder = TokenData.builder();
+                            tokenDataBuilder.Id(tenant.id);
+                            tokenDataBuilder.key(tenant.tenantKey);
+                            tokenDataBuilder.loggedInUserName(tenant.tenantName);
+                            return tokenDataBuilder.build();
+                        })
+        );
     }
 }
