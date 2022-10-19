@@ -1,0 +1,16 @@
+# Default values for tenant-manager-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+namespace:
+  name: saas-boutique
+
+secret:
+  databasePassword: redhat
+
+backend:
+  containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-backend:latest
+
+frontend:
+  containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-frontend:latest
