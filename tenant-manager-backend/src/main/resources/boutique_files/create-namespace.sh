@@ -29,7 +29,11 @@ oc adm policy add-scc-to-user privileged -z default -n $NAMESPACE
 oc project ${NAMESPACE}
 #
 # Deploy the all-in-one application stack
-oc apply -f ${PWD}/src/all-in-one.yaml
+if [[ "$NAMESPACE" ]]; then
+  oc expose svc frontend --name=$NAMESPACE --hostname=$3.apps.ocp.pebcac.org
+else
+  oc apply -f ${PWD}/src/all-in-one.yaml
+fi
 #
 # **Need to create logic to monitor the website until the service is up and running**
 #
