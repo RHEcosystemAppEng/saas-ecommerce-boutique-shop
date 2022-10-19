@@ -2,8 +2,10 @@
 
 # Remove the export variable if it already exists, set the new variable, then export it.
 unset NAMESPACE
-NAMESPACE=$1
-PWD=$2
+NAMESPACE=$1 ## This is the namespace where the Boutique Shop will be deployed.
+PWD=$2 ## This is the working directory which holds the various yaml deployment files.
+URL=$3 ## This is the holder for the URL Prefix applied from the tenant manager
+TIER=$4 ## Tier selection
 export NAMESPACE
 export PWD
 #
@@ -27,7 +29,7 @@ oc adm policy add-scc-to-user privileged -z default -n $NAMESPACE
 oc project ${NAMESPACE}
 #
 # Deploy the all-in-one application stack
-oc apply -f ${PWD}/all-in-one.yaml
+oc apply -f ${PWD}/src/all-in-one.yaml
 #
 # **Need to create logic to monitor the website until the service is up and running**
 #
@@ -41,239 +43,15 @@ sleep 6
 ROUTE=`oc get route | cut -d" " -f4`
 #for i in `curl -kvv $ROUTE`; do grep "HTTP\/1.1 200"
 #
+# Apply Horizontal Pod Autoscaler for the microservices
+oc apply -f ${PWD}/${TIER}/hpa.yaml
+#
 # Apply a quota to the namespace
-oc apply -f ${PWD}/boutique-quota.yaml
+oc apply -f ${PWD}/${TIER}/boutique-quota.yaml
 #
 # Apply a limit in the namespace
-oc apply -f ${PWD}/limit-range-v1.yaml
+oc apply -f ${PWD}/${TIER}/limit-range-v1.yaml
 #
 # Validation of the route
 echo "The shop url is "http://${ROUTE}""
 
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: adservice-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: adservice
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: adservice-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: adservice
-    
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: cartservice-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: cartservice
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: checkout-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: checkoutservice
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: currencyservice-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: currencyservice
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: emailservice-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: emailservice
-kind: HorizontalPodAutoscaler
-apiVersion: autoscaling/v2
-metadata:
-  name: frontend-autoscaler
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: frontend
-  minReplicas: 1
-  maxReplicas: 3
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: paymentservice-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: paymentservice
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: productcatalog-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: productcatalogservice
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: recommend-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: recommendationservice
-    
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: redis-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: redis-cart
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: shipping-autoscaler
-spec:
-  maxReplicas: 3
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 70
-        type: Utilization
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: shippingservice
