@@ -15,7 +15,9 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.acme.saas.util.CommonUtil.createNewTenant;
 import static org.acme.saas.util.CommonUtil.getDummyRegisterData;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 class SubscriptionResourceTest {

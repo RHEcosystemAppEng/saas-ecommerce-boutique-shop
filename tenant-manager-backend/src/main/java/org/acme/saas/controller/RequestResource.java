@@ -2,8 +2,8 @@ package org.acme.saas.controller;
 
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.common.Constants;
-import org.acme.saas.model.data.RequestData;
 import org.acme.saas.model.data.RequestChangeData;
+import org.acme.saas.model.data.RequestData;
 import org.acme.saas.model.data.TokenData;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.service.RequestService;
@@ -49,13 +49,13 @@ public class RequestResource {
 
         return requestService.createNewRequest(requestDraftBuilder.build())
                 .onItem().ifNotNull()
-                .transformToUni(request -> tenantService.findByTenantKey(request.getTenantKey()))
+                .transformToUni(request -> tenantService.findByTenantKey(request.tenantKey))
                 .onItem().ifNull().failWith(NotFoundException::new)
                 .map(tenant -> {
                     TokenData.TokenDataBuilder tokenDataBuilder = TokenData.builder();
-                    tokenDataBuilder.key(tenant.getTenantKey());
-                    tokenDataBuilder.Id(tenant.getId());
-                    tokenDataBuilder.loggedInUserName(tenant.getTenantName());
+                    tokenDataBuilder.key(tenant.tenantKey);
+                    tokenDataBuilder.Id(tenant.id);
+                    tokenDataBuilder.loggedInUserName(tenant.tenantName);
                     return tokenDataBuilder.build();
                 });
     }

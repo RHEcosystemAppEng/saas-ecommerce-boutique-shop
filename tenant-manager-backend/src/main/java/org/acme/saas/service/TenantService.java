@@ -8,7 +8,6 @@ import org.acme.saas.model.Tenant;
 import org.acme.saas.model.data.LoginData;
 import org.acme.saas.model.draft.TenantDraft;
 import org.acme.saas.model.mappers.TenantMapper;
-import org.acme.saas.repository.TenantRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -20,14 +19,11 @@ import java.util.Objects;
 public class TenantService {
 
     @Inject
-    TenantRepository tenantRepository;
-
-    @Inject
     SubscriptionService subscriptionService;
 
     @ReactiveTransactional
     public Uni<Tenant> login(LoginData loginData) {
-        return tenantRepository.findTenantByEmailAndPassword(
+        return Tenant.findTenantByEmailAndPassword(
                 loginData.getEmail(),
                 loginData.getPassword());
     }
@@ -43,17 +39,17 @@ public class TenantService {
 
     @ReactiveTransactional
     public Uni<Tenant> findByTenantKey(String tenantKey) {
-        return tenantRepository.findByTenantKey(tenantKey);
+        return Tenant.findByTenantKey(tenantKey);
     }
 
     @ReactiveTransactional
     public Uni<List<Tenant>> findAllActiveTenants() {
-        return tenantRepository.find("status=?1", Constants.TENANT_STATUS_ACTIVE).list();
+        return Tenant.find("status=?1", Constants.TENANT_STATUS_ACTIVE).list();
     }
 
     @ReactiveTransactional
     public Uni<Boolean> isEmailAlreadyInUse(String email) {
-        return tenantRepository.find("email", email)
+        return Tenant.find("email", email)
                 .firstResult()
                 .map(Objects::nonNull);
     }
@@ -61,15 +57,15 @@ public class TenantService {
     @ReactiveTransactional
     public Uni<Tenant> createNewTenant(TenantDraft tenantDraft, Subscription subscription) {
         Tenant tenant = TenantMapper.INSTANCE.tenantDraftToTenant(tenantDraft);
-        tenant.setStatus(Constants.TENANT_STATUS_ACTIVE);
-        tenant.setSubscriptions(List.of(subscription));
+        tenant.status = Constants.TENANT_STATUS_ACTIVE;
+        tenant.subscriptions = List.of(subscription);
 
-        return tenantRepository.persist(tenant);
+        return tenant.persist();
     }
 
     @ReactiveTransactional
     public Uni<Tenant> updateTenantSubscriptions(Tenant tenantToUpdate, Collection<Subscription> subscriptions) {
-        return tenantRepository.update("subscriptions = ?1 where id = ?2", subscriptions, tenantToUpdate.getId())
-                .onItem().transformToUni(integer -> tenantRepository.findById(tenantToUpdate.getId()));
+        return Tenant.update("subscriptions = ?1 where id = ?2", subscriptions, tenantToUpdate.id)
+                .onItem().transformToUni(integer -> Tenant.findById(tenantToUpdate.id));
     }
 }

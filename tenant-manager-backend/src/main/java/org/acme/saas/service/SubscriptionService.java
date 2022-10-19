@@ -8,7 +8,6 @@ import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.draft.SubscriptionDraft;
 import org.acme.saas.model.draft.TenantDraft;
 import org.acme.saas.model.mappers.SubscriptionMapper;
-import org.acme.saas.repository.SubscriptionRepository;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
@@ -33,17 +32,14 @@ public class SubscriptionService {
     @Inject
     RequestService requestService;
 
-    @Inject
-    SubscriptionRepository subscriptionRepository;
-
     @ReactiveTransactional
     public Uni<Subscription> findFirstByTenantKey(String tenantKey) {
-        return subscriptionRepository.findFirstByTenantKey(tenantKey);
+        return Subscription.findFirstByTenantKey(tenantKey);
     }
 
     @ReactiveTransactional
     public Uni<List<Subscription>> findAllByTenantKey(String tenantKey) {
-        return subscriptionRepository.findAllByTenantKey(tenantKey);
+        return Subscription.findAllByTenantKey(tenantKey);
     }
 
     public double calculatePrice(String tier, int avgConcurrentShoppers) {
@@ -62,13 +58,14 @@ public class SubscriptionService {
     }
 
     @ReactiveTransactional
-    public Uni<Subscription> createNewSubscription(TenantDraft tenantDraft, SubscriptionDraft subscriptionDraft, RequestDraft requestDraft) {
+    public Uni<Subscription> createNewSubscription(TenantDraft tenantDraft, SubscriptionDraft subscriptionDraft,
+                                                   RequestDraft requestDraft) {
 
         return requestService.createNewRequest(requestDraft)
                 .onItem().ifNotNull().transformToUni(request -> {
                     Subscription subscription = SubscriptionMapper.INSTANCE
                             .subscriptionDraftToSubscription(subscriptionDraft);
-                    subscription.setRequest(request);
+                    subscription.request = request;
 
                     String namespaceName = tenantDraft.getTenantName().replaceAll("\\s", "-");
 
@@ -100,14 +97,14 @@ public class SubscriptionService {
                         e.printStackTrace();
                     }
 
-                    return subscriptionRepository.persist(subscription);
-                })
-                .onItem().ifNull().failWith(InternalServerErrorException::new);
+                    Uni<Subscription> subscriptionUni = subscription.persist();
+                    return subscriptionUni;
+                }).onItem().ifNull().failWith(InternalServerErrorException::new);
     }
 
 
     public Uni<List<SubscriptionSummaryData>> getSubscriptionSummary() {
-        return subscriptionRepository.getSubscriptionSummary();
+        return Subscription.getSubscriptionSummary();
     }
 
 }
