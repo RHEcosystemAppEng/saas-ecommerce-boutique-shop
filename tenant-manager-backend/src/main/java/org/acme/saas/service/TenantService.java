@@ -44,7 +44,7 @@ public class TenantService {
 
     @ReactiveTransactional
     public Uni<List<Tenant>> findAllActiveTenants() {
-        return Tenant.find("status=?1", Constants.TENANT_STATUS_ACTIVE).list();
+        return Tenant.findAllActiveTenants();
     }
 
     @ReactiveTransactional
