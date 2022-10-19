@@ -17,6 +17,8 @@ import lombok.ToString;
 public class RequestDraft {
 
     @NonNull
+    private long id;
+    @NonNull
     private String tenantKey;
     private String hostName;
     private String serviceName;

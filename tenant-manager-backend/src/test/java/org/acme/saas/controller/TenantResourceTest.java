@@ -8,7 +8,9 @@ import org.acme.saas.model.Tenant;
 import org.acme.saas.model.data.LoginData;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.TokenData;
+import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.draft.TenantDraft;
+import org.acme.saas.model.mappers.RequestMapper;
 import org.acme.saas.util.CommonUtil;
 import org.hamcrest.Matchers;
 import org.jboss.logging.Logger;
@@ -22,6 +24,7 @@ import static org.acme.saas.util.CommonUtil.createNewTenant;
 import static org.acme.saas.util.CommonUtil.getDummyRegisterData;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 
 @QuarkusTest
@@ -75,6 +78,18 @@ class TenantResourceTest {
         assertThat(responseToken.getLoggedInUserName(), Matchers.is(dummyRegisterData.getTenantName()));
     }
 
+
+    @Test
+    public void testMapper() {
+        Request request = new Request();
+        request.id = 12L;
+        request.tenantKey = "abc";
+
+        RequestDraft requestDraft = RequestMapper.INSTANCE.requestToRequestDraft(request);
+        assertThat(requestDraft.getId(), Matchers.is(12L));
+        assertThat(requestDraft.getTenantKey(), Matchers.is("abc"));
+    }
+
     @Test
     void getTenantByIdTest() {
 
@@ -97,6 +112,9 @@ class TenantResourceTest {
         assertThat(responseTenantDraft.getTenantKey(), is(responseToken.getKey()));
         assertThat(responseTenantDraft.getSubscriptions().size(), is(1));
 
+        RequestDraft requestDraft = responseTenantDraft.getSubscriptions().get(0).getRequest();
+        LOG.infof("Got RequestDraft %s", requestDraft);
+        assertThat(requestDraft.getId(), is(not(0L)));
     }
 
     @BeforeEach

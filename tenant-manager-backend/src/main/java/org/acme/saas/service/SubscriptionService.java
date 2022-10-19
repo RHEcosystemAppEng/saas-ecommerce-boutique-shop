@@ -97,8 +97,7 @@ public class SubscriptionService {
                         e.printStackTrace();
                     }
 
-                    Uni<Subscription> subscriptionUni = subscription.persist();
-                    return subscriptionUni;
+                    return subscription.<Subscription>persist();
                 }).onItem().ifNull().failWith(InternalServerErrorException::new);
     }
 
