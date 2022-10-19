@@ -9,8 +9,10 @@ import org.acme.saas.model.data.LoginData;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.TokenData;
 import org.acme.saas.model.draft.TenantDraft;
+import org.acme.saas.util.CommonUtil;
 import org.hamcrest.Matchers;
 import org.jboss.logging.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -95,5 +97,10 @@ class TenantResourceTest {
         assertThat(responseTenantDraft.getTenantKey(), is(responseToken.getKey()));
         assertThat(responseTenantDraft.getSubscriptions().size(), is(1));
 
+    }
+
+    @BeforeEach
+    public void tearDown() {
+        CommonUtil.tearDown();
     }
 }

@@ -7,6 +7,7 @@ import org.acme.saas.common.Constants;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class Tenant extends PanacheEntity {
     public String status;
 
     @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "TENANT_ID")
     public List<Subscription> subscriptions = new ArrayList<>();
 
     public static Uni<Tenant> findByTenantKey(String tenantKey) {

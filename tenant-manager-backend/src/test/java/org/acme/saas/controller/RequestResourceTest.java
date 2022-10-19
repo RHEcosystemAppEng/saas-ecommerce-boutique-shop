@@ -6,14 +6,12 @@ import io.restassured.response.Response;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.RequestChangeData;
 import org.acme.saas.model.data.RequestData;
-import org.acme.saas.model.data.SubscriptionSummaryData;
 import org.acme.saas.model.data.TokenData;
 import org.acme.saas.util.CommonUtil;
 import org.hamcrest.Matchers;
 import org.jboss.logging.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +22,12 @@ import static org.acme.saas.util.CommonUtil.getDummyRegisterData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 class RequestResourceTest {
 
     private static final Logger LOG = Logger.getLogger(RequestResourceTest.class);
+
     @Test
     void getPendingRequestsTest() {
         RegisterData dummyRegisterData = getDummyRegisterData();
@@ -99,6 +97,10 @@ class RequestResourceTest {
         LOG.debugf("Response is %s", responseToken);
         assertThat(responseToken.getKey(), Matchers.is(notNullValue()));
         assertThat(responseToken.getLoggedInUserName(), Matchers.is(dummyRegisterData.getTenantName()));
+    }
 
+    @BeforeEach
+    public void tearDown() {
+        CommonUtil.tearDown();
     }
 }

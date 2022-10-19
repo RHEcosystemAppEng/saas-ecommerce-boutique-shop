@@ -6,7 +6,9 @@ import io.restassured.response.Response;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.SubscriptionSummaryData;
 import org.acme.saas.model.data.TokenData;
+import org.acme.saas.util.CommonUtil;
 import org.jboss.logging.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -80,7 +82,8 @@ class SubscriptionResourceTest {
         List<SubscriptionSummaryData> subscriptionSummaryDataList = new ArrayList<>();
         final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
         for (Object raw : rawList) {
-            final SubscriptionSummaryData subscriptionSummaryData = mapper.convertValue(raw, SubscriptionSummaryData.class);
+            final SubscriptionSummaryData subscriptionSummaryData = mapper.convertValue(raw,
+                    SubscriptionSummaryData.class);
             subscriptionSummaryDataList.add(subscriptionSummaryData);
         }
         assertEquals(subscriptionSummaryDataList.size(), 2);
@@ -92,5 +95,10 @@ class SubscriptionResourceTest {
                 .anyMatch(s -> s.getTier().equals("Gold") &&
                         s.getTotalSubscriptions() == 1 &&
                         s.getAggregatedShoppers() == 30));
+    }
+
+    @BeforeEach
+    public void tearDown() {
+        CommonUtil.tearDown();
     }
 }
