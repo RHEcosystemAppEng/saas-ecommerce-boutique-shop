@@ -3,16 +3,23 @@ package org.acme.saas.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.response.Response;
+import org.acme.saas.common.Constants;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.RequestChangeData;
 import org.acme.saas.model.data.RequestData;
 import org.acme.saas.model.data.TokenData;
+import org.acme.saas.model.draft.RequestDraft;
+import org.acme.saas.service.RequestService;
 import org.acme.saas.util.CommonUtil;
 import org.hamcrest.Matchers;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +27,10 @@ import static io.restassured.RestAssured.given;
 import static org.acme.saas.util.CommonUtil.createNewTenant;
 import static org.acme.saas.util.CommonUtil.getDummyRegisterData;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @QuarkusTest
 class RequestResourceTest {
@@ -54,6 +63,12 @@ class RequestResourceTest {
         assertThat(createRequestResponseToken.getKey(), Matchers.is(notNullValue()));
         assertThat(createRequestResponseToken.getLoggedInUserName(), Matchers.is(dummyRegisterData.getTenantName()));
 
+        List<RequestChangeData> requestChangeDataList = getPendingChangeData();
+        assertEquals(requestChangeDataList.size(), 1);
+        assertEquals(1, requestChangeDataList.get(0).getNewMinInstances());
+    }
+
+    private List<RequestChangeData> getPendingChangeData() {
         Response getPendingRequestResponse = given()
                 .when().contentType("application/json")
                 .get("/request/pending")
@@ -68,12 +83,18 @@ class RequestResourceTest {
             final RequestChangeData requestChangeData = mapper.convertValue(raw, RequestChangeData.class);
             requestChangeDataList.add(requestChangeData);
         }
-        assertEquals(requestChangeDataList.size(), 1);
-        assertEquals(1, requestChangeDataList.get(0).getNewMinInstances());
+        return requestChangeDataList;
     }
 
     @Test
     void createNewRequestTest() {
+        TokenData responseToken = createNewRequest();
+        LOG.debugf("Response is %s", responseToken);
+        assertThat(responseToken.getKey(), Matchers.is(notNullValue()));
+        assertThat(responseToken.getLoggedInUserName(), Matchers.is(responseToken.getLoggedInUserName()));
+    }
+
+    private TokenData createNewRequest() {
         RegisterData dummyRegisterData = getDummyRegisterData();
         Response createTenantResponse = createNewTenant(dummyRegisterData);
         TokenData createResponseToken = createTenantResponse.as(TokenData.class);
@@ -93,10 +114,85 @@ class RequestResourceTest {
                 .then()
                 .statusCode(200)
                 .extract().response();
-        TokenData responseToken = response.as(TokenData.class);
-        LOG.debugf("Response is %s", responseToken);
-        assertThat(responseToken.getKey(), Matchers.is(notNullValue()));
-        assertThat(responseToken.getLoggedInUserName(), Matchers.is(dummyRegisterData.getTenantName()));
+        return response.as(TokenData.class);
+    }
+
+    @Test
+    void approveRequest() {
+        createNewRequest();
+        RequestChangeData requestChangeData = getPendingChangeData().get(0);
+        LOG.debugf("RequestChangeData is %s", requestChangeData);
+        Response response = given()
+                .when()
+                .put("/request/{id}/approve", requestChangeData.getRequestId())
+                .then()
+                .statusCode(200)
+                .extract().response();
+        RequestDraft requestDraft = response.as(RequestDraft.class);
+        LOG.debugf("RequestDraft is %s", requestDraft);
+        assertEquals(requestDraft.getStatus(), Constants.REQUEST_STATUS_APPROVED);
+    }
+
+    @Test
+    void rejectRequest() {
+        createNewRequest();
+        RequestChangeData requestChangeData = getPendingChangeData().get(0);
+        LOG.debugf("RequestChangeData is %s", requestChangeData);
+        Response response = given()
+                .when()
+                .put("/request/{id}/reject", requestChangeData.getRequestId())
+                .then()
+                .statusCode(200)
+                .extract().response();
+        RequestDraft requestDraft = response.as(RequestDraft.class);
+        LOG.debugf("RequestDraft is %s", requestDraft);
+        assertEquals(requestDraft.getStatus(), Constants.REQUEST_STATUS_REJECTED);
+    }
+
+    @Inject
+    RequestService requestService;
+
+    @Test
+    public void approveOrRejectNonExistingRequest() {
+        int notFound = RestResponse.Status.NOT_FOUND.getStatusCode();
+        long requestId = 123L;
+        Response response = given()
+                .when()
+                .put("/request/{id}/approve", requestId)
+                .then()
+                .statusCode(notFound)
+                .extract().response();
+        assertThat(response.statusCode(), is(notFound));
+
+        response = given()
+                .when()
+                .put("/request/{id}/reject", requestId)
+                .then()
+                .statusCode(notFound)
+                .extract().response();
+        assertThat(response.statusCode(), is(notFound));
+    }
+
+    @Test
+    public void approveOrRejectNonPendingRequest() {
+        int badRequest = RestResponse.Status.BAD_REQUEST.getStatusCode();
+        createNewRequest();
+        long requestId = 1L;
+        Response response = given()
+                .when()
+                .put("/request/{id}/approve", requestId)
+                .then()
+                .statusCode(badRequest)
+                .extract().response();
+        assertThat(response.statusCode(), is(badRequest));
+
+        response = given()
+                .when()
+                .put("/request/{id}/reject", requestId)
+                .then()
+                .statusCode(badRequest)
+                .extract().response();
+        assertThat(response.statusCode(), is(badRequest));
     }
 
     @BeforeEach
