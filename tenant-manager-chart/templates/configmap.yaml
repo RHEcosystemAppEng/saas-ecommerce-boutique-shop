@@ -1,7 +1,20 @@
+{{- $rootFolder := "boutique_files" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: boutique-files-configmap
   namespace: {{ .Values.namespace.name }}
 data:
-  {{ (tpl (.Files.Glob "../../boutique_files").AsConfig .) | indent 2 }}
+{{ (.Files.Glob (printf "%s/*" $rootFolder)).AsConfig | indent 2 }}
+{{- $tiers := list "free" "gold" "silver" "premium" }}
+{{- range $tiers }}
+  {{- $tier := . }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "boutique-files-%s-configmap" $tier }}
+  namespace: {{ $.Values.namespace.name }}
+data:
+{{ ($.Files.Glob (printf "%s/%s/*" $rootFolder $tier)).AsConfig | indent 2 }}
+{{- end }}

@@ -4,7 +4,7 @@
 unset NAMESPACE
 NAMESPACE=$1 ## This is the namespace where the Boutique Shop will be deployed.
 PWD=$2 ## This is the working directory which holds the various yaml deployment files.
-URL=$3 ## This is the holder for the URL Prefix applied from the tenant manager
+HOSTNAME=$3 ## This is the holder for the URL Prefix applied from the tenant manager
 TIER=$4 ## Tier selection
 export NAMESPACE
 export PWD
@@ -28,17 +28,21 @@ oc adm policy add-scc-to-user privileged -z default -n $NAMESPACE
 # Change into the new Namespace
 oc project ${NAMESPACE}
 #
+
+CLUSTER_DOMAIN=$(oc get ingresses.config.openshift.io cluster -ojsonpath='{.spec.domain}')
+echo "CLUSTER_DOMAIN is $CLUSTER_DOMAIN"
+
 # Deploy the all-in-one application stack
 if [[ "$NAMESPACE" ]]; then
-  oc expose svc frontend --name=$NAMESPACE --hostname=$3.apps.ocp.pebcac.org
+  oc expose svc frontend --name=$NAMESPACE --hostname=${HOSTNAME}.${CLUSTER_DOMAIN}
 else
-  oc apply -f ${PWD}/src/all-in-one.yaml
+  oc apply -f ${PWD}/${TIER}/all-in-one.yaml
+  #
+  # **Need to create logic to monitor the website until the service is up and running**
+  #
+  # Expose the frontend service
+  oc expose svc frontend --name=$NAMESPACE --hostname=${HOSTNAME}.${CLUSTER_DOMAIN}
 fi
-#
-# **Need to create logic to monitor the website until the service is up and running**
-#
-# Expose the frontend service
-oc expose svc frontend --name=$NAMESPACE --hostname=$3.apps.ocp.pebcac.org
 #
 # Sleep statement to allow for the frontend service to come online
 sleep 6
