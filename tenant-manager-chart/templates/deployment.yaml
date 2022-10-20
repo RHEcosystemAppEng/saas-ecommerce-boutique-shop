@@ -25,6 +25,8 @@ spec:
           securityContext:
             allowPrivilegeEscalation: true
           env:
+            - name: DBHOST
+              value: tenant-controller-db-service
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:

@@ -14,7 +14,9 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -58,5 +60,19 @@ public class RequestResource {
                     tokenDataBuilder.loggedInUserName(tenant.tenantName);
                     return tokenDataBuilder.build();
                 });
+    }
+
+    @PUT
+    @Path("/{id}/approve")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<RequestDraft> approveByRequestId(@PathParam("id") long id) {
+        return requestService.approveByRequestId(id);
+    }
+
+    @PUT
+    @Path("/{id}/reject")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<RequestDraft> rejectByRequestId(@PathParam("id") long id) {
+        return requestService.rejectByRequestId(id);
     }
 }

@@ -13,6 +13,7 @@ import lombok.ToString;
 @ToString
 public class RequestChangeData {
 
+    private long requestId;
     private String tenantKey;
     private String tenantName;
     private String currentTier;

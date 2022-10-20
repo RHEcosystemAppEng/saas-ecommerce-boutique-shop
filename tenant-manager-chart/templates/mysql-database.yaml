@@ -26,6 +26,8 @@ spec:
             - name: mysql-store
               mountPath: /var/lib/mysql
           env:
+            - name: MYSQL_DATABASE
+              value: tenantmanager
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
