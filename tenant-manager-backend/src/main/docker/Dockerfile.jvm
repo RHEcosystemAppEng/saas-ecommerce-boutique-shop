@@ -75,19 +75,24 @@
 #   accessed directly. (example: "foo.example.com,bar.example.com")
 #
 ###
+FROM registry.redhat.io/openshift4/ose-cli as openshift-cli
+#
 FROM registry.access.redhat.com/ubi8/openjdk-17:1.11
 
 ENV LANGUAGE='en_US:en'
-
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
 COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
 COPY --chown=185 target/quarkus-app/*.jar /deployments/
 COPY --chown=185 target/quarkus-app/app/ /deployments/app/
 COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --from=openshift-cli /usr/bin/oc /usr/bin/oc
 
 EXPOSE 8080
 USER 185
+
+ENV YAML_FILES_LOCATION=/usr/app/boutique_files
+ENV SCRIPT_FILE=/usr/app/boutique_files/create-namespace.sh
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 
