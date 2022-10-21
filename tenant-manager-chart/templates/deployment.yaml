@@ -27,21 +27,39 @@ spec:
           env:
             - name: DBHOST
               value: tenant-controller-db-service
-            - name: MYSQL_ROOT_PASSWORD
+            - name: DBUSER
+              value: {{ .Values.database.username }}
+            - name: DBPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: tenant-controller-mysql-password
-                  key: MYSQL_ROOT_PASSWORD
+                  key: MYSQL_PASSWORD
           volumeMounts:
             - mountPath: /usr/app/boutique_files
               name: provisioner-templates
               readOnly: false
+{{- $tiers := list "free" "gold" "silver" "premium" }}
+{{- range $tiers }}
+{{- $tier := . }}
+            - mountPath: {{ printf "/usr/app/boutique_files/%s" $tier }}
+              name: {{ printf "provisioner-%s-templates" $tier }}
+              readOnly: false
+{{- end }}
       volumes:
         - configMap:
-            defaultMode: 438
+            defaultMode: 0555
             name: boutique-files-configmap
             optional: false
           name: provisioner-templates
+{{- $tiers := list "free" "gold" "silver" "premium" }}
+{{- range $tiers }}
+{{- $tier := . }}
+        - configMap:
+            defaultMode: 0444
+            name: {{ printf "boutique-files-%s-configmap" $tier }}
+            optional: false
+          name: {{ printf "provisioner-%s-templates" $tier }}
+{{- end }}
 
 ---
 
