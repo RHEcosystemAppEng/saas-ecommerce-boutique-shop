@@ -20,7 +20,12 @@ export PWD
 #metadata:
 #  name: ${NAMESPACE}" | oc apply -f -
 #fi
-oc create ns $NAMESPACE
+if [[ "$NAMESPACE" ]]; then 
+  echo "The namespace already exists, creating new route!"
+  oc expose svc frontend --name=$NAMESPACE --hostname=$3.apps.ocp.pebcac.org
+else
+  oc create ns $NAMESPACE
+fi
 #
 # Modify privileges for the defaut service account in scc. This step needs to be reviewed as the gives the service account too much privileges.
 oc adm policy add-scc-to-user privileged -z default -n $NAMESPACE
@@ -29,11 +34,7 @@ oc adm policy add-scc-to-user privileged -z default -n $NAMESPACE
 oc project ${NAMESPACE}
 #
 # Deploy the all-in-one application stack
-if [[ "$NAMESPACE" ]]; then
-  oc expose svc frontend --name=$NAMESPACE --hostname=$3.apps.ocp.pebcac.org
-else
-  oc apply -f ${PWD}/src/all-in-one.yaml
-fi
+oc apply -f ${PWD}/src/all-in-one.yaml
 #
 # **Need to create logic to monitor the website until the service is up and running**
 #
