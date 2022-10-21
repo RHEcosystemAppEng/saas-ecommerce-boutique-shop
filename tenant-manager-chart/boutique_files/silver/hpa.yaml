@@ -1,5 +1,5 @@
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: adservice-autoscaler
@@ -19,7 +19,7 @@ spec:
     name: adservice
 
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: adservice-autoscaler
@@ -39,7 +39,7 @@ spec:
     name: adservice
     
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: cartservice-autoscaler
@@ -59,7 +59,7 @@ spec:
     name: cartservice
 
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: checkout-autoscaler
@@ -79,7 +79,7 @@ spec:
     name: checkoutservice
 
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: currencyservice-autoscaler
@@ -99,7 +99,7 @@ spec:
     name: currencyservice
 
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: emailservice-autoscaler
@@ -117,10 +117,9 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: emailservice
-kind: HorizontalPodAutoscaler
 
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: frontend-autoscaler
@@ -140,7 +139,7 @@ spec:
           averageUtilization: 70
 
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: paymentservice-autoscaler
@@ -160,7 +159,7 @@ spec:
     name: paymentservice
 
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: productcatalog-autoscaler
@@ -180,7 +179,7 @@ spec:
     name: productcatalogservice
 
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: recommend-autoscaler
@@ -200,7 +199,7 @@ spec:
     name: recommendationservice
     
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: redis-autoscaler
@@ -220,7 +219,7 @@ spec:
     name: redis-cart
 
 ---
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: shipping-autoscaler
