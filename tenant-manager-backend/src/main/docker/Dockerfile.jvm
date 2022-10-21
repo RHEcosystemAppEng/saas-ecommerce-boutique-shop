@@ -75,7 +75,7 @@
 #   accessed directly. (example: "foo.example.com,bar.example.com")
 #
 ###
-FROM registry.redhat.io/openshift4/ose-cli as openshift-cli
+FROM quay.io/pdred/backend-base:latest as openshift-cli
 #
 FROM registry.access.redhat.com/ubi8/openjdk-17:1.11
 
