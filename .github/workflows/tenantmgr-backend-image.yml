@@ -23,10 +23,11 @@ jobs:
       uses: stCarolas/setup-maven@v4.4
       with:
         maven-version: 3.8.6
-    - name: Build Quarkus native executable
+    - name: Build Quarkus JVM executable
       run: |
         cd tenant-manager-backend
-        mvn package -Pnative
+        #mvn package -Pnative
+        mvn package
     - name: Build and publish docker image
       run: |
         cd tenant-manager-backend
@@ -37,7 +38,7 @@ jobs:
         echo Building image: ${IMAGE_FULL}
         docker login "${{ env.IMAGE_REGISTRY }}" --username="${{ secrets.REGISTRY_USERNAME }}" --password="${{ secrets.REGISTRY_PASSWORD }}"
         
-        docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} -f ./src/main/docker/Dockerfile.native .
+        docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} -f ./src/main/docker/Dockerfile.jvm .
         docker tag ${IMAGE_FULL} ${IMAGE_LATEST}
         docker push ${IMAGE_FULL}
         docker push ${IMAGE_LATEST}
