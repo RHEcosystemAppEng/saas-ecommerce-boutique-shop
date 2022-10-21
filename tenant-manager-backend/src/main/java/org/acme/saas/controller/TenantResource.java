@@ -17,6 +17,12 @@ import org.acme.saas.model.draft.TenantDraft.TenantDraftBuilder;
 import org.acme.saas.model.mappers.TenantMapper;
 import org.acme.saas.service.SubscriptionService;
 import org.acme.saas.service.TenantService;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -27,9 +33,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.time.Duration;
 import java.util.function.Function;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Path("/tenant")
 public class TenantResource {
@@ -39,9 +46,10 @@ public class TenantResource {
     @Inject
     SubscriptionService subscriptionService;
 
+    @Operation(hidden = true)
     @GET
     @Path("/test")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
     public Multi<Long> test() {
         return Multi.createFrom()
                 .ticks().every(Duration.ofSeconds(1))
@@ -49,35 +57,50 @@ public class TenantResource {
                 .select().first(10);
     }
 
+    @Operation(summary = "Health check service")
     @GET
     @Path("/health")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
     public Uni<String> healthEndpoint() {
         return Uni.createFrom().item("ok");
     }
 
+    @Operation(summary = "Returns a boolean to verify whether an email address is already in use")
+    @APIResponse(responseCode = "200", description = "true if the given email is already in use, otherwise false")
     @GET
     @Path("/email/{email}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
     public Uni<Boolean> isEmailAlreadyInUse(String email) {
         return tenantService.isEmailAlreadyInUse(email);
     }
 
+    @Operation(summary = "Returns a Tenant data given its tenantKey")
+    @APIResponse(responseCode = "200", content = @Content(mediaType = APPLICATION_JSON, schema =
+    @Schema(implementation = TenantDraft.class)))
+    @APIResponse(responseCode = "404", description = "No Tenant found by the given tenantKey")
     @GET
     @Path("/{tenantKey}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Uni<TenantDraft> getTenantById(@PathParam("tenantKey") String tenantKey) {
+    @Produces(APPLICATION_JSON)
+    public Uni<TenantDraft> getTenantById(@Parameter(description = "tenantKey of the Tenant", required = true) @PathParam("tenantKey") String tenantKey) {
         return tenantService.findByTenantKey(tenantKey)
                 .onItem().transform(TenantMapper.INSTANCE::tenantToTenantDraft)
                 .onItem().ifNull().failWith(NotFoundException::new);
     }
 
 
+    @Operation(summary = "Validates the login credentials for a user with Tenant role")
+    @APIResponse(responseCode = "200", description = "Login credentials validated", content = @Content(mediaType =
+            APPLICATION_JSON, schema =
+    @Schema(implementation = TokenData.class)))
+    @APIResponse(responseCode = "401", description = "Invalid login credentials")
     @POST
     @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Uni<TokenData> login(LoginData loginData) {
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Uni<TokenData> login(@RequestBody(
+            required = true,
+            content = @Content(mediaType = APPLICATION_JSON,
+                    schema = @Schema(implementation = LoginData.class))) LoginData loginData) {
 
         return tenantService.login(loginData)
                 .onItem().ifNotNull().transform(tenant -> {
@@ -90,11 +113,20 @@ public class TenantResource {
                 .onItem().ifNull().failWith(() -> new NotAuthorizedException("Invalid credentials"));
     }
 
+    @Operation(summary = "Signs up a new Tenant")
+    @APIResponse(responseCode = "200", description = "Tenant created and subscription request submitted", content =
+    @Content(mediaType =
+            APPLICATION_JSON, schema =
+    @Schema(implementation = TokenData.class)))
+    @APIResponse(responseCode = "500", description = "Internal failure")
     @POST
     @Path("/signup")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Uni<TokenData> signUpNewTenant(RegisterData registerData) {
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Uni<TokenData> signUpNewTenant(@RequestBody(
+            required = true,
+            content = @Content(mediaType = APPLICATION_JSON,
+                    schema = @Schema(implementation = RegisterData.class))) RegisterData registerData) {
 
         String tenantKey = tenantService.generateTenantKey(registerData.getTenantName());
 
