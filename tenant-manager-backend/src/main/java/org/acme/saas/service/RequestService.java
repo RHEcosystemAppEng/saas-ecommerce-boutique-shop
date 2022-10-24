@@ -81,7 +81,8 @@ public class RequestService {
             validateRequestStatus(request);
             request.status = REQUEST_STATUS_APPROVED;
             Uni<Request> updatedRequestUni = request.persist();
-            return updatedRequestUni.onItem().transform(updatedRequest ->
+            // we need to update the subscription association as well
+            return updatedRequestUni.onItem().transform().transform(updatedRequest ->
                     RequestMapper.INSTANCE.requestToRequestDraft(updatedRequest)
             );
         }).onItem().ifNull().failWith(NotFoundException::new);
