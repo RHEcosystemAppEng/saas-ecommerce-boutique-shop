@@ -3,7 +3,6 @@ name: Deploy New Chart
 
 on:
   workflow_dispatch:
-    inputs:
 
 env:
   HELM_REPO_URL: "https://rhecosystemappeng.github.io/saas-ecommerce-boutique-shop"
@@ -18,13 +17,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get chart name
-        id: chart_name
-        run: echo "::set-output name=name::$(cat ./tenant-manager-chart/Chart.yaml | grep 'name:' | cut -c 7-)"
-
-      - name: Get chart version
-        id: chart_version
-        run: echo "::set-output name=name::$(cat ./tenant-manager-chart/Chart.yaml | grep 'version:' | cut -c 10-)"
+      - name: Get chart details
+        id: chart_details
+        run: |
+          echo "chart_name=$(cat ./tenant-manager-chart/Chart.yaml | grep 'name:' | cut -c 7-)" >> $GITHUB_OUTPUT
+          echo "chart_version=$(cat ./tenant-manager-chart/Chart.yaml | grep 'version:' | cut -c 10-)" >> $GITHUB_OUTPUT
 
       - name: Configure Git
         run: |
@@ -48,7 +45,7 @@ jobs:
 
       - name: Deploy new chart
         run: |
-          git add ${{ steps.chart_name.outputs.name }}-${{ steps.chart_name.outputs.chart_version }}.tgz
+          git add ${{ steps.chart_details.outputs.name }}-${{ steps.chart_details.outputs.chart_version }}.tgz
           git add index.yaml
-          git commit -m "chore: deployed ${{ steps.chart_name.outputs.name }} ${{ steps.chart_name.outputs.chart_version }}"
+          git commit -m "chore: deployed ${{ steps.chart_details.outputs.name }} ${{ steps.chart_details.outputs.chart_version }}"
           git push
