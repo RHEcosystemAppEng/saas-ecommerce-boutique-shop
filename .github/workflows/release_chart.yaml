@@ -23,6 +23,8 @@ jobs:
           echo "chart_name=$(cat ./tenant-manager-chart/Chart.yaml | grep 'name:' | cut -c 7-)" >> $GITHUB_ENV
           echo "chart_version=$(cat ./tenant-manager-chart/Chart.yaml | grep 'version:' | cut -c 10-)" >> $GITHUB_ENV
           echo "file_name=${chart_name}-${chart_version}.tgz" >> $GITHUB_ENV
+          echo "${file_name}"
+          echo "${{ env.file_name }}"
 
       - name: Configure Git
         run: |
@@ -38,7 +40,7 @@ jobs:
       - name: Package chart
         run: |
           helm package tenant-manager-chart
-          mv ${{ env.file_name }} release.tgz
+          mv "${{ env.file_name }}" release.tgz
 
       - name: GH-Pages checkout
         run: git checkout gh-pages
