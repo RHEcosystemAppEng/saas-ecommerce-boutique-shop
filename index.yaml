@@ -3,22 +3,12 @@ entries:
   tenant-manager-chart:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-10-24T09:32:37.743134926Z"
+    created: "2022-10-24T09:42:30.758203768Z"
     description: A Helm chart for Kubernetes
-    digest: 3a2250a8589496bef2032d684731960633da01039444423b205217f4031404ac
-    name: tenant-manager-chart
-    type: application
-    urls:
-    - https://rhecosystemappeng.github.io/saas-ecommerce-boutique-shop/release.tgz
-    version: 0.1.0
-  - apiVersion: v2
-    appVersion: 1.16.0
-    created: "2022-10-24T09:32:37.744310625Z"
-    description: A Helm chart for Kubernetes
-    digest: d27405be5b2250d56fd94636555414e56beeaa0f1a2f231a3cb3499f4897a3c0
+    digest: 8f376967aae2adab0639b4c1d1fa18a91c461dbb86ced075629563214dd2f6f6
     name: tenant-manager-chart
     type: application
     urls:
     - https://rhecosystemappeng.github.io/saas-ecommerce-boutique-shop/tenant-manager-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2022-10-24T09:32:37.737314734Z"
+generated: "2022-10-24T09:42:30.756759423Z"
