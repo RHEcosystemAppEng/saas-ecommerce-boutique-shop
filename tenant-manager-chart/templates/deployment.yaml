@@ -87,3 +87,6 @@ spec:
         - name: tenant-manager-frontend
           image: {{ .Values.frontend.containerImagePath }}
           imagePullPolicy: Always
+          env:
+          - name: REACT_APP_BACKEND_URI
+            value: MY_VALUE
