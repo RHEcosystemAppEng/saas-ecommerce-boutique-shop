@@ -20,11 +20,9 @@ jobs:
       - name: Get chart details
         id: chart_details
         run: |
-          echo "chart_name=$(cat ./tenant-manager-chart/Chart.yaml | grep 'name:' | cut -c 7-)" >> $GITHUB_OUTPUT
-          echo "chart_version=$(cat ./tenant-manager-chart/Chart.yaml | grep 'version:' | cut -c 10-)" >> $GITHUB_OUTPUT
-          echo $chart_name
-          echo $chart_version
-          echo $GITHUB_OUTPUT
+          echo "chart_name=$(cat ./tenant-manager-chart/Chart.yaml | grep 'name:' | cut -c 7-)" >> $GITHUB_ENV
+          echo "chart_version=$(cat ./tenant-manager-chart/Chart.yaml | grep 'version:' | cut -c 10-)" >> $GITHUB_ENV
+          echo "file_name=${chart_name}-${chart_version}.tgz" >> $GITHUB_ENV
 
       - name: Configure Git
         run: |
@@ -38,7 +36,9 @@ jobs:
         run: helm lint tenant-manager-chart
 
       - name: Package chart
-        run: helm package tenant-manager-chart
+        run: |
+          helm package tenant-manager-chart
+          mv ${{ env.file_name }} release.tgz
 
       - name: GH-Pages checkout
         run: git checkout gh-pages
@@ -48,8 +48,8 @@ jobs:
 
       - name: Deploy new chart
         run: |
-          ls
-          git add ${{ steps.chart_details.outputs.chart_name }}-${{ steps.chart_details.outputs.chart_version }}.tgz
+          mv release.tgz ${{ env.file_name }}
+          git add ${{ env.file_name }}
           git add index.yaml
-          git commit -m "chore: deployed ${{ steps.chart_details.outputs.chart_name }} ${{ steps.chart_details.outputs.chart_version }}"
+          git commit -m "chore: deployed ${{ env.file_name }}"
           git push
