@@ -20,11 +20,9 @@ jobs:
       - name: Get chart details
         id: chart_details
         run: |
-          echo "chart_name=$(cat ./tenant-manager-chart/Chart.yaml | grep 'name:' | cut -c 7-)" >> $GITHUB_ENV
-          echo "chart_version=$(cat ./tenant-manager-chart/Chart.yaml | grep 'version:' | cut -c 10-)" >> $GITHUB_ENV
+          chart_name=$(cat ./tenant-manager-chart/Chart.yaml | grep 'name:' | cut -c 7-)
+          chart_version=$(cat ./tenant-manager-chart/Chart.yaml | grep 'version:' | cut -c 10-)
           echo "file_name=${chart_name}-${chart_version}.tgz" >> $GITHUB_ENV
-          echo "${file_name}"
-          echo "${{ env.file_name }}"
 
       - name: Configure Git
         run: |
