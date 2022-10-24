@@ -4,10 +4,12 @@ import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactiona
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.common.Constants;
 import org.acme.saas.model.Request;
+import org.acme.saas.model.Subscription;
 import org.acme.saas.model.Tenant;
 import org.acme.saas.model.data.RequestChangeData;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.mappers.RequestMapper;
+import org.acme.saas.model.mappers.SubscriptionMapper;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -18,8 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static io.smallrye.mutiny.helpers.spies.Spy.onItem;
 import static org.acme.saas.common.Constants.REQUEST_STATUS_APPROVED;
 import static org.acme.saas.common.Constants.REQUEST_STATUS_PENDING;
 import static org.acme.saas.common.Constants.REQUEST_STATUS_REJECTED;
@@ -81,9 +85,20 @@ public class RequestService {
             validateRequestStatus(request);
             request.status = REQUEST_STATUS_APPROVED;
             Uni<Request> updatedRequestUni = request.persist();
+
             // we need to update the subscription association as well
-            return updatedRequestUni.onItem().transform().transform(updatedRequest ->
-                    RequestMapper.INSTANCE.requestToRequestDraft(updatedRequest)
+            return updatedRequestUni.onItem()
+                    .transform(savedRequest -> {
+                        Uni<Subscription> subscriptionUni = subscriptionService.findFirstByTenantKey(request.tenantKey);
+                        return subscriptionUni.onItem().transform(subscription -> {
+                            subscription.request = savedRequest;
+                            return subscription.persist();
+                        });
+                    })
+                    .flatMap(Function.identity())
+                    .flatMap(Function.identity())
+                    .onItem().transform(updatedSubscription ->
+                    RequestMapper.INSTANCE.requestToRequestDraft(((Subscription)updatedSubscription).request)
             );
         }).onItem().ifNull().failWith(NotFoundException::new);
         // TBD add provisioning step
