@@ -201,4 +201,43 @@ If you would like to contribute features or fixes to this app, see the [Developm
 
 ---
 
+## Installing the Helm chart
+To install the chart in the `my-namespace` namespace with the release name `my-saas` and using custom configuration in `my-values.yaml`:
+```bash
+helm repo add saas-ecommerce-boutique-shop https://rhecosystemappeng.github.io/saas-ecommerce-boutique-shop/
+helm install -n my-namespace -f my-values.yaml my-saas saas-ecommerce-boutique-shop/tenant-manager-chart
+```
+The command deploys the Tenant Controller application on the OpenShift cluster in the given configuration.
+See the [Chart parameters](#chart-parameters) section for an explanation of each configuration option.
+
+Note: if you already installed the repository, you might need to updated it periodically with:
+```bash
+helm repo update saas-ecommerce-boutique-shop
+```
+
+## Upgrading the chart
+To upgrade the above deployment with updated values from the custom configuration in `my-values.yaml`:
+```bash
+helm upgrade -n my-namespace -f my-rhpvaluesam.yaml my-saas saas-ecommerce-boutique-shop/tenant-manager-chart
+```
+
+## Uninstalling the chart
+To uninstall/delete the `my-saas` deployment:
+```bash
+helm delete -n my-namespace my-saas
+```
+## Chart parameters
+
+| Name                          | Description                              | Default Value          |
+| ------------------------------| -----------------------------------------| -----------------------|
+| `namespace.name`              | Name of the deployment namespace         | `saas-boutique`        |
+| `database.databaseName`       | Name of the MySQL database to be created | `tenantmanager`        |
+| `database.username`           | Name of the MySQL user to be created     | `saas`                 |
+| `database.password`           | Password of the MySQL user               | `redhat`               |
+| `database.rootPassword`       | Password ot the MySQL `root` user        | `admin`                |
+| `backend.containerImagePath`  | Image of the backend application         | `quay.io/ecosystem-appeng/saas-tenant-manager-backend:latest` |
+| `frontend.containerImagePath` | Image of the frontend application        | `quay.io/ecosystem-appeng/saas-tenant-manager-frontend:latest` |
+
+---
+
 This is not an official Google project.
