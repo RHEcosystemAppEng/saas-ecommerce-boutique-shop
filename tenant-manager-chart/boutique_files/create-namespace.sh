@@ -42,6 +42,26 @@ function createNamespaceIfMissingAndSetProject() {
   return $returnCode
 }
 
+function createGoldNamespaceIfMisingAndSetProject() {
+  ns=$1
+  base1=enterprise-utilities
+  base2=boutique-ops
+  checkNamespaceExists ${base1},${base2}
+  if [ $? -eq 0 ]; then
+    log "The shared Gold namespaces, ${base1} and ${base2}, do not exist. We are creating them."
+    oc create namespace ${base1}
+    oc create namespace ${base2}
+    log "Creating tenant namespace for the Gold tier."
+    oc create namespace ${ns}
+    oc project ${ns}
+    return $returnCode
+  elif [ $? -eq 1 ]; then
+    log "The shared Gold namespaces, ${ns} and ${ns}, exist. Creating the tenant namespace."
+    oc create namespace ${ns}
+    oc project ${ns}
+    return $returnCode
+}
+
 function createNewNamespaceAndSetProject() {
   ns=$1
   checkNamespaceExists ${ns}
@@ -109,7 +129,12 @@ function provisionSilver() {
 }
 
 function provisionGold() {
-  echo "NOT MANAGED"
+  log "Provisioining gold tier"
+  createGoldNamespaceIfMisingAndSetProject ${GOLD_NAMESPACE}
+  if [ $? -eq 0 ]; then
+    provisionAllResources ${GOLD_NAMESPACE}
+  fi
+  createRouteAndExportURL ${GOLD_NAMESPACE}
 }
 
 function provisionPremium() {
