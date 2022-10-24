@@ -20,7 +20,7 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: tenant-frontend-route
-  namespace: saas-boutique
+  namespace: {{ .Values.namespace.name }}
 spec:
   to:
     kind: Service

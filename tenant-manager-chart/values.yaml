@@ -6,8 +6,11 @@
 namespace:
   name: saas-boutique
 
-secret:
-  databasePassword: redhat
+database:
+  databaseName: tenantmanager
+  username: saas
+  password: redhat
+  rootPassword: admin
 
 backend:
   containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-backend:latest

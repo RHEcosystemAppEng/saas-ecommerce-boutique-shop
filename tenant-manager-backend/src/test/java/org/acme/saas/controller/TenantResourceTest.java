@@ -9,6 +9,7 @@ import org.acme.saas.model.data.LoginData;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.TokenData;
 import org.acme.saas.model.draft.RequestDraft;
+import org.acme.saas.model.draft.SubscriptionDraft;
 import org.acme.saas.model.draft.TenantDraft;
 import org.acme.saas.model.mappers.RequestMapper;
 import org.acme.saas.util.CommonUtil;
@@ -112,8 +113,12 @@ class TenantResourceTest {
         assertThat(responseTenantDraft.getTenantKey(), is(responseToken.getKey()));
         assertThat(responseTenantDraft.getSubscriptions().size(), is(1));
 
-        RequestDraft requestDraft = responseTenantDraft.getSubscriptions().get(0).getRequest();
-        LOG.infof("Got RequestDraft %s", requestDraft);
+        SubscriptionDraft subscriptionDraft = responseTenantDraft.getSubscriptions().get(0);
+        LOG.debugf("Got SubscriptionDraft %s", subscriptionDraft);
+        assertThat(subscriptionDraft.getUrl(), is("TESTURL"));
+
+        RequestDraft requestDraft = subscriptionDraft.getRequest();
+        LOG.debugf("Got RequestDraft %s", requestDraft);
         assertThat(requestDraft.getId(), is(not(0L)));
     }
 
