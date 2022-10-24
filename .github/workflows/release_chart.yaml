@@ -22,6 +22,9 @@ jobs:
         run: |
           echo "chart_name=$(cat ./tenant-manager-chart/Chart.yaml | grep 'name:' | cut -c 7-)" >> $GITHUB_OUTPUT
           echo "chart_version=$(cat ./tenant-manager-chart/Chart.yaml | grep 'version:' | cut -c 10-)" >> $GITHUB_OUTPUT
+          echo $chart_name
+          echo $chart_version
+          echo $GITHUB_OUTPUT
 
       - name: Configure Git
         run: |
@@ -45,7 +48,8 @@ jobs:
 
       - name: Deploy new chart
         run: |
-          git add ${{ steps.chart_details.outputs.name }}-${{ steps.chart_details.outputs.chart_version }}.tgz
+          ls
+          git add ${{ steps.chart_details.outputs.chart_name }}-${{ steps.chart_details.outputs.chart_version }}.tgz
           git add index.yaml
-          git commit -m "chore: deployed ${{ steps.chart_details.outputs.name }} ${{ steps.chart_details.outputs.chart_version }}"
+          git commit -m "chore: deployed ${{ steps.chart_details.outputs.chart_name }} ${{ steps.chart_details.outputs.chart_version }}"
           git push
