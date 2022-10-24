@@ -1,58 +1,50 @@
-import React, {useEffect} from 'react';
-import {TableComposable, Tbody, Td, Thead, Tr} from "@patternfly/react-table";
+import React, {useEffect} from "react";
+import {TableComposable, Tbody, Td, Th, Thead, Tr,} from "@patternfly/react-table";
+import {PendingListRow} from './PendingListRow';
 import axios from "../axios-middleware";
 
 export const OpsPendingList = () => {
-    const [pendingData, setPendingData] = React.useState([]);
 
     useEffect(() => {
-        getPendingData()
+        getTierData()
     }, [])
 
-    const getPendingData = () => {
+    const getTierData = () => {
         axios
-            .get("/getPendingRequests")
+            .get("/request/pending")
             .then((res) => {
-                const receivedData = []
-
-                setPendingData(receivedData)
+                setDataList(res.data);
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))
             })
     }
-    return <React.Fragment>
-        <TableComposable aria-label="Simple table">
-            <Thead>
-                <Tr key="0">
-                    <Td modifier="wrap">Tenant ID</Td>
-                    <Td modifier="wrap">Tenant Name</Td>
-                    <Td modifier="wrap">Current Tier</Td>
-                    <Td modifier="wrap">Requesting Tier</Td>
-                    <Td modifier="wrap">Service Name</Td>
-                    <Td modifier="wrap">Prev. Min Instances</Td>
-                    <Td modifier="wrap">Prev. Max Instances</Td>
-                    <Td modifier="wrap">New Min Instances</Td>
-                    <Td modifier="wrap">New Max Instances</Td>
-                    <Td modifier="wrap">Action</Td>
-                </Tr>
-            </Thead>
-            <Tbody>
-                <Tr key="1">
-                    <Td>0110000</Td>
-                    <Td>Citi Bank</Td>
-                    <Td>Silver</Td>
-                    <Td>Gold</Td>
-                </Tr>
-                <Tr key="2">
-                    <Td>0110230</Td>
-                    <Td>Deutsche Bank</Td>
-                    <Td>Free</Td>
-                    <Td>Silver</Td>
-                </Tr>
-            </Tbody>
-        </TableComposable>
 
-    </React.Fragment>;
+    const [dataList, setDataList] = React.useState([]);
 
+
+    return (<React.Fragment>
+            <TableComposable aria-label="Actions table">
+                <Thead>
+                    <Tr>
+                        <Th modifier="wrap">Tenant ID</Th>
+                        <Th modifier="wrap">Tenant Name</Th>
+                        <Th modifier="wrap">Current Tier</Th>
+                        <Th modifier="wrap">Requesting Tier</Th>
+                        <Th modifier="wrap">Service Name</Th>
+                        <Th modifier="wrap">Prev. Min Instances</Th>
+                        <Th modifier="wrap">Prev. Max Instances</Th>
+                        <Th modifier="wrap">New Min Instances</Th>
+                        <Th modifier="wrap">New Max Instances</Th>
+
+                        <Td></Td>
+                    </Tr>
+                </Thead>
+                <Tbody>
+                    {dataList.map((rowData, index) => (
+                            <PendingListRow visibleActions={true} rowData={rowData}/>
+                    ))}
+                </Tbody>
+            </TableComposable>
+        </React.Fragment>);
 };
