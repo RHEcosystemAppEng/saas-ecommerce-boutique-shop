@@ -48,7 +48,7 @@ jobs:
 
       - name: Deploy new chart
         run: |
-          git add ${{ steps.chart_name.outputs.name }}-${{ github.event.inputs.new_semver }}.tgz
+          git add ${{ steps.chart_name.outputs.name }}-${{ steps.chart_name.outputs.chart_version }}.tgz
           git add index.yaml
           git commit -m "chore: deployed ${{ steps.chart_name.outputs.name }} ${{ steps.chart_name.outputs.chart_version }}"
           git push
