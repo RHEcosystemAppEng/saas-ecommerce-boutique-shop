@@ -19,11 +19,11 @@ RUN npm run build
 # production environment
 FROM nginxinc/nginx-unprivileged
 COPY --from=build /app/build /usr/share/nginx/html
-COPY --chown=185 init.sh /usr/share
+COPY --chown=1001:root init.sh /usr/share
 # new
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 8080
-USER 185
+USER 1001
 
 ENTRYPOINT ["/usr/share/init.sh"]
