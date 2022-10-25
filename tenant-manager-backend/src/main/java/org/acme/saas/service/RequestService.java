@@ -9,7 +9,6 @@ import org.acme.saas.model.Tenant;
 import org.acme.saas.model.data.RequestChangeData;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.mappers.RequestMapper;
-import org.acme.saas.model.mappers.SubscriptionMapper;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,7 +22,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static io.smallrye.mutiny.helpers.spies.Spy.onItem;
 import static org.acme.saas.common.Constants.REQUEST_STATUS_APPROVED;
 import static org.acme.saas.common.Constants.REQUEST_STATUS_PENDING;
 import static org.acme.saas.common.Constants.REQUEST_STATUS_REJECTED;
@@ -31,6 +29,9 @@ import static org.acme.saas.common.Constants.REQUEST_STATUS_REJECTED;
 @ApplicationScoped
 public class RequestService {
     private Logger log = Logger.getLogger(RequestService.class);
+
+    @Inject
+    ProvisionService provisionService;
 
     @ReactiveTransactional
     public Uni<Request> createNewRequest(RequestDraft requestDraft) {
@@ -52,7 +53,8 @@ public class RequestService {
                     .collect(Collectors.groupingBy(tenant -> tenant.tenantKey));
 
             for (Request request : pendingRequests) {
-                int[] instanceCount = subscriptionService.calculateInstanceCount(request.avgConcurrentShoppers);
+                int[] instanceCount = subscriptionService.calculateInstanceCount(request.avgConcurrentShoppers,
+                        request.peakConcurrentShoppers);
 
                 RequestChangeData changeData = new RequestChangeData();
                 changeData.setRequestId(request.id);
@@ -97,9 +99,16 @@ public class RequestService {
                     })
                     .flatMap(Function.identity())
                     .flatMap(Function.identity())
-                    .onItem().transform(updatedSubscription ->
-                    RequestMapper.INSTANCE.requestToRequestDraft(((Subscription)updatedSubscription).request)
-            );
+                    .onItem().transformToUni(updatedSubscription ->
+                                Tenant.findByTenantKey(request.tenantKey).onItem().transform(tenant ->
+                                {
+                                    int[] replicas =
+                                            subscriptionService.calculateInstanceCount(request.avgConcurrentShoppers,
+                                            request.peakConcurrentShoppers);
+                                    provisionService.onResourceUpdate(tenant.tenantName, replicas[0], replicas[1]);
+                                    return RequestMapper.INSTANCE.requestToRequestDraft(((Subscription) updatedSubscription).request);
+                                })
+                    );
         }).onItem().ifNull().failWith(NotFoundException::new);
         // TBD add provisioning step
     }

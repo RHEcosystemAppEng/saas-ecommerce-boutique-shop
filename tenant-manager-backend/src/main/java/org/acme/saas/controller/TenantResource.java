@@ -154,7 +154,7 @@ public class TenantResource {
         RequestDraft requestDraft = requestDraftBuilder.build();
 
         int[] instanceCount = subscriptionService.calculateInstanceCount(
-                requestDraft.getAvgConcurrentShoppers());
+                requestDraft.getAvgConcurrentShoppers(), requestDraft.getPeakConcurrentShoppers());
         SubscriptionDraftBuilder subscriptionDraftBuilder = SubscriptionDraft.builder();
         subscriptionDraftBuilder.tenantKey(tenantKey);
         subscriptionDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);

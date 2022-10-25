@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
 
 @ApplicationScoped
 public class ProvisionService {
@@ -17,16 +19,33 @@ public class ProvisionService {
 
     @ConfigProperty(name = "org.acme.saas.service.SubscriptionService.scriptFile")
     String scriptFile;
+    @ConfigProperty(name = "org.acme.saas.service.SubscriptionService.updateScriptFile")
+    String updateScriptFile;
+
+    public String onResourceUpdate(String tenantName, int minReplicas, int maxReplicas) {
+        return runScript(updateScriptFile,
+                getNamespaceName(tenantName),
+                Integer.toString(minReplicas),
+                Integer.toString(maxReplicas));
+    }
+
+    private String getNamespaceName(String tenantName) {
+        return tenantName.replaceAll("\\s", "-");
+    }
 
     public String onNewSubscription(TenantDraft tenantDraft, RequestDraft requestDraft) {
-        String namespaceName = tenantDraft.getTenantName().replaceAll("\\s", "-");
+        return runScript(scriptFile,
+                getNamespaceName(tenantDraft.getTenantName()),
+                requestDraft.getHostName(),
+                requestDraft.getTier());
+    }
 
-        log.infof("Calling the shell script %s", scriptFile);
+    private String runScript(String... scriptAndArgs) {
+        log.infof("Calling the shell script %s with args %s", scriptAndArgs[0],
+                List.of(Arrays.copyOfRange(scriptAndArgs, 1,
+                scriptAndArgs.length )));
         try {
-            ProcessBuilder pb = new ProcessBuilder(scriptFile,
-                    namespaceName,
-                    requestDraft.getHostName(),
-                    requestDraft.getTier());
+            ProcessBuilder pb = new ProcessBuilder(scriptAndArgs);
             Process p = pb.start();
             InputStream is = p.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
