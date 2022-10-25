@@ -43,9 +43,9 @@ public class SubscriptionService {
         };
     }
 
-    public int[] calculateInstanceCount(int avgConcurrentShoppers) {
+    public int[] calculateInstanceCount(int avgConcurrentShoppers, int peakConcurrentShoppers) {
         int min = avgConcurrentShoppers / 50;
-        int max = avgConcurrentShoppers / 50;
+        int max = peakConcurrentShoppers / 50;
 
         return new int[]{min, max};
     }
