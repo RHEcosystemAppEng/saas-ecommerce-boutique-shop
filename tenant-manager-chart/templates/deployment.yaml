@@ -82,7 +82,6 @@ spec:
       labels:
         app.kubernetes.io/name: tenant-manager-frontend
     spec:
-      serviceAccountName: nginx-sa
       containers:
         - name: tenant-manager-frontend
           image: {{ .Values.frontend.containerImagePath }}
