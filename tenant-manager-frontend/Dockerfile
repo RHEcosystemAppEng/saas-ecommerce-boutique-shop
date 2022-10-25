@@ -16,16 +16,3 @@ COPY . ./
 EXPOSE 3000
 
 CMD ["npm", "run", "start"]
-#RUN npm run start
-
-## production environment
-#FROM nginxinc/nginx-unprivileged
-#COPY --from=build /app/build /usr/share/nginx/html
-#COPY --chown=1001:root init.sh /usr/share
-## new
-#COPY nginx.conf /etc/nginx/conf.d/default.conf
-#
-#EXPOSE 8080
-#USER 1001
-#
-#ENTRYPOINT ["/usr/share/init.sh"]
