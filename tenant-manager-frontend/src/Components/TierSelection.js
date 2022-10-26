@@ -111,7 +111,7 @@ export const TierSelection = () => {
                       onSelectableInputChange={() => onSelectTier("Premium")}>
                     <CardTitle component="h4">Premium</CardTitle>
                     <CardBody>
-                    Primium Tier - provider best security protection. Tenants can have own instance of application which completely isolated from others. <br/><br/>
+                    Premium Tier - provider best security protection. Tenants can have own instance of application which completely isolated from others. <br/><br/>
                     The price will be $40/month subscription fee to support every 100 concurrent shoppers
                     </CardBody>
                     <CardFooter style={styles.footer}>
