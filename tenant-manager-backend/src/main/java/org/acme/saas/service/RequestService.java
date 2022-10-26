@@ -106,9 +106,8 @@ public class RequestService {
 
                                         return Uni.combine().all().unis(updatedSubscriptionUni, resourceUpdateUni).combinedWith(
                                                 (updatedSubscription, resourceUpdate) ->
-                                                        // This is necessary to move back the executio into one event
-                                                        // thread,
-                                                        // otherwise it takes the worker thread of the ProvisionService
+                                                        // This is necessary to move back the execution into one event
+                                                        // thread, otherwise it takes the worker thread of the ProvisionService
                                                         Panache.withTransaction(() ->
                                                                 Uni.createFrom().item(RequestMapper.INSTANCE.requestToRequestDraft((
                                                                         updatedSubscription).request))
