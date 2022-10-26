@@ -33,7 +33,9 @@ jobs:
         uses: azure/setup-helm@v1.1
 
       - name: Lint chart
-        run: helm lint tenant-manager-chart
+        run: |
+          helm version
+          helm lint tenant-manager-chart
 
       - name: Package chart
         run: |
