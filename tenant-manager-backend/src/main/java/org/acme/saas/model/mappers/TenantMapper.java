@@ -10,6 +10,7 @@ import org.mapstruct.factory.Mappers;
 public interface TenantMapper {
 
     TenantMapper INSTANCE = Mappers.getMapper(TenantMapper.class);
+
     Tenant tenantDraftToTenant(TenantDraft draft);
 
     @Mapping(target = "password", ignore = true)
