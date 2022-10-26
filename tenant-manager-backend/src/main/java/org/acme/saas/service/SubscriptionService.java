@@ -2,6 +2,7 @@ package org.acme.saas.service;
 
 import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
 import io.smallrye.mutiny.Uni;
+import org.acme.saas.model.Request;
 import org.acme.saas.model.Subscription;
 import org.acme.saas.model.data.SubscriptionSummaryData;
 import org.acme.saas.model.draft.RequestDraft;
@@ -14,6 +15,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.List;
+import java.util.function.Function;
 
 @ApplicationScoped
 public class SubscriptionService {
@@ -54,21 +56,25 @@ public class SubscriptionService {
     public Uni<Subscription> createNewSubscription(TenantDraft tenantDraft, SubscriptionDraft subscriptionDraft,
                                                    RequestDraft requestDraft) {
 
-        return requestService.createNewRequest(requestDraft)
-                .onItem().ifNotNull().transformToUni(request -> {
-                    Subscription subscription = SubscriptionMapper.INSTANCE
-                            .subscriptionDraftToSubscription(subscriptionDraft);
-                    subscription.request = request;
+        Uni<Request> requestUni = requestService.createNewRequest(requestDraft);
+        Uni<String> serviceUrlUni = provisionService.onNewSubscription(tenantDraft, requestDraft);
 
-                    subscription.url = provisionService.onNewSubscription(tenantDraft, requestDraft);
+        return Uni.combine().all().unis(requestUni, serviceUrlUni).combinedWith(
+                        (request, serviceUrl) -> {
+                            Subscription subscription = SubscriptionMapper.INSTANCE
+                                    .subscriptionDraftToSubscription(subscriptionDraft);
 
-                    return subscription.<Subscription>persist();
-                }).onItem().ifNull().failWith(InternalServerErrorException::new);
+                            subscription.request = request;
+                            subscription.url = serviceUrl;
+                            return subscription.<Subscription>persist();
+                        }
+                )
+                .onItem().ifNull().failWith(InternalServerErrorException::new)
+                .flatMap(Function.identity());
     }
 
 
     public Uni<List<SubscriptionSummaryData>> getSubscriptionSummary() {
         return Subscription.getSubscriptionSummary();
     }
-
 }
