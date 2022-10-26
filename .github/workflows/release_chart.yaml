@@ -30,7 +30,7 @@ jobs:
           git config user.email "${{ github.actor }}@users.noreply.github.com"
 
       - name: Setup Helm
-        uses: azure/setup-helm@v1.1
+        uses: azure/setup-helm@latest
 
       - name: Lint chart
         run: |
