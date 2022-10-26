@@ -1,5 +1,7 @@
 package org.acme.saas.service;
 
+import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.infrastructure.Infrastructure;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.draft.TenantDraft;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -22,7 +24,7 @@ public class ProvisionService {
     @ConfigProperty(name = "org.acme.saas.service.SubscriptionService.updateScriptFile")
     String updateScriptFile;
 
-    public String onResourceUpdate(String tenantName, int minReplicas, int maxReplicas) {
+    public Uni<String> onResourceUpdate(String tenantName, int minReplicas, int maxReplicas) {
         return runScript(updateScriptFile,
                 getNamespaceName(tenantName),
                 Integer.toString(minReplicas),
@@ -33,17 +35,24 @@ public class ProvisionService {
         return tenantName.replaceAll("\\s", "-");
     }
 
-    public String onNewSubscription(TenantDraft tenantDraft, RequestDraft requestDraft) {
+    public Uni<String> onNewSubscription(TenantDraft tenantDraft, RequestDraft requestDraft) {
         return runScript(scriptFile,
                 getNamespaceName(tenantDraft.getTenantName()),
                 requestDraft.getHostName(),
                 requestDraft.getTier());
     }
 
-    private String runScript(String... scriptAndArgs) {
+    private Uni<String> runScript(String... scriptAndArgs) {
         log.infof("Calling the shell script %s with args %s", scriptAndArgs[0],
                 List.of(Arrays.copyOfRange(scriptAndArgs, 1,
-                scriptAndArgs.length )));
+                        scriptAndArgs.length)));
+        return Uni.createFrom()
+                .item(() -> runScriptUsingBlockingIO(scriptAndArgs))
+                .runSubscriptionOn(Infrastructure.getDefaultWorkerPool());
+    }
+
+    private String runScriptUsingBlockingIO(String... scriptAndArgs) {
+        String output;
         try {
             ProcessBuilder pb = new ProcessBuilder(scriptAndArgs);
             Process p = pb.start();
@@ -58,10 +67,11 @@ public class ProvisionService {
             }
             log.infof("Received %s", lastLine);
 
-            return lastLine;
+            output = lastLine;
         } catch (IOException e) {
             e.printStackTrace();
-            return e.getMessage();
+            output = e.getMessage();
         }
+        return output;
     }
 }
