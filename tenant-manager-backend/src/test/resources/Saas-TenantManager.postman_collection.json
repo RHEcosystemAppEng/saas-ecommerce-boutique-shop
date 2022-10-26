@@ -1,0 +1,300 @@
+{
+	"info": {
+		"_postman_id": "1f474301-225c-47f3-850d-b6fccbc46633",
+		"name": "Saas-TenantManager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16808720"
+	},
+	"item": [
+		{
+			"name": "signup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"tenantKey\", jsonData.key);",
+							"",
+							"console.log('tenantKey is', pm.collectionVariables.get(\"tenantKey\"));",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tenantName\": \"{{tenantName}}\",\n    \"tier\": \"{{tier}}\",\n    \"hostName\": \"joe.boutique\",\n    \"avgConcurrentShoppers\": {{avgConcurrentShoppers}},\n    \"peakConcurrentShoppers\": {{peakConcurrentShoppers}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{protocol}}://{{host}}/tenant/signup",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tenant",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tenant by Key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{protocol}}://{{host}}/tenant/{{tenantKey}}",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tenant",
+						"{{tenantKey}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"requestId\", jsonData.id);",
+							"",
+							"console.log('requestId is', pm.collectionVariables.get(\"requestId\"));",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tenantKey\": \"{{tenantKey}}\",\n    \"tier\": \"Premium\",\n    \"avgConcurrentShoppers\": {{newAvgConcurrentShoppers}},\n    \"peakConcurrentShoppers\": {{newPeakConcurrentShoppers}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{protocol}}://{{host}}/request/resource",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"request",
+						"resource"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pending requests",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"requestId\", jsonData[0].requestId);",
+							"",
+							"console.log('requestId is', pm.collectionVariables.get(\"requestId\"));",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{protocol}}://{{host}}/request/pending",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"request",
+						"pending"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "approve pending request",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{protocol}}://{{host}}/request/{{requestId}}/approve",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"request",
+						"{{requestId}}",
+						"approve"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all tenant profiles",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"tenantKey\", jsonData[0].tenantKey);",
+							"",
+							"console.log('tenantKey is', pm.collectionVariables.get(\"tenantKey\"));",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{protocol}}://{{host}}/tenant-profile/",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tenant-profile",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tenant profile by tenantKey",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{protocol}}://{{host}}/tenant-profile/{{tenantKey}}",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tenant-profile",
+						"{{tenantKey}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "protocol",
+			"value": "http",
+			"type": "string"
+		},
+		{
+			"key": "tenantName",
+			"value": "joe",
+			"type": "string"
+		},
+		{
+			"key": "tier",
+			"value": "Premium",
+			"type": "string"
+		},
+		{
+			"key": "avgConcurrentShoppers",
+			"value": "50",
+			"type": "string"
+		},
+		{
+			"key": "peakConcurrentShoppers",
+			"value": "200",
+			"type": "string"
+		},
+		{
+			"key": "newAvgConcurrentShoppers",
+			"value": "75",
+			"type": "string"
+		},
+		{
+			"key": "newPeakConcurrentShoppers",
+			"value": "400",
+			"type": "string"
+		},
+		{
+			"key": "tenantKey",
+			"value": ""
+		}
+	]
+}
