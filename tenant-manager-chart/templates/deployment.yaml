@@ -88,7 +88,12 @@ spec:
           imagePullPolicy: Always
           env:
           - name: REACT_APP_BACKEND_URI
+{{- $route := "UNKNOWN" }}
 {{- $cluster := lookup "config.openshift.io/v1" "Ingress" "" "cluster" }}
-{{- $domain := $cluster.spec.domain }}
-{{- $route :=  printf  "https://tenant-controller-route-%s.%s" $.Values.namespace.name $domain }}
+{{- if hasKey $cluster "spec"  }}
+  {{- if hasKey $cluster.spec "domain" }}
+    {{- $domain := $cluster.spec.domain }}
+    {{- $route =  printf  "https://tenant-controller-route-%s.%s" $.Values.namespace.name $domain }}
+  {{- end }}
+{{- end }}
             value: {{ $route }}
