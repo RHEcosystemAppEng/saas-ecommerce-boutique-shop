@@ -1,4 +1,4 @@
-# Red Hat SaaS Tenant Manager Frontend
+# Red Hat SaaS Tenant Manager Frontend 🌟✨
 
 <img style="float: right;" src="./doc/img/Logo-Red_Hat-A-Standard-RGB.svg" title="Apache Kafka" width="400" align="right">
 
@@ -15,18 +15,11 @@ who is willing to provide their software solutions to their customer in a tenant
 This project only consist the frontend component of this below design. 
 Please refer to [this repository](https://github.com/RHEcosystemAppEng/saas-tenant-manager-backend) for the backend component.
 
-<img style="float: right;" src="./doc/img/overview.png">
-
 ### Demo 📺
 <img style="float: right;" src="./doc/img/tenant-manager-ui.gif">
 
-### How to run 🏃
 
-```shell
-git clone https://github.com/RHEcosystemAppEng/saas-tenant-manager-ui.git
-cd tenant-manager-ui
-npm install
-```
+### Configuration ⚙️
 
 Define the saas-manager-backend url as an environment variable.
 

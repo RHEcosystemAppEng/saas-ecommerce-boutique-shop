@@ -1,4 +1,6 @@
-## SaaS (Software as a Service) reference architecture implementation
+## Red Hat SaaS reference architecture implementation
+![build workflow](https://github.com/RHEcosystemAppEng/saas-ecommerce-boutique-shop/actions/workflows/tenantmgr-backend-image.yml/badge.svg)
+![helm chart](https://github.com/RHEcosystemAppEng/saas-ecommerce-boutique-shop/actions/workflows/release_chart.yaml/badge.svg)
 
 ### Quick Start ⏰
 
