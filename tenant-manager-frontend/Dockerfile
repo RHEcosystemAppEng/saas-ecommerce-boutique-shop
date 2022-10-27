@@ -3,7 +3,6 @@ FROM node:13.12.0-alpine as build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
-COPY .env ./
 COPY package-lock.json ./
 COPY ./src/ /src
 COPY ./public/ /public
@@ -14,14 +13,6 @@ RUN apk add git
 RUN npm ci
 
 COPY . ./
-RUN npm run build
+EXPOSE 3000
 
-# production environment
-FROM nginxinc/nginx-unprivileged
-COPY --from=build /app/build /usr/share/nginx/html
-# new
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 8080
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "start"]

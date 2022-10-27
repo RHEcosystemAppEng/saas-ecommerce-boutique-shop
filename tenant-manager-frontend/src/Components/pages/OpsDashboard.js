@@ -30,7 +30,7 @@ import avatar from '../../images/avatar.png';
 import {useNavigate, useParams} from 'react-router-dom';
 import {clearLocalStorage} from "../../Utils/Helper";
 import {ManagerDataList} from "../ManagerDataList";
-import {ManagerPendingList} from "../ManagerPendingList";
+import {OpsPendingList} from "../OpsPendingList";
 
 const OpsDashboard = () => {
 
@@ -141,7 +141,7 @@ const OpsDashboard = () => {
             </PageSection>
             <Divider/>
             <PageSection isWidthLimited>
-                <ManagerPendingList />
+                <OpsPendingList />
             </PageSection>
         </Page>
     );

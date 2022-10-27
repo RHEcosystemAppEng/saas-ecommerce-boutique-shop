@@ -10,6 +10,7 @@ import org.acme.saas.model.data.TokenData;
 import org.acme.saas.restclient.RulesClient;
 import org.acme.saas.service.RulesClientStub;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.acme.saas.util.CommonUtil;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -107,5 +108,10 @@ class SubscriptionResourceTest {
                 .anyMatch(s -> s.getTier().equals("Gold") &&
                         s.getTotalSubscriptions() == 1 &&
                         s.getAggregatedShoppers() == 30));
+    }
+
+    @BeforeEach
+    public void tearDown() {
+        CommonUtil.tearDown();
     }
 }

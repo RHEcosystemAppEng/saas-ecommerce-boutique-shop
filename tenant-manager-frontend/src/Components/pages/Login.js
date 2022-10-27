@@ -92,7 +92,7 @@ export const Login = () => {
 
     const manageOpsLogin = (formData) => {
         axios
-            .post("/ops-login", formData)
+            .post("/ops/login", formData)
             .then((res) => {
                 localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
                 navigate("/ops-dashboard")

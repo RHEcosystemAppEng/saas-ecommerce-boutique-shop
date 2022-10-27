@@ -1,30 +1,32 @@
 package org.acme.saas.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import io.quarkus.hibernate.reactive.panache.PanacheEntity;
+import io.smallrye.mutiny.Uni;
 import lombok.ToString;
+import org.acme.saas.common.Constants;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.List;
 
-@Getter
-@Setter
 @Entity
 @ToString
-public class Request {
+public class Request extends PanacheEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private String tenantKey;
-    private String hostName;
-    private String serviceName;
-    private String tier;
-    private int avgConcurrentShoppers;
-    private int peakConcurrentShoppers;
-    private String fromTime;
-    private String toTime;
-    private String status;
+    public String tenantKey;
+    public String hostName;
+    public String serviceName;
+    public String tier;
+    public int avgConcurrentShoppers;
+    public int peakConcurrentShoppers;
+    public String fromTime;
+    public String toTime;
+    public String status;
+
+    public static Uni<List<Request>> findAllByTenantKey(String tenantKey) {
+        return find("tenantKey= ?1", tenantKey).list();
+    }
+
+    public static Uni<List<Request>> findAllPendingRequests() {
+        return find("status=?1", Constants.REQUEST_STATUS_PENDING).list();
+    }
 }

@@ -19,6 +19,10 @@
     <quarkus.platform.version>2.13.0.Final</quarkus.platform.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
+    <lombok.version>1.18.24</lombok.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -51,6 +55,10 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

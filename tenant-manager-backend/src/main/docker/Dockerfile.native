@@ -14,19 +14,22 @@
 # docker run -i --rm -p 8080:8080 quarkus/tenant-manager-backend
 #
 ###
-FROM quay.io/pdred/backend-base:latest as build
+FROM quay.io/pdred/backend-base:latest as openshift-cli
 #
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
 WORKDIR /work/
+
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \
     && chown 1001:root /work
 COPY --chown=1001:root target/*-runner /work/application
+COPY --from=openshift-cli /usr/bin/oc /usr/bin/oc
 
 EXPOSE 8080
 USER 1001
 
-ENV YAML_FILES_LOCATION=/usr/app/boutique_files
 ENV SCRIPT_FILE=/usr/app/boutique_files/create-namespace.sh
 ENV RULES_SERVICE_URL=http://tenant-manager-rules.saas-rules.svc.cluster.local
+ENV SCALER_SCRIPT_FILE=/usr/app/boutique_files/hpa-scaler.sh
+
 CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
