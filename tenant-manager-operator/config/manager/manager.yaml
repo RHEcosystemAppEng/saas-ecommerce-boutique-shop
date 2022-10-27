@@ -36,7 +36,7 @@ spec:
       containers:
       - args:
         - --leader-elect
-        - --leader-election-id=tenant-chart
+        - --leader-election-id=boutique-demo
         image: controller:latest
         name: manager
         securityContext:

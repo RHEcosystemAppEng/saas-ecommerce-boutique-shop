@@ -1,6 +1,2 @@
 # Use the 'create api' subcommand to add watches to this file.
-- group: charts.apps.ocp.pebcac.org
-  version: v1alpha1
-  kind: TenantManagerChart
-  chart: helm-charts/tenant-manager-chart
 #+kubebuilder:scaffold:watch

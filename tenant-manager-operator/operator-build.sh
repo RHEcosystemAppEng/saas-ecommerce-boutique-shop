@@ -20,13 +20,14 @@ function checkOlmStatus() {
 }
 
 # Connecto the helm repo and install the chart
-helm repo add rh-saas $HELM_REPO
-# helm install demo-release $HELM_CHART  #May not need to call this line since it is called later in the script
+#helm repo add rh-saas $HELM_REPO
+#helm install demo-release $HELM_CHART  #May not need to call this line since it is called later in the script
 
 # Stage the operator
-operator-sdk init --plugins=helm.sdk.operatorframework.io/v1 \
+operator-sdk init --verbose --plugins=helm.sdk.operatorframework.io/v1 \
   --domain=$CLUSTER_DOMAIN \
-  --helm-chart=$HELM_CHART
+  --project-name=boutique-demo \
+  --helm-chart=$HELM_CHART \
   --helm-chart-repo=$HELM_REPO
 
 # Update the operator CRDs and OLM to the latest version
