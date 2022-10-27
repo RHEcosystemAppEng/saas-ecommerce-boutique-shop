@@ -1,0 +1,24 @@
+# permissions for end users to edit tenantmanagercharts.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tenantmanagerchart-editor-role
+rules:
+- apiGroups:
+  - charts.apps.ocp.pebcac.org
+  resources:
+  - tenantmanagercharts
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - charts.apps.ocp.pebcac.org
+  resources:
+  - tenantmanagercharts/status
+  verbs:
+  - get

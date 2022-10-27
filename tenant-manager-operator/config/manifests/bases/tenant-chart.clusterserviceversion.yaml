@@ -1,0 +1,40 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: tenant-chart.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions: {}
+  description: Demo implementation of the Boutique Shop.
+  displayName: Boutique-Shop
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - operator
+  - demo
+  - boutique
+  links:
+  - name: Tenant Chart
+    url: https://tenant-chart.domain
+  maturity: alpha
+  provider:
+    name: RH
+  version: 0.0.0

@@ -1,0 +1,19 @@
+apiVersion: charts.apps.ocp.pebcac.org/v1alpha1
+kind: TenantManagerChart
+metadata:
+  name: tenantmanagerchart-sample
+spec:
+  # Default values copied from <project_dir>/helm-charts/tenant-manager-chart/values.yaml
+  backend:
+    containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-backend:latest
+  database:
+    databaseName: tenantmanager
+    password: redhat
+    rootPassword: admin
+    username: saas
+  frontend:
+    containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-frontend:latest
+  namespace:
+    name: saas-boutique
+  
+  

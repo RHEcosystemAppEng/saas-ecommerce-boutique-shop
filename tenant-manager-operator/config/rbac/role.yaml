@@ -1,0 +1,84 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+##
+## Base operator rules
+##
+# We need to get namespaces so the operator can read namespaces to ensure they exist
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+# We need to manage Helm release secrets
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - "*"
+# We need to create events on CRs about things happening during reconciliation
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+
+##
+## Rules for charts.apps.ocp.pebcac.org/v1alpha1, Kind: TenantManagerChart
+##
+- apiGroups:
+  - charts.apps.ocp.pebcac.org
+  resources:
+  - tenantmanagercharts
+  - tenantmanagercharts/status
+  - tenantmanagercharts/finalizers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- verbs:
+  - "*"
+  apiGroups:
+  - ""
+  resources:
+  - "namespaces"
+- verbs:
+  - "*"
+  apiGroups:
+  - "rbac.authorization.k8s.io"
+  resources:
+  - "clusterrolebindings"
+  - "clusterroles"
+- verbs:
+  - "*"
+  apiGroups:
+  - "route.openshift.io"
+  resources:
+  - "routes"
+- verbs:
+  - "*"
+  apiGroups:
+  - ""
+  resources:
+  - "configmaps"
+  - "secrets"
+  - "serviceaccounts"
+  - "services"
+- verbs:
+  - "*"
+  apiGroups:
+  - "apps"
+  resources:
+  - "deployments"
+  - "statefulsets"
+
+#+kubebuilder:scaffold:rules

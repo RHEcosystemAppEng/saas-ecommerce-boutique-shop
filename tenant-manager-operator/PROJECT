@@ -1,0 +1,17 @@
+domain: apps.ocp.pebcac.org
+layout:
+- helm.sdk.operatorframework.io/v1
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+  sdk.x-openshift.io/v1: {}
+projectName: tenant-chart
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: apps.ocp.pebcac.org
+  group: charts
+  kind: TenantManagerChart
+  version: v1alpha1
+version: "3"
