@@ -1,5 +1,5 @@
 ---
-name: Publish the Helm chart
+name: Helm chart publish
 
 on:
   workflow_dispatch:
