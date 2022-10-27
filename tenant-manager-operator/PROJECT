@@ -1,9 +1,0 @@
-domain: apps.ocp.pebcac.org
-layout:
-- helm.sdk.operatorframework.io/v1
-plugins:
-  manifests.sdk.operatorframework.io/v2: {}
-  scorecard.sdk.operatorframework.io/v2: {}
-  sdk.x-openshift.io/v1: {}
-projectName: boutique-demo
-version: "3"
