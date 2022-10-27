@@ -13,7 +13,10 @@ database:
   rootPassword: admin
 
 backend:
-  containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-backend:latest
+  containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-backend:latest-rules
+
+rules:
+  containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-rules:latest
 
 frontend:
   containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-frontend:latest
