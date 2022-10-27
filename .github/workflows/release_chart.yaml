@@ -1,5 +1,5 @@
 ---
-name: Deploy New Chart
+name: Helm chart publish
 
 on:
   workflow_dispatch:
@@ -50,7 +50,7 @@ jobs:
           mv release.tgz ${{ env.file_name }}
           helm repo index --url ${{ env.HELM_REPO_URL }} .
 
-      - name: Deploy new chart
+      - name: Publish the new helm chart
         run: |
           git add ${{ env.file_name }}
           git add index.yaml

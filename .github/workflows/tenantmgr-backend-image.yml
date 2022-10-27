@@ -1,4 +1,4 @@
-name: Tenant Manager Backend image build and push to Quay
+name: Frontend & Backend build
 on:
   push:
     branches:

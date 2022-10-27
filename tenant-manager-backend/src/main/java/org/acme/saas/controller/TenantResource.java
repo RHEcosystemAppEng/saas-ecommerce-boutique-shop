@@ -143,7 +143,7 @@ public class TenantResource {
 
         RequestDraftBuilder requestDraftBuilder = RequestDraft.builder();
         requestDraftBuilder.tenantKey(tenantKey);
-        requestDraftBuilder.hostName(registerData.getHostName());
+        requestDraftBuilder.hostName(registerData.getHostName().length() == 0 ? tenantKey : registerData.getHostName());
         requestDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);
         requestDraftBuilder.tier(registerData.getTier());
         requestDraftBuilder.avgConcurrentShoppers(registerData.getAvgConcurrentShoppers());
