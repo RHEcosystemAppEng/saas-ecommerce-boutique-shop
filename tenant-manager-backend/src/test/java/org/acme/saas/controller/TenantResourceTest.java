@@ -12,14 +12,11 @@ import org.acme.saas.model.data.TokenData;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.draft.SubscriptionDraft;
 import org.acme.saas.model.draft.TenantDraft;
-import org.acme.saas.repository.RequestRepository;
-import org.acme.saas.repository.SubscriptionRepository;
-import org.acme.saas.repository.TenantRepository;
+import org.acme.saas.model.mappers.RequestMapper;
 import org.acme.saas.restclient.RulesClient;
 import org.acme.saas.service.RulesClientStub;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.acme.saas.model.mappers.RequestMapper;
 import org.acme.saas.util.CommonUtil;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.hamcrest.Matchers;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,15 +40,6 @@ class TenantResourceTest {
     @InjectMock
     @RestClient
     RulesClient rulesClient;
-
-    @Inject
-    TenantRepository tenantRepository;
-
-    @Inject
-    RequestRepository requestRepository;
-
-    @Inject
-    SubscriptionRepository subscriptionRepository;
 
     @BeforeEach
     void mockRestClient() {

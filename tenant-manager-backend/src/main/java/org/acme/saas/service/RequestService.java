@@ -3,6 +3,7 @@ package org.acme.saas.service;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.groups.UniCombine;
 import org.acme.saas.common.Constants;
 import org.acme.saas.model.Request;
 import org.acme.saas.model.Subscription;
@@ -49,36 +50,43 @@ public class RequestService {
                 Request.findAllPendingRequests(),
                 Tenant.findAllActiveTenants()
         ).combinedWith((pendingRequests, tenants) -> {
-            List<RequestChangeData> data = new ArrayList<>();
+            List<Uni<RequestChangeData>> unis = new ArrayList<>();
             Map<String, List<Tenant>> tenantMap = tenants.stream()
                     .collect(Collectors.groupingBy(tenant -> tenant.tenantKey));
 
+            UniCombine combine = Uni.combine();
             for (Request request : pendingRequests) {
-                int[] instanceCount = subscriptionService.calculateInstanceCount(request.avgConcurrentShoppers,
-                        request.peakConcurrentShoppers);
+                unis.add(subscriptionService.calculateInstanceCount(request.avgConcurrentShoppers,
+                        request.peakConcurrentShoppers).onItem().transform(instanceCount -> {
+                    RequestChangeData changeData = new RequestChangeData();
+                    changeData.setRequestId(request.id);
+                    changeData.setTenantKey(request.tenantKey);
+                    changeData.setNewTier(request.tier);
+                    changeData.setServiceName(request.serviceName);
+                    changeData.setNewMinInstances(instanceCount[0]);
+                    changeData.setNewMaxInstances(instanceCount[1]);
 
-                RequestChangeData changeData = new RequestChangeData();
-                changeData.setRequestId(request.id);
-                changeData.setTenantKey(request.tenantKey);
-                changeData.setNewTier(request.tier);
-                changeData.setServiceName(request.serviceName);
-                changeData.setNewMinInstances(instanceCount[0]);
-                changeData.setNewMaxInstances(instanceCount[1]);
+                    Tenant tenant = tenantMap.get(request.tenantKey).get(0);
+                    changeData.setTenantName(tenant.tenantName);
 
-                Tenant tenant = tenantMap.get(request.tenantKey).get(0);
-                changeData.setTenantName(tenant.tenantName);
-
-                tenant.subscriptions.stream().limit(1)
-                        .forEach(subscription -> {
-                            changeData.setCurrentTier(subscription.tier);
-                            changeData.setOldMinInstances(subscription.minInstanceCount);
-                            changeData.setOldMaxInstances(subscription.maxInstanceCount);
-                        });
-
-                data.add(changeData);
+                    tenant.subscriptions.stream().limit(1)
+                            .forEach(subscription -> {
+                                changeData.setCurrentTier(subscription.tier);
+                                changeData.setOldMinInstances(subscription.minInstanceCount);
+                                changeData.setOldMaxInstances(subscription.maxInstanceCount);
+                            });
+                    return changeData;
+                }));
             }
-            return data;
-        });
+            List<RequestChangeData> data = new ArrayList<>();
+            return combine.all().unis(unis.toArray(new Uni[0])).
+                    combinedWith(listOfResponses -> {
+                        for (Object requestChangeData : listOfResponses) {
+                            data.add((RequestChangeData) requestChangeData);
+                        }
+                        return data;
+                    });
+        }).flatMap(Function.identity());
     }
 
     @ReactiveTransactional
@@ -90,15 +98,16 @@ public class RequestService {
                             Uni<Request> updatedRequestUni = request.persist();
                             Uni<Tenant> tenantUni = Tenant.findByTenantKey(request.tenantKey);
                             Uni<Subscription> subscriptionUni = Subscription.findFirstByTenantKey(request.tenantKey);
+                            Uni<int[]> replicasUni = subscriptionService.calculateInstanceCount(
+                                    request.avgConcurrentShoppers,
+                                    request.peakConcurrentShoppers);
 
-                            return Uni.combine().all().unis(updatedRequestUni, tenantUni, subscriptionUni).combinedWith(
-                                    (updatedRequest, tenant, subscription) -> {
+                            return Uni.combine().all().unis(updatedRequestUni, tenantUni, subscriptionUni,
+                                    replicasUni).combinedWith(
+                                    (updatedRequest, tenant, subscription, replicas) -> {
                                         subscription.request = updatedRequest;
                                         Uni<Subscription> updatedSubscriptionUni = subscription.persist();
 
-                                        int[] replicas = subscriptionService.calculateInstanceCount(
-                                                request.avgConcurrentShoppers,
-                                                request.peakConcurrentShoppers);
                                         Uni<String> resourceUpdateUni =
                                                 provisionService.onResourceUpdate(tenant.tenantName,
                                                         replicas[0],

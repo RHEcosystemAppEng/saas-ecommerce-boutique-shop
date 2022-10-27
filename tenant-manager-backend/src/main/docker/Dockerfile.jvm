@@ -93,6 +93,7 @@ USER 185
 
 ENV SCRIPT_FILE=/usr/app/boutique_files/create-namespace.sh
 ENV SCALER_SCRIPT_FILE=/usr/app/boutique_files/hpa-scaler.sh
+ENV RULES_SERVICE_URL=http://tenant-manager-rules.svc.cluster.local
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 

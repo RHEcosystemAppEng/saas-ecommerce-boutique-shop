@@ -156,8 +156,6 @@ public class TenantResource {
         return subscriptionService.calculateInstanceCount(
                         registerData.getAvgConcurrentShoppers(), registerData.getPeakConcurrentShoppers()).
                 onItem().ifNotNull().transformToUni(instanceCount -> {
-                    log.debugf("Received instanceCount [%d, %d]", instanceCount[0], instanceCount[1]);
-
                     SubscriptionDraftBuilder subscriptionDraftBuilder = SubscriptionDraft.builder();
                     subscriptionDraftBuilder.tenantKey(tenantKey);
                     subscriptionDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);
@@ -166,20 +164,22 @@ public class TenantResource {
                     subscriptionDraftBuilder.maxInstanceCount(instanceCount[1]);
                     subscriptionDraftBuilder.status(Constants.SUBSCRIPTION_STATUS_INITIAL);
 
-        // Added to ensure a unique Transaction
-        return Panache.withTransaction(() ->
-                subscriptionService.createNewSubscription(
-                                tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft).onItem().ifNotNull()
-                        .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build(),
-                                subscription))
-                        .flatMap(Function.identity())
-                        .onItem().transform(tenant -> {
-                            TokenDataBuilder tokenDataBuilder = TokenData.builder();
-                            tokenDataBuilder.Id(tenant.id);
-                            tokenDataBuilder.key(tenant.tenantKey);
-                            tokenDataBuilder.loggedInUserName(tenant.tenantName);
-                            return tokenDataBuilder.build();
-                        })
-        );
+                    // Added to ensure a unique Transaction
+                    return Panache.withTransaction(() ->
+                            subscriptionService.createNewSubscription(
+                                            tenantDraftBuilder.build(), subscriptionDraftBuilder.build(),
+                                            requestDraft).onItem().ifNotNull()
+                                    .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build(),
+                                            subscription))
+                                    .flatMap(Function.identity())
+                                    .onItem().transform(tenant -> {
+                                        TokenDataBuilder tokenDataBuilder = TokenData.builder();
+                                        tokenDataBuilder.Id(tenant.id);
+                                        tokenDataBuilder.key(tenant.tenantKey);
+                                        tokenDataBuilder.loggedInUserName(tenant.tenantName);
+                                        return tokenDataBuilder.build();
+                                    })
+                    );
+                });
     }
 }
