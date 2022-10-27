@@ -32,7 +32,7 @@ jobs:
         IMAGE_NAME: saas-tenant-manager-backend
       run: |
         cd tenant-manager-backend
-        BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)-rules
         echo Build version is: ${BUILD_VERSION}
         IMAGE_FULL=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:${BUILD_VERSION}
         IMAGE_LATEST=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:latest
@@ -42,7 +42,7 @@ jobs:
         docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} -f ./src/main/docker/Dockerfile.jvm .
         docker tag ${IMAGE_FULL} ${IMAGE_LATEST}
         docker push ${IMAGE_FULL}
-        docker push ${IMAGE_LATEST}
+        #docker push ${IMAGE_LATEST}
   build-image-and-push-rules:
     runs-on: ubuntu-latest
     steps:
