@@ -14,4 +14,4 @@ tenant and subscriptions data.
 
 ### Overview 🛰️
 Mediator application between the frontend and Red Hat Openshift cluster.
-<img style="float: right;" src="./docs/img/overview.png" title="overview" width="400">
+<img src="./docs/img/overview.png" title="overview">
