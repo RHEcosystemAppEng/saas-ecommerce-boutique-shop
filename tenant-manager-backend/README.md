@@ -1,10 +1,17 @@
 # Tenant Manager Backend 🚀🚀🚀
 
-This project is responsible for managing the Http API calls made by the ReactJS project (git branch `reactive`).
+<img style="float: right;" src="./docs/img/quarkus_logo.png" title="Quarkus Framework" width="400" align="right">
+
+Backend application that manages the tenant management logics.
+This application contains its own relational database to store 
+tenant and subscriptions data. 
 
 ### Prerequisites
 - Install oc-cli
-- Connect to a Red Hat Openshift cluster and run `oc login` command
 - Up and running Docker environment
 - Java 17
 - Maven 3.8+
+
+### Overview 🛰️
+Mediator application between the frontend and Red Hat Openshift cluster.
+<img style="float: right;" src="./docs/img/overview.png" title="overview" width="400">
