@@ -1,5 +1,5 @@
 ---
-name: Deploy New Chart
+name: Helm chart publish
 
 on:
   workflow_dispatch:
@@ -30,10 +30,12 @@ jobs:
           git config user.email "${{ github.actor }}@users.noreply.github.com"
 
       - name: Setup Helm
-        uses: azure/setup-helm@v1.1
+        uses: azure/setup-helm@v3.3
 
       - name: Lint chart
-        run: helm lint tenant-manager-chart
+        run: |
+          helm version
+          helm lint tenant-manager-chart
 
       - name: Package chart
         run: |
@@ -48,7 +50,7 @@ jobs:
           mv release.tgz ${{ env.file_name }}
           helm repo index --url ${{ env.HELM_REPO_URL }} .
 
-      - name: Deploy new chart
+      - name: Publish the new helm chart
         run: |
           git add ${{ env.file_name }}
           git add index.yaml

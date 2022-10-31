@@ -13,14 +13,6 @@ RUN apk add git
 RUN npm ci
 
 COPY . ./
-RUN npm run build
+EXPOSE 3000
 
-# production environment
-FROM nginxinc/nginx-unprivileged
-COPY --from=build /app/build /usr/share/nginx/html
-# new
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 8080
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "start"]

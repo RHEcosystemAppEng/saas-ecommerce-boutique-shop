@@ -1,5 +1,6 @@
 package org.acme.saas.service;
 
+import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.common.Constants;
@@ -9,7 +10,6 @@ import org.acme.saas.model.Tenant;
 import org.acme.saas.model.data.RequestChangeData;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.mappers.RequestMapper;
-import org.acme.saas.model.mappers.SubscriptionMapper;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static io.smallrye.mutiny.helpers.spies.Spy.onItem;
 import static org.acme.saas.common.Constants.REQUEST_STATUS_APPROVED;
 import static org.acme.saas.common.Constants.REQUEST_STATUS_PENDING;
 import static org.acme.saas.common.Constants.REQUEST_STATUS_REJECTED;
@@ -31,6 +30,9 @@ import static org.acme.saas.common.Constants.REQUEST_STATUS_REJECTED;
 @ApplicationScoped
 public class RequestService {
     private Logger log = Logger.getLogger(RequestService.class);
+
+    @Inject
+    ProvisionService provisionService;
 
     @ReactiveTransactional
     public Uni<Request> createNewRequest(RequestDraft requestDraft) {
@@ -52,7 +54,8 @@ public class RequestService {
                     .collect(Collectors.groupingBy(tenant -> tenant.tenantKey));
 
             for (Request request : pendingRequests) {
-                int[] instanceCount = subscriptionService.calculateInstanceCount(request.avgConcurrentShoppers);
+                int[] instanceCount = subscriptionService.calculateInstanceCount(request.avgConcurrentShoppers,
+                        request.peakConcurrentShoppers);
 
                 RequestChangeData changeData = new RequestChangeData();
                 changeData.setRequestId(request.id);
@@ -82,26 +85,39 @@ public class RequestService {
     public Uni<RequestDraft> approveByRequestId(long id) {
         Uni<Request> requestUni = Request.findById(id);
         return requestUni.onItem().ifNotNull().transformToUni(request -> {
-            validateRequestStatus(request);
-            request.status = REQUEST_STATUS_APPROVED;
-            Uni<Request> updatedRequestUni = request.persist();
+                            validateRequestStatus(request);
+                            request.status = REQUEST_STATUS_APPROVED;
+                            Uni<Request> updatedRequestUni = request.persist();
+                            Uni<Tenant> tenantUni = Tenant.findByTenantKey(request.tenantKey);
+                            Uni<Subscription> subscriptionUni = Subscription.findFirstByTenantKey(request.tenantKey);
 
-            // we need to update the subscription association as well
-            return updatedRequestUni.onItem()
-                    .transform(savedRequest -> {
-                        Uni<Subscription> subscriptionUni = subscriptionService.findFirstByTenantKey(request.tenantKey);
-                        return subscriptionUni.onItem().transform(subscription -> {
-                            subscription.request = savedRequest;
-                            return subscription.persist();
-                        });
-                    })
-                    .flatMap(Function.identity())
-                    .flatMap(Function.identity())
-                    .onItem().transform(updatedSubscription ->
-                    RequestMapper.INSTANCE.requestToRequestDraft(((Subscription)updatedSubscription).request)
-            );
-        }).onItem().ifNull().failWith(NotFoundException::new);
-        // TBD add provisioning step
+                            return Uni.combine().all().unis(updatedRequestUni, tenantUni, subscriptionUni).combinedWith(
+                                    (updatedRequest, tenant, subscription) -> {
+                                        subscription.request = updatedRequest;
+                                        Uni<Subscription> updatedSubscriptionUni = subscription.persist();
+
+                                        int[] replicas = subscriptionService.calculateInstanceCount(
+                                                request.avgConcurrentShoppers,
+                                                request.peakConcurrentShoppers);
+                                        Uni<String> resourceUpdateUni =
+                                                provisionService.onResourceUpdate(tenant.tenantName,
+                                                        replicas[0],
+                                                        replicas[1]);
+
+                                        return Uni.combine().all().unis(updatedSubscriptionUni, resourceUpdateUni).combinedWith(
+                                                (updatedSubscription, resourceUpdate) ->
+                                                        // This is necessary to move back the execution into one event
+                                                        // thread, otherwise it takes the worker thread of the ProvisionService
+                                                        Panache.withTransaction(() ->
+                                                                Uni.createFrom().item(RequestMapper.INSTANCE.requestToRequestDraft((
+                                                                        updatedSubscription).request))
+                                                        )
+                                        );
+                                    });
+                        }
+                ).onItem().ifNull().failWith(NotFoundException::new)
+                .flatMap(Function.identity())
+                .flatMap(Function.identity());
     }
 
     private void validateRequestStatus(Request request) {
@@ -119,8 +135,7 @@ public class RequestService {
             validateRequestStatus(request);
             request.status = REQUEST_STATUS_REJECTED;
             Uni<Request> updatedRequestUni = request.persist();
-            return updatedRequestUni.onItem().transform(updatedRequest ->
-                    RequestMapper.INSTANCE.requestToRequestDraft(updatedRequest)
+            return updatedRequestUni.onItem().transform(RequestMapper.INSTANCE::requestToRequestDraft
             );
         }).onItem().ifNull().failWith(NotFoundException::new);
     }

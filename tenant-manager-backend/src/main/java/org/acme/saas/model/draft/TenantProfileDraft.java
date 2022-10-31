@@ -1,15 +1,11 @@
 package org.acme.saas.model.draft;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -17,7 +13,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class TenantDraft extends TenantProfileDraft {
+public class TenantProfileDraft {
 
-    private List<SubscriptionDraft> subscriptions;
+    private String tenantKey;
+    private String email;
+    private String password;
+    private String tenantName;
+    private String orgName;
+    private String address;
+    private String contactName;
+    private String phone;
+    private String status;
+
 }

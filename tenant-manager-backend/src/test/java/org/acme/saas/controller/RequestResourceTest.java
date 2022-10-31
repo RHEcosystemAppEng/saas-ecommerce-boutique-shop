@@ -18,8 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +28,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @QuarkusTest
 class RequestResourceTest {
@@ -101,8 +98,12 @@ class RequestResourceTest {
         LOG.debugf("Response is %s", createResponseToken);
         assertThat(createResponseToken.getKey(), Matchers.is(notNullValue()));
 
+        return createNewRequest(createResponseToken.getKey());
+    }
+
+    private TokenData createNewRequest(String tenantKey) {
         RequestData requestData = new RequestData();
-        requestData.setTenantKey(createResponseToken.getKey());
+        requestData.setTenantKey(tenantKey);
         requestData.setAvgConcurrentShoppers(50);
         requestData.setPeakConcurrentShoppers(100);
         requestData.setHostName("test-host-name");
@@ -193,6 +194,25 @@ class RequestResourceTest {
                 .statusCode(badRequest)
                 .extract().response();
         assertThat(response.statusCode(), is(badRequest));
+    }
+
+    @Test
+    public void approveOrRejectNonExistingTenant() {
+        int notFound = RestResponse.Status.NOT_FOUND.getStatusCode();
+        RequestData requestData = new RequestData();
+        requestData.setTenantKey("missing");
+        requestData.setAvgConcurrentShoppers(50);
+        requestData.setPeakConcurrentShoppers(100);
+        requestData.setHostName("test-host-name");
+
+        Response response = given()
+                .when().contentType("application/json")
+                .body(requestData)
+                .post("/request/resource")
+                .then()
+                .statusCode(notFound)
+                .extract().response();
+        assertThat(response.statusCode(), is(notFound));
     }
 
     @BeforeEach
