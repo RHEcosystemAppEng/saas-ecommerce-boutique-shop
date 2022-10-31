@@ -6,7 +6,7 @@ MAX_REPLICAS=$3 ## This is the new maxReplicas for all the HPAs
 
 oc project ${TENANT_NAMESPACE}
 
-for hpa in $(oc get hpa -n ${TENANT_NAMESPACE} -oname)
+for hpa in $(oc get hpa -n boutique-free -oname)
 do
   echo "Patching ${hpa} in namespace ${TENANT_NAMESPACE}"
   oc patch ${hpa} -p "{\"spec\":{\"minReplicas\":${MIN_REPLICAS}, \"maxReplicas\":${MAX_REPLICAS}}}"
