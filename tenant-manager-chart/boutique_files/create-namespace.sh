@@ -60,6 +60,7 @@ function createGoldNamespaceIfMisingAndSetProject() {
     oc create namespace ${ns}
     oc project ${ns}
     return $returnCode
+  fi
 }
 
 function createNewNamespaceAndSetProject() {
