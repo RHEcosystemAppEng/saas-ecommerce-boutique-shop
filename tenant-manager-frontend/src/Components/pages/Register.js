@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import axios from "../../axios-middleware"
 import {
     Brand,
@@ -29,6 +29,10 @@ export const Register = (props) => {
     const navigate = useNavigate();
     const [isPrimaryLoading, setIsPrimaryLoading] = React.useState(false);
     const [isBtnDisabled, setIsBtnDisabled] = React.useState(false);
+
+    useEffect(() => {
+        clearLocalStorage()
+    }, [])
 
     const validateAndSubmitData = k => {
         // console.log('JUDE ADDED:::' + JSON.stringify(props))
