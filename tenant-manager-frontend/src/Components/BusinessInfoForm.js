@@ -2,8 +2,11 @@ import React from 'react';
 import {Form, FormGroup, Popover, TextInput, Divider, ValidatedOptions} from '@patternfly/react-core';
 import HelpIcon from '@patternfly/react-icons/dist/esm/icons/help-icon';
 import axios from "../axios-middleware";
+import {ModalDialog} from "./ModalDialog";
 
 export const BusinessInfoForm = () => {
+    const [isModalShowing, setIsModalShowing] = React.useState(false);
+    const [modalData, setModalData] = React.useState();
     const [email, setEmail] = React.useState(() => {
         return localStorage.getItem("email") || "";
     });
@@ -31,20 +34,34 @@ export const BusinessInfoForm = () => {
     const [contactName, setContactName] = React.useState(() => {
         return localStorage.getItem("contactName") || "";
     });
-    const handleEmailChange = email => {
+
+    const onChangeEmail = email => {
+        setEmail(email);
         localStorage.setItem("email", email);
+    }
+    const handleEmailChange = email => {
         axios
-            .get("/tenant/email/"+email)
+            .get("/tenant/email/"+email.target.value)
             .then((res) => {
                 if (res.data === false)
                     setEmailState(ValidatedOptions.success)
-                else
+                else{
                     setEmailState(ValidatedOptions.error)
+                    setIsModalShowing(true)
+                    setModalData({
+                        title: "Email is not acceptable",
+                        body: "Provided email is already in use. Please try with a different email address."
+                    })
+                }
             })
             .catch((err) => {
+                setIsModalShowing(true)
+                setModalData({
+                    title: "Server Connection Failed",
+                    body: err.message
+                })
                 setEmailState(ValidatedOptions.error)
             })
-        setEmail(email);
     };
     const handlePasswordChange = password => {
         localStorage.setItem("password", password);
@@ -84,7 +101,8 @@ export const BusinessInfoForm = () => {
         <FormGroup label="Email" isRequired fieldId="simple-form-email-01"
                    helperText="Email address will be used as login credentials.">
             <TextInput isRequired type="email" id="simple-form-email-01" name="simple-form-email-01" value={email}
-                       onChange={handleEmailChange}  validated={emailState}/>
+                       onBlur={handleEmailChange} onChange={onChangeEmail}  validated={emailState}/>
+            {isModalShowing && <ModalDialog setIsOpen={isModalShowing} data={modalData} />}
         </FormGroup>
         <FormGroup label="Password" isRequired fieldId="simple-form-email-02">
             <TextInput isRequired type="password" id="simple-form-email-02" name="simple-form-email-02" value={password}
