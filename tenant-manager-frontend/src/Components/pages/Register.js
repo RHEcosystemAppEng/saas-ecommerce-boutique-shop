@@ -24,18 +24,21 @@ import {ServiceSummary} from '../ServiceSummary';
 import readHatLogo from '../../images/Logo-Red_Hat.png';
 import {useNavigate} from "react-router-dom"
 import {clearLocalStorage} from "../../Utils/Helper";
+import {ModalDialog} from "../ModalDialog";
 
 export const Register = (props) => {
     const navigate = useNavigate();
     const [isPrimaryLoading, setIsPrimaryLoading] = React.useState(false);
     const [isBtnDisabled, setIsBtnDisabled] = React.useState(false);
+    const [stepIdReached, setStepIdReached] = React.useState(1);
+    const [isModalShowing, setIsModalShowing] = React.useState(false);
+    const [modalData, setModalData] = React.useState();
 
     useEffect(() => {
         clearLocalStorage()
     }, [])
 
     const validateAndSubmitData = k => {
-        // console.log('JUDE ADDED:::' + JSON.stringify(props))
 
         setIsBtnDisabled(true)
         setIsPrimaryLoading(!isPrimaryLoading)
@@ -64,7 +67,11 @@ export const Register = (props) => {
                 navigate("/dashboard/"+res.data.key)
             })
             .catch((err) => {
-                console.error(JSON.stringify(err))
+                setIsModalShowing(true)
+                setModalData({
+                    title: "Server Connection Failed",
+                    body: err.message
+                })
             })
     };
 
@@ -90,18 +97,21 @@ export const Register = (props) => {
         {
             id: 2,
             name: 'Subscription Configuration',
-            component: <TierSelection/>
+            component: <TierSelection/>,
+            canJumpTo: stepIdReached >= 2
         },
         {
             id: 3,
             name: 'Service Details',
-            component: <ServiceDetailsForm/>
+            component: <ServiceDetailsForm/>,
+            canJumpTo: stepIdReached >= 3
         },
         {
             id: 4,
             name: 'Summary',
             component: <ServiceSummary/>,
-            nextButtonText: 'Finish'
+            nextButtonText: 'Finish',
+            canJumpTo: stepIdReached >= 4
         }
     ];
 
@@ -109,8 +119,8 @@ export const Register = (props) => {
         <WizardFooter>
             <WizardContextConsumer>
                 {({activeStep, goToStepByName, goToStepById, onNext, onBack, onClose}) => {
-
-                    if (activeStep.name === 'Subscription Configuration') {
+                    setStepIdReached(activeStep.id)
+                    if (activeStep.id === 2) {
                         return (
                             <>
                                 <Button
@@ -128,7 +138,7 @@ export const Register = (props) => {
                             </>
                         );
                     }
-                    if (activeStep.name !== 'Summary') {
+                    if (activeStep.id === 1 || activeStep.id === 3) {
                         return (
                             <>
                                 <Button variant="primary" type="submit" onClick={onNext}>
@@ -180,7 +190,7 @@ export const Register = (props) => {
 
     return (
         <React.Fragment>
-
+            {isModalShowing && <ModalDialog setIsOpen={isModalShowing} data={modalData}/>}
             <Panel>
                 <PanelMain>
                     <Page

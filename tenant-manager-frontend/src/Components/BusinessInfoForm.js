@@ -1,11 +1,14 @@
 import React from 'react';
-import {Form, FormGroup, Popover, TextInput, Divider, ValidatedOptions} from '@patternfly/react-core';
+import {Form, FormGroup, Popover, TextInput, ValidatedOptions} from '@patternfly/react-core';
 import HelpIcon from '@patternfly/react-icons/dist/esm/icons/help-icon';
 import axios from "../axios-middleware";
 import {ModalDialog} from "./ModalDialog";
 
 export const BusinessInfoForm = () => {
     const [isModalShowing, setIsModalShowing] = React.useState(false);
+    const [emailHelperText, setEmailHelperText] =
+        React.useState("Email address will be used as login credentials.");
+    const [passwordHelperText, setPasswordHelperText] = React.useState("");
     const [modalData, setModalData] = React.useState();
     const [email, setEmail] = React.useState(() => {
         return localStorage.getItem("email") || "";
@@ -41,17 +44,14 @@ export const BusinessInfoForm = () => {
     }
     const handleEmailChange = email => {
         axios
-            .get("/tenant/email/"+email.target.value)
+            .get("/tenant/email/" + email.target.value)
             .then((res) => {
                 if (res.data === false)
                     setEmailState(ValidatedOptions.success)
-                else{
+                else {
                     setEmailState(ValidatedOptions.error)
-                    setIsModalShowing(true)
-                    setModalData({
-                        title: "Email is not acceptable",
-                        body: "Provided email is already in use. Please try with a different email address."
-                    })
+                    setEmailHelperText("Provided email is already in use. " +
+                        "Please try with a different email address.")
                 }
             })
             .catch((err) => {
@@ -69,10 +69,12 @@ export const BusinessInfoForm = () => {
     };
     const handleConfPasswordChange = confPassword => {
         localStorage.setItem("confPassword", confPassword);
-        if(confPassword===password){
+        if (confPassword === password) {
             setConfPasswordState(ValidatedOptions.success)
-        }else{
+            setPasswordHelperText("")
+        } else {
             setConfPasswordState(ValidatedOptions.error)
+            setPasswordHelperText("Passwords do not match");
         }
         setConfPassword(confPassword);
     };
@@ -99,35 +101,35 @@ export const BusinessInfoForm = () => {
     return <Form>
 
         <FormGroup label="Email" isRequired fieldId="simple-form-email-01"
-                   helperText="Email address will be used as login credentials.">
+                   helperText={emailHelperText}>
             <TextInput isRequired type="email" id="simple-form-email-01" name="simple-form-email-01" value={email}
-                       onBlur={handleEmailChange} onChange={onChangeEmail}  validated={emailState}/>
-            {isModalShowing && <ModalDialog setIsOpen={isModalShowing} data={modalData} />}
+                       onBlur={handleEmailChange} onChange={onChangeEmail} validated={emailState}/>
+            {isModalShowing && <ModalDialog setIsOpen={isModalShowing} data={modalData}/>}
         </FormGroup>
         <FormGroup label="Password" isRequired fieldId="simple-form-email-02">
             <TextInput isRequired type="password" id="simple-form-email-02" name="simple-form-email-02" value={password}
                        onChange={handlePasswordChange}/>
         </FormGroup>
-        <FormGroup label="Confirm Password" isRequired fieldId="simple-form-email-03">
+        <FormGroup label="Confirm Password" isRequired fieldId="simple-form-email-03"
+                   helperText={passwordHelperText}>
             <TextInput isRequired type="password" id="simple-form-email-03" name="simple-form-email-03"
                        value={confPassword}
                        validated={confPasswordState}
 
                        onChange={handleConfPasswordChange}/>
         </FormGroup>
-        <Divider/>
         <FormGroup label="Tenant Name" isRequired fieldId="simple-form-email-04"
                    labelIcon={<Popover headerContent={
-            <div>
-                Identifier for your tenant
-            </div>} bodyContent={<div>
-            This will be used as the source to construct the unique identification.
-        </div>}>
-            <button type="button" aria-label="More info for name field" onClick={e => e.preventDefault()}
-                    aria-describedby="simple-form-name-04" className="pf-c-form__group-label-help">
-                <HelpIcon noVerticalAlign/>
-            </button>
-        </Popover>}
+                       <div>
+                           Identifier for your tenant
+                       </div>} bodyContent={<div>
+                       This will be used as the source to construct the unique identification.
+                   </div>}>
+                       <button type="button" aria-label="More info for name field" onClick={e => e.preventDefault()}
+                               aria-describedby="simple-form-name-04" className="pf-c-form__group-label-help">
+                           <HelpIcon noVerticalAlign/>
+                       </button>
+                   </Popover>}
         >
             <TextInput isRequired type="text" id="simple-form-email-04" name="simple-form-email-04" value={tenantName}
                        onChange={handleTenantNameChange}/>
@@ -147,17 +149,17 @@ export const BusinessInfoForm = () => {
         <FormGroup label="Contact Person Name" isRequired fieldId="simple-form-phone-08"
                    labelIcon={<Popover
                        headerContent={<div>
-                                        Contact Person's Name
-                                        </div>}
+                           Contact Person's Name
+                       </div>}
                        bodyContent={<div>
-                                    For any further verifications, emergency matters, contact person will be notified.
-                                </div>}
+                           For any further verifications, emergency matters, contact person will be notified.
+                       </div>}
                    >
-            <button type="button" aria-label="More info for name field" onClick={e => e.preventDefault()}
-                    aria-describedby="simple-form-name-08" className="pf-c-form__group-label-help">
-                <HelpIcon noVerticalAlign/>
-            </button>
-        </Popover>}
+                       <button type="button" aria-label="More info for name field" onClick={e => e.preventDefault()}
+                               aria-describedby="simple-form-name-08" className="pf-c-form__group-label-help">
+                           <HelpIcon noVerticalAlign/>
+                       </button>
+                   </Popover>}
         >
             <TextInput isRequired type="text" id="simple-form-phone-08" name="simple-form-phone-08"
                        value={contactName} onChange={handleContactPersonNameChange}/>
