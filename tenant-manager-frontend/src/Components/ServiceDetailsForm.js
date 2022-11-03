@@ -33,7 +33,6 @@ export const ServiceDetailsForm = (props) => {
 
     useEffect(() => {
         if (localStorage.getItem("tenantKey") && props && !props.isEdited) {
-            console.log('Sadu added'+localStorage.getItem("tenantKey"))
             getResourceData()
         }
     }, [])

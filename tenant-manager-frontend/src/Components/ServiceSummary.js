@@ -20,8 +20,8 @@ export class ServiceSummary extends React.Component {
 
         const formData = {
             "tier": localStorage.getItem("tier") || "",
-            "avgConcurrentShoppers": localStorage.getItem("avgConcurrentShoppers") || null,
-            "peakConcurrentShoppers": localStorage.getItem("peakConcurrentShoppers") || null,
+            "avgConcurrentShoppers": localStorage.getItem("avgConcurrentShoppers") || 0,
+            "peakConcurrentShoppers": localStorage.getItem("peakConcurrentShoppers") || 0,
             "fromTime": localStorage.getItem("fromTime") || null,
             "toTime": localStorage.getItem("toTime") || null
         }
