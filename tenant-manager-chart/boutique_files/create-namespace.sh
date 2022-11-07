@@ -1,7 +1,7 @@
 #!/bin/bash
 
-TENANT_NAME=$1 ## This can be the namespace where the Boutique Shop will be deployed, and the name of the associated Route
-TENANT_HOSTNAME=$2 ## This is the host name for the tenant access Route
+TENANT_NAME=$(echo "$1" | tr '[:upper:]' '[:lower:]') ## This can be the namespace where the Boutique Shop will be deployed, and the name of the associated Route
+TENANT_HOSTNAME=$(echo "$2" | tr '[:upper:]' '[:lower:]') ## This is the host name for the tenant access Route
 TIER=$(echo "$3" | tr '[:upper:]' '[:lower:]') ## Tier selection - Ensure it's all lowercase
 
 SCRIPT_DIR=$(dirname $0)
