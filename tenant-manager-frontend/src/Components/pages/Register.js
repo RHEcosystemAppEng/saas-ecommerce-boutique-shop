@@ -1,7 +1,8 @@
-import React,{useEffect} from 'react';
+import React, {useEffect} from 'react';
 import axios from "../../axios-middleware"
 import {
     Brand,
+    Button,
     Masthead,
     MastheadBrand,
     MastheadMain,
@@ -9,13 +10,13 @@ import {
     PageSection,
     PageSectionTypes,
     PageSectionVariants,
+    Panel,
+    PanelMain,
     Text,
     TextContent,
     Wizard,
-    WizardFooter,
     WizardContextConsumer,
-    Button,
-    Panel, PanelMain
+    WizardFooter
 } from '@patternfly/react-core';
 import {BusinessInfoForm} from "../BusinessInfoForm";
 import {TierSelection} from "../TierSelection";
@@ -33,6 +34,13 @@ export const Register = (props) => {
     const [stepIdReached, setStepIdReached] = React.useState(1);
     const [isModalShowing, setIsModalShowing] = React.useState(false);
     const [modalData, setModalData] = React.useState();
+    const [isValidBusinessForm, setIsValidBusinessForm] = React.useState({
+        tenantName: true,
+        orgName: true,
+        orgAddress: true,
+        phone: true,
+        contactName: true
+    });
 
     useEffect(() => {
         clearLocalStorage()
@@ -64,7 +72,7 @@ export const Register = (props) => {
                 clearLocalStorage()
                 localStorage.setItem("loggedInUserName", res.data.loggedInUserName)
                 localStorage.setItem("tenantKey", res.data.key)
-                navigate("/dashboard/"+res.data.key)
+                navigate("/dashboard/" + res.data.key)
             })
             .catch((err) => {
                 setIsModalShowing(true)
@@ -92,7 +100,7 @@ export const Register = (props) => {
         {
             id: 1,
             name: 'Business Information',
-            component: <BusinessInfoForm/>
+            component: <BusinessInfoForm isValid={isValidBusinessForm}/>
         },
         {
             id: 2,
@@ -114,6 +122,52 @@ export const Register = (props) => {
             canJumpTo: stepIdReached >= 4
         }
     ];
+
+    const businessInfoFormOnNextStep = (onNext) => {
+        if (localStorage.getItem("tenantName") !== null && localStorage.getItem("tenantName") !== "" &&
+            localStorage.getItem("orgName") !== null && localStorage.getItem("orgName") !== "" &&
+            localStorage.getItem("contactName") !== null && localStorage.getItem("contactName") !== "" &&
+            localStorage.getItem("orgAddress") !== null && localStorage.getItem("orgAddress") !== "" &&
+            localStorage.getItem("phone") !== null && localStorage.getItem("phone") !== "") {
+            setIsValidBusinessForm({
+                tenantName: true,
+                orgName: true,
+                orgAddress: true,
+                phone: true,
+                contactName: true
+            })
+            return onNext();
+        }
+        var tenantNameVal = true;
+        var orgNameVal = true;
+        var orgAddressVal = true;
+        var phoneVal = true;
+        var contactNameVal = true;
+        if (localStorage.getItem("tenantName") === null || localStorage.getItem("tenantName") === "") {
+            tenantNameVal = false;
+        }
+        if (localStorage.getItem("orgName") === null || localStorage.getItem("orgName") === "") {
+            orgNameVal = false;
+        }
+        if (localStorage.getItem("orgAddress") === null || localStorage.getItem("orgAddress") === "") {
+            orgAddressVal = false;
+        }
+        if (localStorage.getItem("phone") === null || localStorage.getItem("phone") === "") {
+            phoneVal = false;
+        }
+        if (localStorage.getItem("contactName") === null || localStorage.getItem("contactName") === "") {
+            contactNameVal = false;
+        }
+
+        console.log("setting the object:" + JSON.stringify(isValidBusinessForm))
+        setIsValidBusinessForm({
+            tenantName: tenantNameVal,
+            orgName: orgNameVal,
+            orgAddress: orgAddressVal,
+            phone: phoneVal,
+            contactName: contactNameVal
+        })
+    }
 
     const CustomFooter = (
         <WizardFooter>
@@ -138,7 +192,30 @@ export const Register = (props) => {
                             </>
                         );
                     }
-                    if (activeStep.id === 1 || activeStep.id === 3) {
+                    if (activeStep.id === 1) {
+                        return (
+                            <>
+                                <Button variant="primary" type="submit"
+                                        onClick={() => businessInfoFormOnNextStep(onNext)}>
+                                    Next
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    onClick={onBack}
+                                    className={activeStep.name === 'Business Information' ? 'pf-m-disabled' : ''}
+                                >
+                                    Back
+                                </Button>
+                                <a href="/login">
+                                    <Button variant="link">
+                                        Cancel
+                                    </Button>
+                                </a>
+
+                            </>
+                        );
+                    }
+                    if (activeStep.id === 3) {
                         return (
                             <>
                                 <Button variant="primary" type="submit" onClick={onNext}>
@@ -196,7 +273,7 @@ export const Register = (props) => {
                     <Page
                         header={Header}
                         mainContainerId={pageId}
-                        style={{height:"100vh"}}
+                        style={{height: "100vh"}}
                     >
                         <PageSection variant={PageSectionVariants.light}>
                             <TextContent>

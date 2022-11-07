@@ -1,14 +1,20 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Form, FormGroup, Popover, TextInput, ValidatedOptions} from '@patternfly/react-core';
 import HelpIcon from '@patternfly/react-icons/dist/esm/icons/help-icon';
 import axios from "../axios-middleware";
 import {ModalDialog} from "./ModalDialog";
 
-export const BusinessInfoForm = () => {
+export const BusinessInfoForm = (props) => {
+    console.log("Inside BusinessInfoForm:" + JSON.stringify(props.isValid))
     const [isModalShowing, setIsModalShowing] = React.useState(false);
     const [emailHelperText, setEmailHelperText] =
         React.useState("Email address will be used as login credentials.");
     const [passwordHelperText, setPasswordHelperText] = React.useState("");
+    const [tenantNameHelperText, setTenantNameHelperText] = React.useState("");
+    const [orgNameHelperText, setOrgNameHelperText] = React.useState("");
+    const [orgAddressHelperText, setOrgAddressHelperText] = React.useState("");
+    const [phoneHelperText, setPhoneHelperText] = React.useState("");
+    const [contactNameHelperText, setContactNameHelperText] = React.useState("");
     const [modalData, setModalData] = React.useState();
     const [email, setEmail] = React.useState(() => {
         return localStorage.getItem("email") || "";
@@ -37,6 +43,25 @@ export const BusinessInfoForm = () => {
     const [contactName, setContactName] = React.useState(() => {
         return localStorage.getItem("contactName") || "";
     });
+
+    useEffect(() => {
+        if (props.isValid && !props.isValid.tenantName){
+            setTenantNameHelperText("Invalid tenant name")
+        }
+        if (props.isValid && !props.isValid.orgName){
+            setOrgNameHelperText("Invalid orgName name")
+        }
+        if (props.isValid && !props.isValid.orgAddress){
+            setOrgAddressHelperText("Invalid orgAddress name")
+        }
+        if (props.isValid && !props.isValid.phone){
+            setPhoneHelperText("Invalid phone name")
+        }
+        if (props.isValid && !props.isValid.contactName){
+            setContactNameHelperText("Invalid contactName name")
+        }
+
+    }, [props.isValid])
 
     const onChangeEmail = email => {
         setEmail(email);
@@ -81,22 +106,27 @@ export const BusinessInfoForm = () => {
     const handleTenantNameChange = tenantName => {
         localStorage.setItem("tenantName", tenantName);
         setTenantName(tenantName);
+        setTenantNameHelperText("")
     };
     const handleOrgNameChange = orgName => {
         localStorage.setItem("orgName", orgName);
         setOrgName(orgName);
+        setOrgNameHelperText("")
     };
     const handleOrgAddressChange = orgAddress => {
         localStorage.setItem("orgAddress", orgAddress);
         setOrgAddress(orgAddress);
+        setOrgAddressHelperText("")
     };
     const handlePhoneChange = phone => {
         localStorage.setItem("phone", phone);
         setPhone(phone);
+        setPhoneHelperText("")
     };
     const handleContactPersonNameChange = contactPersonName => {
         localStorage.setItem("contactName", contactPersonName);
         setContactName(contactPersonName);
+        setContactNameHelperText("")
     };
     return <Form>
 
@@ -115,11 +145,10 @@ export const BusinessInfoForm = () => {
             <TextInput isRequired type="password" id="simple-form-email-03" name="simple-form-email-03"
                        value={confPassword}
                        validated={confPasswordState}
-
                        onChange={handleConfPasswordChange}/>
         </FormGroup>
         <FormGroup label="Tenant Name" isRequired fieldId="simple-form-email-04"
-                   labelIcon={<Popover headerContent={
+                   helperText={tenantNameHelperText} labelIcon={<Popover headerContent={
                        <div>
                            Identifier for your tenant
                        </div>} bodyContent={<div>
@@ -134,19 +163,23 @@ export const BusinessInfoForm = () => {
             <TextInput isRequired type="text" id="simple-form-email-04" name="simple-form-email-04" value={tenantName}
                        onChange={handleTenantNameChange}/>
         </FormGroup>
-        <FormGroup label="Organization Name" isRequired fieldId="simple-form-email-05">
+        <FormGroup label="Organization Name" isRequired fieldId="simple-form-email-05"
+        helperText={orgNameHelperText}>
             <TextInput isRequired type="text" id="simple-form-email-05" name="simple-form-email-05" value={orgName}
                        onChange={handleOrgNameChange}/>
         </FormGroup>
-        <FormGroup label="Organization Address" isRequired fieldId="simple-form-email-06">
+        <FormGroup label="Organization Address" isRequired fieldId="simple-form-email-06"
+        helperText={orgAddressHelperText}>
             <TextInput isRequired type="text" id="simple-form-email-06" name="simple-form-email-06" value={orgAddress}
                        onChange={handleOrgAddressChange}/>
         </FormGroup>
-        <FormGroup label="Phone Number" isRequired fieldId="simple-form-phone-07">
+        <FormGroup label="Phone Number" isRequired fieldId="simple-form-phone-07"
+        helperText={phoneHelperText}>
             <TextInput isRequired type="tel" id="simple-form-phone-07" name="simple-form-phone-07"
                        placeholder="555-555-5555" value={phone} onChange={handlePhoneChange}/>
         </FormGroup>
         <FormGroup label="Contact Person Name" isRequired fieldId="simple-form-phone-08"
+                   helperText={contactNameHelperText}
                    labelIcon={<Popover
                        headerContent={<div>
                            Contact Person's Name
