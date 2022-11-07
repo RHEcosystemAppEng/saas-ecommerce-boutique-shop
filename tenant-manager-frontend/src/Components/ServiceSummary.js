@@ -1,17 +1,19 @@
 import React from 'react';
 import {Form, FormGroup, TextInput} from '@patternfly/react-core';
 import axios from "../axios-middleware";
+import {ModalDialog} from "./ModalDialog";
 
 export class ServiceSummary extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isModalShowing : false,
+            modalData: "",
             inputError: "",
             unexpectedError: false,
             price: "Calculating..."
         };
     }
-
     componentDidMount() {
         this.fetchPricingData();
     }
@@ -36,15 +38,19 @@ export class ServiceSummary extends React.Component {
                     this.setState({
                         price: res.data
                     })
+                    this.props.activateConfirmBtn();
                 } catch (e) {
-                    this.setState({
-                        inputError: "Incompatible browser. Please use an updated browser.",
-                        unexpectedError: true,
-                    })
+
                 }
             })
             .catch((err) => {
-                console.error(JSON.stringify(err))
+                this.setState({
+                    modalData: {
+                        title: "Price calculation failed",
+                        body: "Server connection failed with reason: "+err.message
+                    },
+                    isModalShowing: true,
+                })
             })
     };
 
@@ -58,6 +64,7 @@ export class ServiceSummary extends React.Component {
                        helperText="Expected average number of parallel users in the system.">
                 <TextInput isDisabled={true} type="text" id="simple-form-email-01" name="simple-form-email-01"
                            value={this.getSelectedTier()}/>
+                {this.state.isModalShowing && <ModalDialog setIsOpen={this.state.isModalShowing} data={this.state.modalData}/>}
             </FormGroup>
             <FormGroup label="Monthly cost" fieldId="simple-form-email-02"
                        helperText="Expected monthly cost based on selected Tier and expected usage.">

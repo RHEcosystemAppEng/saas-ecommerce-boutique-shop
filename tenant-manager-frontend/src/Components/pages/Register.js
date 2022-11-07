@@ -30,18 +30,30 @@ import {ModalDialog} from "../ModalDialog";
 export const Register = (props) => {
     const navigate = useNavigate();
     const [isPrimaryLoading, setIsPrimaryLoading] = React.useState(false);
-    const [isBtnDisabled, setIsBtnDisabled] = React.useState(false);
+    const [isBtnDisabled, setIsBtnDisabled] = React.useState(true);
     const [stepIdReached, setStepIdReached] = React.useState(1);
     const [isModalShowing, setIsModalShowing] = React.useState(false);
     const [modalData, setModalData] = React.useState();
     const [isValidBusinessForm, setIsValidBusinessForm] = React.useState({
+        email: true,
+        password: true,
         tenantName: true,
         orgName: true,
         orgAddress: true,
         phone: true,
         contactName: true
     });
+    const [isValidServiceDetailsForm, setIsValidServiceDetailsForm] = React.useState({
+        hostName: true,
+        avgConcurrentShoppers: true,
+        peakConcurrentShoppers: true,
+        fromTime: true,
+        toTime: true
+    });
 
+    const activateConfirmBtn = () => {
+        setIsBtnDisabled(false)
+    }
     useEffect(() => {
         clearLocalStorage()
     }, [])
@@ -111,25 +123,29 @@ export const Register = (props) => {
         {
             id: 3,
             name: 'Service Details',
-            component: <ServiceDetailsForm/>,
+            component: <ServiceDetailsForm isValid={isValidServiceDetailsForm}/>,
             canJumpTo: stepIdReached >= 3
         },
         {
             id: 4,
             name: 'Summary',
-            component: <ServiceSummary/>,
+            component: <ServiceSummary activateConfirmBtn={activateConfirmBtn}/>,
             nextButtonText: 'Finish',
             canJumpTo: stepIdReached >= 4
         }
     ];
 
-    const businessInfoFormOnNextStep = (onNext) => {
-        if (localStorage.getItem("tenantName") !== null && localStorage.getItem("tenantName") !== "" &&
+    const businessInfoFormOnNext = (onNext) => {
+        if (localStorage.getItem("email") !== null && localStorage.getItem("email") !== "" &&
+            localStorage.getItem("password") !== null && localStorage.getItem("password") !== "" &&
+            localStorage.getItem("tenantName") !== null && localStorage.getItem("tenantName") !== "" &&
             localStorage.getItem("orgName") !== null && localStorage.getItem("orgName") !== "" &&
             localStorage.getItem("contactName") !== null && localStorage.getItem("contactName") !== "" &&
             localStorage.getItem("orgAddress") !== null && localStorage.getItem("orgAddress") !== "" &&
             localStorage.getItem("phone") !== null && localStorage.getItem("phone") !== "") {
             setIsValidBusinessForm({
+                email: true,
+                password: true,
                 tenantName: true,
                 orgName: true,
                 orgAddress: true,
@@ -138,11 +154,19 @@ export const Register = (props) => {
             })
             return onNext();
         }
+        var emailVal = true;
+        var passwordVal = true;
         var tenantNameVal = true;
         var orgNameVal = true;
         var orgAddressVal = true;
         var phoneVal = true;
         var contactNameVal = true;
+        if (localStorage.getItem("email") === null || localStorage.getItem("email") === "") {
+            emailVal = false;
+        }
+        if (localStorage.getItem("password") === null || localStorage.getItem("password") === "") {
+            passwordVal = false;
+        }
         if (localStorage.getItem("tenantName") === null || localStorage.getItem("tenantName") === "") {
             tenantNameVal = false;
         }
@@ -159,13 +183,61 @@ export const Register = (props) => {
             contactNameVal = false;
         }
 
-        console.log("setting the object:" + JSON.stringify(isValidBusinessForm))
         setIsValidBusinessForm({
+            email: emailVal,
+            password: passwordVal,
             tenantName: tenantNameVal,
             orgName: orgNameVal,
             orgAddress: orgAddressVal,
             phone: phoneVal,
             contactName: contactNameVal
+        })
+    }
+
+    const serviceDetailsFormOnNext = (onNext) => {
+        if (localStorage.getItem("hostName") !== null && localStorage.getItem("hostName") !== "" &&
+            localStorage.getItem("avgConcurrentShoppers") !== null && localStorage.getItem("avgConcurrentShoppers") !== "" &&
+            localStorage.getItem("peakConcurrentShoppers") !== null && localStorage.getItem("peakConcurrentShoppers") !== "" &&
+            localStorage.getItem("fromTime") !== null && localStorage.getItem("fromTime") !== "" &&
+            localStorage.getItem("toTime") !== null && localStorage.getItem("toTime") !== "") {
+            setIsValidServiceDetailsForm({
+                hostName: true,
+                avgConcurrentShoppers: true,
+                peakConcurrentShoppers: true,
+                fromTime: true,
+                toTime: true
+            })
+            return onNext();
+        }
+        var hostNameVal = true;
+        var avgConcurrentShoppersVal = true;
+        var peakConcurrentShoppersVal = true;
+        var fromTimeVal = true;
+        var toTimeVal = true;
+        if (localStorage.getItem("hostName") === null || localStorage.getItem("hostName") === "") {
+            hostNameVal = false;
+        }
+        if (localStorage.getItem("avgConcurrentShoppers") === null || localStorage.getItem("avgConcurrentShoppers") === ""
+            && Number(localStorage.getItem("avgConcurrentShoppers")) === 0) {
+            avgConcurrentShoppersVal = false;
+        }
+        if (localStorage.getItem("peakConcurrentShoppers") === null || localStorage.getItem("peakConcurrentShoppers") === ""
+            && Number(localStorage.getItem("peakConcurrentShoppers")) === 0) {
+            peakConcurrentShoppersVal = false;
+        }
+        if (localStorage.getItem("fromTime") === null || localStorage.getItem("fromTime") === "") {
+            fromTimeVal = false;
+        }
+        if (localStorage.getItem("toTime") === null || localStorage.getItem("toTime") === "") {
+            toTimeVal = false;
+        }
+
+        setIsValidServiceDetailsForm({
+            hostName: hostNameVal,
+            avgConcurrentShoppers: avgConcurrentShoppersVal,
+            peakConcurrentShoppers: peakConcurrentShoppersVal,
+            fromTime: fromTimeVal,
+            toTime: toTimeVal
         })
     }
 
@@ -196,7 +268,7 @@ export const Register = (props) => {
                         return (
                             <>
                                 <Button variant="primary" type="submit"
-                                        onClick={() => businessInfoFormOnNextStep(onNext)}>
+                                        onClick={() => businessInfoFormOnNext(onNext)}>
                                     Next
                                 </Button>
                                 <Button
@@ -218,7 +290,8 @@ export const Register = (props) => {
                     if (activeStep.id === 3) {
                         return (
                             <>
-                                <Button variant="primary" type="submit" onClick={onNext}>
+                                <Button variant="primary" type="submit"
+                                        onClick={() => serviceDetailsFormOnNext(onNext)}>
                                     Next
                                 </Button>
                                 <Button
