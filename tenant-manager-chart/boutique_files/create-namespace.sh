@@ -1,7 +1,7 @@
 #!/bin/bash
 
-TENANT_NAME=$(echo "$1" | tr '[:upper:]' '[:lower:]') ## This can be the namespace where the Boutique Shop will be deployed, and the name of the associated Route
-TENANT_HOSTNAME=$(echo "$2" | tr '[:upper:]' '[:lower:]') ## This is the host name for the tenant access Route
+TENANT_NAME=$(echo "$1" | tr '[:upper:]' '[:lower:]')  ## This can be the namespace where the Boutique Shop will be deployed, and the name of the associated Route
+TENANT_HOSTNAME=$(echo "$2" | tr '[:upper:]' '[:lower:]')  ## This is the host name for the tenant access Route
 TIER=$(echo "$3" | tr '[:upper:]' '[:lower:]') ## Tier selection - Ensure it's all lowercase
 
 SCRIPT_DIR=$(dirname $0)
@@ -69,6 +69,24 @@ function createNewNamespaceAndSetProject() {
 }
 
 
+function provisionAllGoldResources() {
+
+  tierFolder=${SCRIPT_DIR}/${TIER}
+
+  # Modify privileges for the defaut service account in scc. This step needs to be reviewed as the gives the service account too much privileges.
+  oc adm policy add-scc-to-user privileged -z default -n $1
+
+  # Deploy the all-in-one application stack
+  oc process -f ${tierFolder}/all-in-one.yaml --param=TENANT_NAMESPACE=$1 | oc apply -f -
+  # Apply Horizontal Pod Autoscaler for the microservices
+  oc apply -f ${tierFolder}/hpa.yaml
+  # Apply a quota to the namespace
+  oc apply -f ${tierFolder}/boutique-quota.yaml
+  # Apply a limit in the namespace
+  oc apply -f ${tierFolder}/limit-range-v1.yaml
+
+}
+
 function provisionAllResources() {
 
   tierFolder=${SCRIPT_DIR}/${TIER}
@@ -126,7 +144,7 @@ function provisionGold() {
   log "Provisioining gold tier"
   createGoldNamespaceIfMisingAndSetProject ${GOLD_NAMESPACE}
   if [ $? -eq 0 ]; then
-    provisionAllResources ${GOLD_NAMESPACE}
+    provisionAllGoldResources ${GOLD_NAMESPACE}
   fi
   createRouteAndExportURL ${GOLD_NAMESPACE}
 }
