@@ -48,6 +48,43 @@ init: setup
 	--helm-chart=${HELM_CHART} \
 	--helm-chart-repo=${HELM_REPO} \
 	--kind=TenantManager
-	$(shell pwd)/post-init.sh "$(shell pwd)/${OPERATOR_DIR}" "${OPERATOR_NAME}" "${NAMESPACE}"
+	$(shell pwd)/scripts/post-init.sh "$(shell pwd)/${OPERATOR_DIR}" "${OPERATOR_NAME}" "${NAMESPACE}"
 
 
+.PHONY: bundle
+bundle:
+	# create manifest file
+	$(shell pwd)/scripts/manifest.sh "$(shell pwd)/${OPERATOR_DIR}" "${OPERATOR_NAME}"
+
+	# Make the operator image
+	cd $(shell pwd)/${OPERATOR_DIR} && \
+	make docker-build docker-push IMG="${IMG}" VERSION=${VERSION}
+
+	# Make the operator bundle by adding OLM to the operator image
+	cd $(shell pwd)/${OPERATOR_DIR} && \
+	make bundle IMG=${IMG} IMAGE_TAG_BASE=${IMAGE_TAG_BASE} VERSION=${VERSION}
+
+	cd $(shell pwd)/${OPERATOR_DIR} && \
+	make bundle-build bundle-push IMG="${IMG}" IMAGE_TAG_BASE="${IMAGE_TAG_BASE}" VERSION=${VERSION}
+
+.PHONY: deploy
+deploy:
+	# Make a new namespace and deploy the operator
+	oc new-project ${NAMESPACE} || true
+	operator-sdk run bundle ${BUNDLE_IMG}
+
+.PHONY: build-deploy
+build-deploy: init bundle deploy
+
+.PHONY: all
+all: build-deploy
+
+.PHONY: undeploy
+undeploy:
+	oc delete ns boutique-ops enterprise-utilities boutique-free boutique-silver || true
+	cd $(shell pwd)/${OPERATOR_DIR} && \
+	make undeploy || true
+	oc delete --all TenantManager --namespace=${NAMESPACE} || true
+	oc delete ns saas-boutique || true
+	oc delete ns ${NAMESPACE}  || true
+ 
