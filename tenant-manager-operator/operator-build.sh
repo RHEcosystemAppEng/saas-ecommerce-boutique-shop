@@ -13,7 +13,7 @@ INT_VERSION=0.0.31
 VERSION=v$INT_VERSION
 IMG="$IMAGE_TAG_BASE:$VERSION"
 BUNDLE_IMG="$IMAGE_TAG_BASE-bundle:$VERSION"
-NAMESPACE=botique-tenant-operator
+NAMESPACE=boutique-tenant-operator
 OPERATOR_NAME=boutique-tenant-operator
 
 oc delete ns $NAMESPACE > /dev/null 2>&1

@@ -1,0 +1,19 @@
+apiVersion: charts.ecosystem-appeng.redhat.com/v1alpha1
+kind: TenantManager
+metadata:
+  name: tenantmanager-sample
+spec:
+  # Default values copied from <project_dir>/helm-charts/tenant-manager-chart/values.yaml
+  backend:
+    containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-backend:latest
+  database:
+    databaseName: tenantmanager
+    password: redhat
+    rootPassword: admin
+    username: saas
+  frontend:
+    containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-frontend:latest
+  namespace:
+    name: saas-boutique
+  
+  
