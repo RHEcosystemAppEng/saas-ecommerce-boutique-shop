@@ -26,6 +26,7 @@ import readHatLogo from '../../images/Logo-Red_Hat.png';
 import {useNavigate} from "react-router-dom"
 import {clearLocalStorage} from "../../Utils/Helper";
 import {ModalDialog} from "../ModalDialog";
+import {CustomizeTenantForm} from "../CustomizeTenantForm";
 
 export const Register = (props) => {
     const navigate = useNavigate();
@@ -128,10 +129,16 @@ export const Register = (props) => {
         },
         {
             id: 4,
+            name: 'Customize Tenant',
+            component: <CustomizeTenantForm />,
+            canJumpTo: stepIdReached >= 4
+        },
+        {
+            id: 5,
             name: 'Summary',
             component: <ServiceSummary activateConfirmBtn={activateConfirmBtn}/>,
             nextButtonText: 'Finish',
-            canJumpTo: stepIdReached >= 4
+            canJumpTo: stepIdReached >= 5
         }
     ];
 
@@ -287,7 +294,7 @@ export const Register = (props) => {
                             </>
                         );
                     }
-                    if (activeStep.id === 3) {
+                    if (activeStep.id === 3 || activeStep.id === 4) {
                         return (
                             <>
                                 <Button variant="primary" type="submit"
