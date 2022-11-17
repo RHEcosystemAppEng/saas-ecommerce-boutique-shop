@@ -67,7 +67,7 @@ Create the name of the service account to use
 {{- else if eq .Values.global.tier "silver" }}
 {{- printf "%s" "boutique-silver" }}
 {{- else if eq .Values.global.tier "gold" }}
-{{- printf "%s" "boutique-ops" }}
+{{- printf "%s" "enterprise-utilities" }}
 {{- else if or (eq .Values.global.tier "platinum") (eq .Values.global.tier "premium") }}
 {{- printf "%s" .Values.global.tenant }}
 {{- end }}
