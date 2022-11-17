@@ -1,0 +1,56 @@
+{{- $deployment := (lookup "v1" "Deployment" (include "tenant.namespace" .) "redis-cart") }}
+{{- if not $deployment }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cart
+  namespace: {{ include "tenant.namespace" . }}
+  {{- if include "redis-cart.keep" . }}
+  annotations: 
+    helm.sh/resource-policy: keep
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: redis-cart
+  template:
+    metadata:
+      labels:
+        app: redis-cart
+        function: tenant
+    spec:
+      containers:
+      - name: redis
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - all
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 6379
+        readinessProbe:
+          periodSeconds: 5
+          tcpSocket:
+            port: 6379
+        livenessProbe:
+          periodSeconds: 5
+          tcpSocket:
+            port: 6379
+        volumeMounts:
+        - mountPath: /data
+          name: redis-data
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 125m
+          requests:
+            cpu: 70m
+            memory: 200Mi
+      volumes:
+      - name: redis-data
+        emptyDir: {}
+{{- end }}

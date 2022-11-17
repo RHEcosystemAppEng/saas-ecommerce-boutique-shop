@@ -1,0 +1,23 @@
+global:
+  tier: gold
+  tenant: mytenant
+  tenantPrefix: my-online-shop
+
+tiers:
+  - name: free
+    namespaces:
+    - "boutique-free"
+  - name: silver
+    namespaces:
+    - "boutique-silver"
+  - name: gold
+    namespaces:
+    - "boutique-ops"
+    - "enterprise-utilities"
+    - "tenant"
+  - name: platinum
+    namespaces:
+    - "tenant"
+  - name: premium
+    namespaces:
+    - "tenant"

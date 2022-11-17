@@ -1,0 +1,38 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: boutique-shop-template
+objects:
+  - apiVersion: charts.ecosystem-appeng.redhat.com/v1alpha1
+    kind: BoutiqueShop
+    metadata:
+      name: ${TENANT_NAME}
+      namespace: boutique-shop
+    spec:
+      tier: ${TIER}
+      tenant: ${TENANT_NAME}
+      tenantPrefix: ${TENANT_PREFIX}
+      resources:
+        max: ${MAX_LIMIT}
+        min: ${MIN_LIMIT}
+parameters:
+- name: TENANT_NAME
+  displayName: Tenant Namespace
+  description: Namespace of the tenant for gold tier deployment
+  value: TIER
+  required: true
+- name: TENANT_PREFIX 
+  displayName: Utilities Namespace
+  description: Namespace to deploy utilities services for gold tier deployment
+  value: enterprise-utilities
+  required: true
+- name: MAX_LIMIT 
+  displayName: max limit
+  description: Namespace to deploy operational services for gold tier deployment
+  value: 10
+  required: true
+- name: MIN_LIMIT 
+  displayName: min limit
+  description: Namespace to deploy operational services for gold tier deployment
+  value: 10
+  required: true

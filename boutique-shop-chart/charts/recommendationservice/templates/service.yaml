@@ -1,0 +1,21 @@
+{{- $service := (lookup "v1" "Service" (include "ops.namespace" .) "recommendationservice") }}
+{{- if not $service }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendationservice
+  namespace: {{ include "ops.namespace" . }}
+  {{- if include "recommendationservice.keep" . }}
+  annotations: 
+    helm.sh/resource-policy: keep
+  {{- end }}
+spec:
+  type: ClusterIP
+  selector:
+    app: recommendationservice
+    function: backends
+  ports:
+  - name: grpc
+    port: 8080
+    targetPort: 8080
+{{- end }}
