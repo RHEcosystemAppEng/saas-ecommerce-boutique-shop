@@ -43,6 +43,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: cartservice-autoscaler
+  namespace: boutique-ops
 spec:
   maxReplicas: 3
   metrics:
@@ -63,6 +64,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: checkout-autoscaler
+  namespace: boutique-ops
 spec:
   maxReplicas: 3
   metrics:
@@ -83,6 +85,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: currencyservice-autoscaler
+  namespace: enterprise-utilities
 spec:
   maxReplicas: 3
   metrics:
@@ -103,6 +106,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: emailservice-autoscaler
+  namespace: enterprise-utilities
 spec:
   maxReplicas: 3
   metrics:
@@ -143,6 +147,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: paymentservice-autoscaler
+  namespace: enterprise-utilities
 spec:
   maxReplicas: 3
   metrics:
@@ -163,6 +168,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: productcatalog-autoscaler
+  namespace: boutique-ops
 spec:
   maxReplicas: 3
   metrics:
@@ -183,6 +189,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: recommend-autoscaler
+  namespace: boutique-ops
 spec:
   maxReplicas: 3
   metrics:
@@ -223,6 +230,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: shipping-autoscaler
+  namespace: boutique-ops
 spec:
   maxReplicas: 3
   metrics:

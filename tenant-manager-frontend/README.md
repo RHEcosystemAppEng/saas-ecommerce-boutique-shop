@@ -2,18 +2,14 @@
 
 <img style="float: right;" src="./doc/img/Logo-Red_Hat-A-Standard-RGB.svg" title="Apache Kafka" width="400" align="right">
 
-Red Hat SaaS (Software as a Service) reference implementation is a demonstration project to showcase how easy to 
-implement a SaaS solution leveraging the Red Hat product portfolio. 
-
-This project contains the basic user interfaces where users can request for an online ecommerce web-shop on demand 
-
-[//]: # (with customizable resource requirements. This project is intend as a reference implementation example for any customer )
-who is willing to provide their software solutions to their customer in a tenant based subscriptions.
+This project contains the basic user interfaces where users can request for an online ecommerce web-shop on demand
+with customizable resource requirements. This project is intend as a reference implementation example for any customer
+who is willing to offer their software solutions as a tenant based subscription model.
 
 ### Overview 🛰️
 
-This project only consist the frontend component of this below design. 
-Please refer to [this repository](https://github.com/RHEcosystemAppEng/saas-tenant-manager-backend) for the backend component.
+This project only consist the frontend application which has written using React JS framework. 
+Project also follows the [patternfly UI framework](https://www.patternfly.org/v4/).
 
 ### Demo 📺
 <img style="float: right;" src="./doc/img/tenant-manager-ui.gif">
@@ -23,9 +19,9 @@ Please refer to [this repository](https://github.com/RHEcosystemAppEng/saas-tena
 
 Define the saas-manager-backend url as an environment variable.
 
-| Variable Name |        Description         | Example |
-| :---: |:--------------------------:| :---: |
-| `REACT_APP_BACKEND_URI` | Tenant Manager Backend URL | localhost:8081 |
+| Variable Name |        Description         |    Example     |
+| :---: |:--------------------------:|:--------------:|
+| `REACT_APP_BACKEND_URI` | Tenant Manager Backend URL | localhost:8080 |
 
 Start the application by running:
 ```shell

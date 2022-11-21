@@ -53,7 +53,6 @@ export const TierSelection = () => {
                 setGoldTier(true);
                 localStorage.setItem("goldTier", true);
                 break;
-                break;
             case "Premium" :
                 setPremiumTier(true);
                 localStorage.setItem("premiumTier", true);
