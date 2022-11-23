@@ -153,33 +153,30 @@ public class TenantResource {
         requestDraftBuilder.status(Constants.REQUEST_STATUS_APPROVED);
         RequestDraft requestDraft = requestDraftBuilder.build();
 
-        return subscriptionService.calculateInstanceCount(
-                        registerData.getAvgConcurrentShoppers(), registerData.getPeakConcurrentShoppers()).
-                onItem().ifNotNull().transformToUni(instanceCount -> {
-                    SubscriptionDraftBuilder subscriptionDraftBuilder = SubscriptionDraft.builder();
-                    subscriptionDraftBuilder.tenantKey(tenantKey);
-                    subscriptionDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);
-                    subscriptionDraftBuilder.tier(registerData.getTier());
-                    subscriptionDraftBuilder.minInstanceCount(instanceCount[0]);
-                    subscriptionDraftBuilder.maxInstanceCount(instanceCount[1]);
-                    subscriptionDraftBuilder.status(Constants.SUBSCRIPTION_STATUS_INITIAL);
+        int[] instanceCount = subscriptionService.calculateInstanceCount(
+                requestDraft.getAvgConcurrentShoppers(), requestDraft.getPeakConcurrentShoppers());
+        SubscriptionDraftBuilder subscriptionDraftBuilder = SubscriptionDraft.builder();
+        subscriptionDraftBuilder.tenantKey(tenantKey);
+        subscriptionDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);
+        subscriptionDraftBuilder.tier(registerData.getTier());
+        subscriptionDraftBuilder.minInstanceCount(instanceCount[0]);
+        subscriptionDraftBuilder.maxInstanceCount(instanceCount[1]);
+        subscriptionDraftBuilder.status(Constants.SUBSCRIPTION_STATUS_INITIAL);
 
-                    // Added to ensure a unique Transaction
-                    return Panache.withTransaction(() ->
-                            subscriptionService.createNewSubscription(
-                                            tenantDraftBuilder.build(), subscriptionDraftBuilder.build(),
-                                            requestDraft).onItem().ifNotNull()
-                                    .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build(),
-                                            subscription))
-                                    .flatMap(Function.identity())
-                                    .onItem().transform(tenant -> {
-                                        TokenDataBuilder tokenDataBuilder = TokenData.builder();
-                                        tokenDataBuilder.Id(tenant.id);
-                                        tokenDataBuilder.key(tenant.tenantKey);
-                                        tokenDataBuilder.loggedInUserName(tenant.tenantName);
-                                        return tokenDataBuilder.build();
-                                    })
-                    );
-                });
+        // Added to ensure a unique Transaction
+        return Panache.withTransaction(() ->
+                subscriptionService.createNewSubscription(
+                                tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft).onItem().ifNotNull()
+                        .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build(),
+                                subscription))
+                        .flatMap(Function.identity())
+                        .onItem().transform(tenant -> {
+                            TokenDataBuilder tokenDataBuilder = TokenData.builder();
+                            tokenDataBuilder.Id(tenant.id);
+                            tokenDataBuilder.key(tenant.tenantKey);
+                            tokenDataBuilder.loggedInUserName(tenant.tenantName);
+                            return tokenDataBuilder.build();
+                        })
+        );
     }
 }

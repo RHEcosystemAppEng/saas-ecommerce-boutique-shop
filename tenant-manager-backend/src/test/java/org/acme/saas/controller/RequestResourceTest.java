@@ -2,7 +2,6 @@ package org.acme.saas.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.response.Response;
 import org.acme.saas.common.Constants;
 import org.acme.saas.model.data.RegisterData;
@@ -10,11 +9,8 @@ import org.acme.saas.model.data.RequestChangeData;
 import org.acme.saas.model.data.RequestData;
 import org.acme.saas.model.data.TokenData;
 import org.acme.saas.model.draft.RequestDraft;
-import org.acme.saas.restclient.RulesClient;
 import org.acme.saas.service.RequestService;
-import org.acme.saas.service.RulesClientStub;
 import org.acme.saas.util.CommonUtil;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.hamcrest.Matchers;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
@@ -37,14 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RequestResourceTest {
 
     private static final Logger LOG = Logger.getLogger(RequestResourceTest.class);
-    @InjectMock
-    @RestClient
-    RulesClient rulesClient;
-
-    @BeforeEach
-    void mockRestClient() {
-        RulesClientStub.initMock(rulesClient);
-    }
 
     @Test
     void getPendingRequestsTest() {

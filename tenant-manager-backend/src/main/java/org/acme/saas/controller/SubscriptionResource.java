@@ -38,15 +38,13 @@ public class SubscriptionResource {
     @Path("/calculate-price")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<String> calculatePrice(@RequestBody(
+    public String calculatePrice(@RequestBody(
             required = true,
             content = @Content(mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = PriceData.class))) PriceData priceData) {
-        return subscriptionService.
-                calculatePrice(priceData.getTier(), priceData.getAvgConcurrentShoppers()).
-                onItem().transform(priceWithoutFormatting ->
-                        String.format("%.2f", priceWithoutFormatting)
-                );
+        double priceWithoutFormatting = subscriptionService.
+                calculatePrice(priceData.getTier(), priceData.getAvgConcurrentShoppers());
+        return String.format("%.2f", priceWithoutFormatting);
     }
 
     @Operation(summary = "Returns the current subcriptions for a given Tenant, identified by the tenantKey")

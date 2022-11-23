@@ -24,9 +24,6 @@ public class SubscriptionService {
     @Inject
     RequestService requestService;
     @Inject
-    RulesService rulesService;
-
-    @Inject
     ProvisionService provisionService;
 
     @ReactiveTransactional
@@ -39,12 +36,20 @@ public class SubscriptionService {
         return Subscription.findAllByTenantKey(tenantKey);
     }
 
-    public Uni<Double> calculatePrice(String tier, int avgConcurrentShoppers) {
-        return rulesService.calculatePrice(tier, avgConcurrentShoppers);
+    public double calculatePrice(String tier, int avgConcurrentShoppers) {
+        return switch (tier) {
+            case "Silver" -> (avgConcurrentShoppers / 100.0) * 10;
+            case "Gold" -> (avgConcurrentShoppers / 100.0) * 20;
+            case "Premium" -> (avgConcurrentShoppers / 100.0) * 40;
+            default -> 0.0;
+        };
     }
 
-    public Uni<int[]> calculateInstanceCount(int avgConcurrentShoppers, int peakConcurrentShoppers) {
-        return rulesService.calculateInstanceCount(avgConcurrentShoppers, peakConcurrentShoppers);
+    public int[] calculateInstanceCount(int avgConcurrentShoppers, int peakConcurrentShoppers) {
+        int min = avgConcurrentShoppers / 50;
+        int max = peakConcurrentShoppers / 50;
+
+        return new int[]{min, max};
     }
 
     @ReactiveTransactional
