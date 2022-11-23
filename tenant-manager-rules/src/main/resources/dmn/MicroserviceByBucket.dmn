@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/ms-by-bucket" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_B1FACF1A-D57B-4891-B8C3-ABEA52A8CA28" name="MicroserviceByBucket" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/ms-by-bucket">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_F4D6029D-D000-4072-9C63-ACC4B605007A" name="Bucket" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_F884F65E-DE89-40D9-ACC6-AE74E154BA61">
+      <dmn:text>"enterprise utilities", "logistics", "shopper experience"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_6565C56F-F5AD-40BC-A79F-F015EEBF91C8" name="Microservice" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_4E12A103-5D67-4726-95AB-3CECBE21702B">
+      <dmn:text>"emailservice", "paymentservice", "currencyservice", "checkoutservice", "cartservice", "shippingservice", "recommendationservice", "productcatalogservice", "frontend", "redis-cart", "adservice"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_B7EEF58A-9374-47C7-A087-F4F7343D32FE" name="Microservices" isCollection="true">
+    <dmn:typeRef>Microservice</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_E22B7035-E2C7-4DEF-BA00-0639B6555331" name="Bucket">
+    <dmn:extensionElements/>
+    <dmn:variable id="_9D9F853F-C18A-4221-9C07-9C3465BAA178" name="Bucket" typeRef="Bucket"/>
+  </dmn:inputData>
+  <dmn:decision id="_DE4D6AD0-B517-4F31-8B29-50648E2FB2F0" name="Microservice By Bucket">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A0B52BD3-A70C-4A33-88B8-F7355C1F52BA" name="Microservice By Bucket" typeRef="Microservices"/>
+    <dmn:informationRequirement id="_7121DA2F-777E-4284-9886-CCB4AAF937A9">
+      <dmn:requiredInput href="#_E22B7035-E2C7-4DEF-BA00-0639B6555331"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_AF8DC375-F76D-4033-9917-A1ACA923B356" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_5403D843-DE6B-437F-B5AE-603250F0F080">
+        <dmn:inputExpression id="_F8524FD7-91D1-499B-8B88-8D89B21741DB" typeRef="Bucket">
+          <dmn:text>Bucket</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_388F4CA0-4EDF-4FC1-9A0D-F8BFBFF1037D"/>
+      <dmn:annotation name="Annotation"/>
+      <dmn:rule id="_E6B669DA-4EB6-44B7-8165-7293509DE96C">
+        <dmn:inputEntry id="_B4BE8D25-588A-4CD5-B107-5050D185AC43">
+          <dmn:text>"enterprise utilities"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_CC7513CE-EE30-4889-ADF1-BF802B20809D">
+          <dmn:text>["emailservice","paymentservice","currencyservice"]</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_16372970-729C-4CFF-89C6-46EC03DBCBF8">
+        <dmn:inputEntry id="_6666BA80-8459-4611-9135-76502E94F162">
+          <dmn:text>"logistics"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_61BF6562-8DB4-47D2-9E8D-3E0AC4DE8535">
+          <dmn:text>["checkoutservice","cartservice","shippingservice","recommendationservice","productcatalogservice"]</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_B6D68794-429C-4B8B-B5C8-ECCFA448F263">
+        <dmn:inputEntry id="_CCFE22CD-7DB3-41D7-AD6F-10555612F667">
+          <dmn:text>"shopper experience"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_095EFD9E-B71A-402D-B486-3DDDBA9C27C7">
+          <dmn:text>["frontend","redis-cart","adservice"]</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_47A4B0E3-B363-4314-A9A1-83BA3AFC3D99" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_AF8DC375-F76D-4033-9917-A1ACA923B356">
+            <kie:width>50</kie:width>
+            <kie:width>204</kie:width>
+            <kie:width>393</kie:width>
+            <kie:width>217</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_E22B7035-E2C7-4DEF-BA00-0639B6555331" dmnElementRef="_E22B7035-E2C7-4DEF-BA00-0639B6555331" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="283" y="296" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_DE4D6AD0-B517-4F31-8B29-50648E2FB2F0" dmnElementRef="_DE4D6AD0-B517-4F31-8B29-50648E2FB2F0" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="283" y="109" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_7121DA2F-777E-4284-9886-CCB4AAF937A9" dmnElementRef="_7121DA2F-777E-4284-9886-CCB4AAF937A9">
+        <di:waypoint x="333" y="321"/>
+        <di:waypoint x="333" y="159"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
