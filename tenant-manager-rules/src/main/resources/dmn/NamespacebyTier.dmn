@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/ns-by-tier" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_B1FACF1A-D57B-4891-B8C3-ABEA52A8CA28" name="NamespaceByTier" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/ns-by-tier">
+  <dmn:description>Given a tenant name, a tier and a microservice, returns the associated target namespace for the microservice</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_6ABDED0C-AE4D-4C71-8CAE-A876900A8541" name="Tier" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_14634527-FA06-4031-B433-954BDA857344">
+      <dmn:text>"free", "silver", "gold", "premium"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_5746647D-4583-48CD-8864-EF0E01BF9275" name="Bucket" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_7921CE77-CE23-4764-AA7B-5D604F69B965">
+      <dmn:text>"enterprise utilities", "logistics", "shopper experience"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_7829E09E-D676-4261-9A8B-E4B9FCEB0248" name="Microservice" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_4E12A103-5D67-4726-95AB-3CECBE21702B">
+      <dmn:text>"emailservice", "paymentservice", "currencyservice", "checkoutservice", "cartservice", "shippingservice", "recommendationservice", "productcatalogservice", "frontend", "redis-cart", "adservice"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_00650ABC-54DB-4B9E-8A45-17D194C59A49" name="Namespace" isCollection="false">
+    <dmn:itemComponent id="_99083679-7773-415C-9B82-946C6DD34B07" name="isTenantNamespace" isCollection="false">
+      <dmn:typeRef>boolean</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_7E04603E-4E61-4269-8677-4720B529EE63" name="namespace" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_42E9E3EC-4AB7-42AC-AAFA-71AF24635FE0" name="MicroserviceConfig" isCollection="false">
+    <dmn:itemComponent id="_A80DBCB4-6554-4FDA-B24F-55C694B49756" name="name" isCollection="false">
+      <dmn:typeRef>Microservice</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_96A32AC1-F1D9-490F-B327-CAF10BB9BA57" name="bucket" isCollection="false">
+      <dmn:typeRef>Bucket</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_35895D3C-B088-4D2B-AF5A-5D729DC8A165" name="namespace" isCollection="false">
+      <dmn:typeRef>Namespace</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_F3A0F868-301F-4CDD-A1B4-526C9A4B162E" name="MicroserviceConfigs" isCollection="true">
+    <dmn:typeRef>MicroserviceConfig</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_9D955ADB-4BF6-44EB-AA7F-1D1103EBC1E7" name="Tier">
+    <dmn:extensionElements/>
+    <dmn:variable id="_CCDD87EC-24FA-4D68-BCC8-BBA04FE56079" name="Tier" typeRef="Tier"/>
+  </dmn:inputData>
+  <dmn:decision id="_C7D655CB-B07B-419A-945F-E8896CA1A967" name="Namespace By Tier">
+    <dmn:extensionElements/>
+    <dmn:variable id="_124F6709-3078-4957-86A0-06D2594370D6" name="Namespace By Tier" typeRef="Namespace"/>
+    <dmn:informationRequirement id="_1189C088-1692-41E6-85F2-E8ACA5E66A82">
+      <dmn:requiredInput href="#_9D955ADB-4BF6-44EB-AA7F-1D1103EBC1E7"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_800EE78F-A517-49A4-B961-2A90E8F54ECC">
+      <dmn:requiredInput href="#_54DFC272-B4F7-4980-9C6A-DD54C33C8CE1"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_112BA712-8D09-4298-AD25-2DBC319663AC" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_191F3FAD-CFC4-435F-AD6A-AD5E700D3126">
+        <dmn:inputExpression id="_EF05F663-44A6-4792-A16D-1542ACA9A941">
+          <dmn:text>Tier</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_46F813E3-81C7-473C-A88D-FF4F8FAD66B4">
+        <dmn:inputExpression id="_3B740A97-8221-42A0-9931-1D7741981FC4" typeRef="Microservice">
+          <dmn:text>Microservice</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_44D299E7-4419-4835-8BE2-6211648B7638" name="isTenantNamespace" typeRef="boolean"/>
+      <dmn:output id="_42991B1E-A1AA-425E-AB33-EA7CD46DEB7B" name="namespace" typeRef="string"/>
+      <dmn:annotation name="Annotations"/>
+      <dmn:rule id="_CD3BE597-4A0D-44B4-A0A8-0352AB740AFE">
+        <dmn:inputEntry id="_90EAABA9-D422-45E7-987F-7EA0B81FC671">
+          <dmn:text>"free"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_06D428F8-7915-46C2-8819-4D47F4CE2008">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_090886EF-A709-4F46-8696-A0EE606D2C14">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_96256A65-8EBC-41B8-9BCC-EAED79C62DDD">
+          <dmn:text>"boutique-free"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>All shared namespaces</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_48FA241F-CB9F-4A81-8844-36C6991D9C52">
+        <dmn:inputEntry id="_E3C49317-E0B0-437E-98DE-E7453B18A254">
+          <dmn:text>"silver"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_75203C0B-E24E-4F79-925B-3F0245429DC7">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_764B5CB8-7221-496C-8BDA-9A8CDBB2D620">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_C97F5539-2787-4C9C-BDB4-68458EA91931">
+          <dmn:text>"boutique-silver"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>All shared namespaces</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_3C533815-EB1C-4566-A8A2-EEF428A7C182">
+        <dmn:inputEntry id="_A90781CD-325A-4681-9D46-C4FBE06617EA">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_C22D75A8-4C90-4FFF-B649-FB94F15073A5">
+          <dmn:text>"emailservice"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_1996C268-2DDF-4A30-9A50-C9D4E939200C">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_E9A46725-0EF3-4428-9BA7-2F9383A3EADB">
+          <dmn:text>"enterprise-utilities"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Shared pool</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_9B559D48-596F-4004-B5E2-9DA3EE328C8A">
+        <dmn:inputEntry id="_D849D5DE-13FB-4BA8-B4F9-6D68DFB37212">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_E16DDF0A-1577-48E5-B886-0ADBB3CD7636">
+          <dmn:text>"paymentservice"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_96683DEC-D56D-491F-BB65-08208186CDF0">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_33C72DB9-0EB0-4ACD-BC32-B19BE05B7908">
+          <dmn:text>"enterprise-utilities"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Shared pool</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_23429365-A0F4-4BAD-A1A3-A3E2D806DB18">
+        <dmn:inputEntry id="_B2A217E6-E283-4F77-A735-4642C8E65270">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_9CB87054-652E-466B-9169-DC62FDA99D12">
+          <dmn:text>"currencyservice"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_0351EDE4-BA39-404E-B754-F30795561B01">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_3E5317E5-4CDD-43E7-AFE6-980BA81C4660">
+          <dmn:text>"enterprise-utilities"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Shared pool</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_A19A379F-390C-4011-9C39-3CDDA8B2FB46">
+        <dmn:inputEntry id="_7A69F569-7160-49E6-8930-0D7DDB6E9A37">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_C89681B7-A0E0-450F-8205-8C2227C71FE3">
+          <dmn:text>"checkoutservice"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_C8D4FBF5-3852-4276-A3B1-DCD24279995E">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_8FD736EA-D574-4600-A632-CEC75019DD0E">
+          <dmn:text>"boutique-ops"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Shared pool</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_57FDCD47-0CE8-4721-82F6-772F03428552">
+        <dmn:inputEntry id="_832565E7-A7CE-4FC5-B2C4-D1599D1FA83F">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_CBC452D3-3BBF-4B91-A78E-1FD3758703B9">
+          <dmn:text>"cartservice"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_16FB68FE-36F6-4A54-905D-51FE4960D46F">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_ECA5E2AA-EC6F-4A15-BC35-B55FDC7E6543">
+          <dmn:text>"boutique-ops"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Shared pool</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_A20A3C1D-C071-43A4-A00F-D1629A45B0B9">
+        <dmn:inputEntry id="_C5ECBDAD-EA4C-4331-9ECD-98A08EB17419">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_12F54878-661D-45F4-9C86-316EAF94090E">
+          <dmn:text>"shippingservice"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_D8BFB463-4649-45B7-BF64-BCC656FDF8CF">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_C15E4E57-D88C-4B04-829F-202E6181E28C">
+          <dmn:text>"boutique-ops"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Shared pool</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_8798D567-987D-4837-9030-C1DA957623F7">
+        <dmn:inputEntry id="_75B44E10-D778-4237-A519-B5DD408239BE">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_AC4D4051-E0EB-40CA-9BA1-D71922B43EC2">
+          <dmn:text>"recommendationservice"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_0C000668-DB65-4B78-8243-715AADE93015">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_CDC85336-0E8E-4554-919D-FE8148E693C2">
+          <dmn:text>"boutique-ops"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Shared pool</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_531BD628-4467-4B9C-A1BD-BBDD98000522">
+        <dmn:inputEntry id="_4A741CF5-5D1B-4C9D-B564-FAF233B69008">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_0A51C716-7B5D-45C1-9A84-08920BC1B255">
+          <dmn:text>"productcatalogservice"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_CA150EBE-22E2-4D6F-A65B-2CB1636806A6">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_CA042AED-357D-41E5-B95C-F0D56E271AF4">
+          <dmn:text>"boutique-ops"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Shared pool</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_90906FFA-9D00-40B2-937C-814BEFB92B15">
+        <dmn:inputEntry id="_EB8CE128-CF3A-46A5-8DBB-27D62915D2F9">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_8D256142-DEA0-497B-93C2-DFCB53E9B94A">
+          <dmn:text>"frontend"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_9AF06220-DDD0-4E68-967B-91FE78F37079">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_175870CB-A686-4246-9D8D-421933E49D32">
+          <dmn:text>""</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Tenant namespace</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_0D1559A0-6425-4A50-A8AE-B31777B3BF91">
+        <dmn:inputEntry id="_57F26903-7177-451A-A461-5C1C99044A65">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_1BEBD1A6-E7DC-4F31-BA61-4040A83DA859">
+          <dmn:text>"redis-cart"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_B64598F7-9350-469B-8DD6-9F2D21A139CD">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_023A9A5C-4C90-4CD5-8DE2-35767375FEF2">
+          <dmn:text>""</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Tenant namespace</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_4BA6C025-0162-4EE9-88E9-323CA6B70F0E">
+        <dmn:inputEntry id="_602EF402-9A88-42AE-AFEF-23B794A913A4">
+          <dmn:text>"gold"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_483A7B31-E82A-4171-A0BB-B0F2036E6823">
+          <dmn:text>"adservice"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_977EA0A7-C26E-497E-A9BE-18148B5BC8E9">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_CD01C453-F745-4FB8-83A3-68750D837C5A">
+          <dmn:text>""</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Tenant namespace</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_44A311FD-775E-4EFC-99CE-DA883EE5D52E">
+        <dmn:inputEntry id="_E08EDEAB-A150-4DCC-8972-6BBA75513843">
+          <dmn:text>"premium"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_DFCF0D7F-8017-439E-9C91-C0FF82D9E895">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_9E9664C2-C5FF-4A8F-A3B3-199E6C5830B5">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_EA02CF63-6DA6-4A4A-B6CB-3BC1B323A527">
+          <dmn:text>""</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>Tenant namespace</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_54DFC272-B4F7-4980-9C6A-DD54C33C8CE1" name="Microservice">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C559D56A-70A5-4AC8-87D6-1B3D747B7B60" name="Microservice" typeRef="Microservice"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_47A4B0E3-B363-4314-A9A1-83BA3AFC3D99" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_112BA712-8D09-4298-AD25-2DBC319663AC">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>216</kie:width>
+            <kie:width>128</kie:width>
+            <kie:width>227</kie:width>
+            <kie:width>253</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_9D955ADB-4BF6-44EB-AA7F-1D1103EBC1E7" dmnElementRef="_9D955ADB-4BF6-44EB-AA7F-1D1103EBC1E7" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="272" y="487" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_C7D655CB-B07B-419A-945F-E8896CA1A967" dmnElementRef="_C7D655CB-B07B-419A-945F-E8896CA1A967" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="363" y="265" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_54DFC272-B4F7-4980-9C6A-DD54C33C8CE1" dmnElementRef="_54DFC272-B4F7-4980-9C6A-DD54C33C8CE1" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="481" y="481" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_1189C088-1692-41E6-85F2-E8ACA5E66A82" dmnElementRef="_1189C088-1692-41E6-85F2-E8ACA5E66A82">
+        <di:waypoint x="322" y="512"/>
+        <di:waypoint x="413" y="315"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_800EE78F-A517-49A4-B961-2A90E8F54ECC" dmnElementRef="_800EE78F-A517-49A4-B961-2A90E8F54ECC">
+        <di:waypoint x="531" y="506"/>
+        <di:waypoint x="413" y="315"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

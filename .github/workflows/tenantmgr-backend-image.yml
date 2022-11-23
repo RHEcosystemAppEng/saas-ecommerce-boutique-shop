@@ -3,11 +3,10 @@ on:
   push:
     branches:
       - main
-
+      - rules
 env:
   IMAGE_REGISTRY: quay.io
   IMAGE_REPOSITORY: ecosystem-appeng
-  IMAGE_NAME: saas-tenant-manager-backend
 jobs:
   build-image-and-push-backend:
     runs-on: ubuntu-latest
@@ -29,15 +28,52 @@ jobs:
         #mvn package -Pnative
         mvn package
     - name: Build and publish docker image
+      env:
+        IMAGE_NAME: saas-tenant-manager-backend
       run: |
         cd tenant-manager-backend
+        BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)-rules
+        echo Build version is: ${BUILD_VERSION}
+        IMAGE_FULL=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:${BUILD_VERSION}
+        IMAGE_LATEST=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:latest-rules
+        echo Building image: ${IMAGE_FULL}
+        docker login "${{ env.IMAGE_REGISTRY }}" --username="${{ secrets.REGISTRY_USERNAME }}" --password="${{ secrets.REGISTRY_PASSWORD }}"
+        
+        docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} -f ./src/main/docker/Dockerfile.jvm .
+        docker tag ${IMAGE_FULL} ${IMAGE_LATEST}
+        docker push ${IMAGE_FULL}
+        #docker push ${IMAGE_LATEST}
+  build-image-and-push-rules:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Java JDK
+      uses: actions/setup-java@v3.5.1
+      with:
+        java-version: 17
+        java-package: jdk
+        distribution: 'corretto'
+    - name: Set up Maven
+      uses: stCarolas/setup-maven@v4.4
+      with:
+        maven-version: 3.8.6
+    - name: Build Quarkus JVM executable
+      run: |
+        cd tenant-manager-rules
+        #mvn package -Pnative
+        mvn package
+    - name: Build and publish docker image
+      env:
+        IMAGE_NAME: saas-tenant-manager-rules
+      run: |
+        cd tenant-manager-rules
         BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         echo Build version is: ${BUILD_VERSION}
         IMAGE_FULL=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:${BUILD_VERSION}
         IMAGE_LATEST=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:latest
         echo Building image: ${IMAGE_FULL}
         docker login "${{ env.IMAGE_REGISTRY }}" --username="${{ secrets.REGISTRY_USERNAME }}" --password="${{ secrets.REGISTRY_PASSWORD }}"
-        
+
         docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} -f ./src/main/docker/Dockerfile.jvm .
         docker tag ${IMAGE_FULL} ${IMAGE_LATEST}
         docker push ${IMAGE_FULL}
