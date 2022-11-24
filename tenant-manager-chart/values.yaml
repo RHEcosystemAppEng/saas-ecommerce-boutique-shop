@@ -16,7 +16,7 @@ backend:
   containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-backend:latest
 
 rules:
-  containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-rules:latest
+  containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-rules-engine:latest
 
 frontend:
   containerImagePath: quay.io/ecosystem-appeng/saas-tenant-manager-frontend:latest

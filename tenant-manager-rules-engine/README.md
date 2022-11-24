@@ -1,4 +1,4 @@
-# tenant-manager-costcomputation-rule Project
+# tenant-manager-rules-engine Project
 A Quarkus project to expose SaaS services using a DMN rules engine.
 
 ## DMN rules

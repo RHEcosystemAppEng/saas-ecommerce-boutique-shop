@@ -64,7 +64,7 @@ jobs:
         mvn package
     - name: Build and publish docker image
       env:
-        IMAGE_NAME: saas-tenant-manager-rules
+        IMAGE_NAME: saas-tenant-manager-rules-engine
       run: |
         cd tenant-manager-rules
         BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
