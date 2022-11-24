@@ -1,0 +1,23 @@
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: tenant-manager-rules-engine
+  name: tenant-manager-rules-engine
+  namespace: {{ .Values.namespace.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tenant-manager-rules-engine
+    spec:
+      containers:
+        - env:
+            - name: JAVA_APP_JAR
+              value: /deployments/quarkus-run.jar
+          image: {{ .Values.rules.containerImagePath }}
+          name: tenant-manager-rules-engine
+          ports:
+            - containerPort: 8080
+              protocol: TCP
