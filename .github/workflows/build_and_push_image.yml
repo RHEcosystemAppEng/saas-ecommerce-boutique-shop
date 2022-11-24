@@ -1,9 +1,8 @@
-name: Frontend & Backend build
+name: Build and push all the software images
 on:
   push:
     branches:
       - main
-      - rules
 env:
   IMAGE_REGISTRY: quay.io
   IMAGE_REPOSITORY: ecosystem-appeng
