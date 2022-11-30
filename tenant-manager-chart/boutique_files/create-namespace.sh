@@ -85,7 +85,7 @@ function provisionAllGoldResources() {
   # Apply a limit in the namespace
   oc apply -f ${tierFolder}/limit-range-v1.yaml
   # Apply the pod disruption budget for the tier (Right now only active on premium tier)
-  # oc apply -f ${tierFolder}/pdb/*.yaml
+  oc apply -f ${tierFolder}/pdb/pdb-template.yaml
 
 }
 
