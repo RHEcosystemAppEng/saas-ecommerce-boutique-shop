@@ -27,8 +27,6 @@ export const ManagerPendingList = () => {
                 <Tr>
                     <Th modifier="wrap">Tenant ID</Th>
                     <Th modifier="wrap">Tenant Name</Th>
-                    <Th modifier="wrap">Current Tier</Th>
-                    <Th modifier="wrap">Requesting Tier</Th>
                     <Th modifier="wrap">Service Name</Th>
                     <Th modifier="wrap">Prev. Min Instances</Th>
                     <Th modifier="wrap">Prev. Max Instances</Th>

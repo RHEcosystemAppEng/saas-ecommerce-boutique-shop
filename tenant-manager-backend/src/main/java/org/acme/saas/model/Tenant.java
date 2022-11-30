@@ -3,7 +3,6 @@ package org.acme.saas.model;
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import io.smallrye.mutiny.Uni;
 import lombok.ToString;
-import org.acme.saas.common.Constants;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,6 +23,7 @@ public class Tenant extends PanacheEntity {
     public String contactName;
     public String email;
     public String password;
+    public boolean desiredState;
     public String status;
 
     @OneToMany(fetch = FetchType.EAGER)
@@ -38,7 +38,19 @@ public class Tenant extends PanacheEntity {
         return find("email= ?1 and password = ?2", email, password).firstResult();
     }
 
-    public static Uni<List<Tenant>> findAllActiveTenants() {
-        return find("status=?1", Constants.TENANT_STATUS_ACTIVE).list();
+    public static Uni<List<Tenant>> findAllTenantsByStatus(String status) {
+        return find("status=?1", status).list();
+    }
+
+    public static Uni<List<Tenant>> findAllTenantsByDesiredStatus(Boolean desired) {
+        return find("desiredState=?1", desired).list();
+    }
+
+    public static Uni<List<Tenant>> findAllTenants() {
+        return findAll().list();
+    }
+
+    public static Uni<Tenant> persist(Tenant tenant) {
+        return tenant.persist();
     }
 }

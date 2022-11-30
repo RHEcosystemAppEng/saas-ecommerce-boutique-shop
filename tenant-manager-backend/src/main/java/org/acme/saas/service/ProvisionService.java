@@ -1,10 +1,15 @@
 package org.acme.saas.service;
 
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
+import org.acme.saas.model.data.ProvisionRequest;
+import org.acme.saas.model.data.ProvisionResponse;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.draft.TenantDraft;
+import org.acme.saas.restclient.RulesClient;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -19,10 +24,17 @@ import java.util.List;
 public class ProvisionService {
     private Logger log = Logger.getLogger(ProvisionService.class);
 
+    @RestClient
+    RulesClient rulesClient;
+
     @ConfigProperty(name = "org.acme.saas.service.SubscriptionService.scriptFile")
     String scriptFile;
     @ConfigProperty(name = "org.acme.saas.service.SubscriptionService.updateScriptFile")
     String updateScriptFile;
+
+    public Uni<ProvisionResponse> provisionTier(ProvisionRequest provisionRequest) {
+        return rulesClient.updateTierProvisionPlan(provisionRequest);
+    }
 
     public Uni<String> onResourceUpdate(String tenantName, int minReplicas, int maxReplicas) {
         return runScript(updateScriptFile,

@@ -1,8 +1,11 @@
 package org.acme.saas.common;
 
 public class Constants {
-    public static final String TENANT_STATUS_ACTIVE = "ACTIVE";
-    public static final String TENANT_STATUS_REMOVED = "REMOVED";
+    public static final String TENANT_STATUS_REQUESTED = "Requested";
+    public static final String TENANT_STATUS_WAITING = "Waiting";
+    public static final String TENANT_STATUS_RUNNING = "Running";
+    public static final String TENANT_STATUS_STOPPED = "Stopped";
+    public static final String TENANT_STATUS_PURGED = "Purged";
 
     public static final String REQUEST_STATUS_PENDING = "PENDING";
     public static final String REQUEST_STATUS_APPROVED = "APPROVED";

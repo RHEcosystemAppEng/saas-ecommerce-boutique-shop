@@ -10,8 +10,6 @@ export const PendingListRow = (props) => {
     const columnNames = {
         tenantKey: "Tenant ID",
         tenantName: "Tenant Name",
-        currentTier: "Current Tier",
-        newTier: "Requesting Tier",
         serviceName: "Service Name",
         oldMinInstances: "Prev. Min Instances",
         newMinInstances: "New Min Instances",
@@ -54,8 +52,6 @@ export const PendingListRow = (props) => {
         <Tr key={props.rowData.requestId}>
             <Td dataLabel={columnNames.tenantKey}>{props.rowData.tenantKey}</Td>
             <Td dataLabel={columnNames.tenantName}>{props.rowData.tenantName}</Td>
-            <Td dataLabel={columnNames.currentTier}>{props.rowData.currentTier}</Td>
-            <Td dataLabel={columnNames.newTier}>{props.rowData.newTier}</Td>
             <Td dataLabel={columnNames.serviceName}>{props.rowData.serviceName}</Td>
             <Td dataLabel={columnNames.oldMinInstances}>{props.rowData.oldMinInstances}</Td>
             <Td dataLabel={columnNames.newMinInstances}>{props.rowData.newMinInstances}</Td>
