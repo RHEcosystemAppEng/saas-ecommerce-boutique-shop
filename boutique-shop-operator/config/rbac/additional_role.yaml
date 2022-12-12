@@ -9,6 +9,7 @@ rules:
       - list
       - create
       - delete
+      - update
     apiGroups:
       - route.openshift.io
     resources:
@@ -19,6 +20,7 @@ rules:
       - list
       - create
       - delete
+      - update
     apiGroups:
       - networking.k8s.io
     resources:
@@ -29,6 +31,7 @@ rules:
       - list
       - create
       - delete
+      - update
     apiGroups:
       - ''
     resources:
@@ -39,6 +42,7 @@ rules:
       - list
       - create
       - delete
+      - update
     apiGroups:
       - ''
       - apps
@@ -50,6 +54,7 @@ rules:
       - list
       - create
       - delete
+      - update
     apiGroups:
       - ''
     resources:
