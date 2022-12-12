@@ -4,7 +4,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: adservice-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
@@ -24,7 +24,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: adservice-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
@@ -44,7 +44,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: cartservice-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
@@ -64,7 +64,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: checkout-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
@@ -84,7 +84,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: currencyservice-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
@@ -104,7 +104,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: emailservice-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
@@ -129,7 +129,7 @@ spec:
     kind: Deployment
     name: frontend
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
     - type: Resource
       resource:
@@ -144,7 +144,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: paymentservice-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
@@ -164,7 +164,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: productcatalog-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
@@ -184,7 +184,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: recommend-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
@@ -204,7 +204,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: redis-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
@@ -224,7 +224,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: shipping-autoscaler
 spec:
-  maxReplicas: 3
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu

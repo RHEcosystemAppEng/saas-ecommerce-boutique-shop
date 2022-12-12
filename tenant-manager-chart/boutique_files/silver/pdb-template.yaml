@@ -62,7 +62,7 @@ spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: frontend
+      app: frontendservice
 
 ---
 apiVersion: policy/v1
@@ -106,7 +106,7 @@ spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: redis-cart
+      app: rediscartservice
 
 ---
 apiVersion: policy/v1
