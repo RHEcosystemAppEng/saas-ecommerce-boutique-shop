@@ -33,5 +33,7 @@ rules:
   - get
 EOF
 
-KUSTOMIZATION_YAML=${OPERATOR_DIR}/config/rbac/kustomization.yaml
-echo '- additional_role_binding.yaml' >> ${KUSTOMIZATION_YAML}
+cat << EOF >> ${OPERATOR_DIR}/config/rbac/kustomization.yaml
+# Add service account
+- additional_role_binding.yaml
+EOF
