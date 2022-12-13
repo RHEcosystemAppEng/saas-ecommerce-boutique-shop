@@ -1,0 +1,4 @@
+global:
+  tier: gold
+  tenant: mytenant
+  tenantPrefix: my-online-shop

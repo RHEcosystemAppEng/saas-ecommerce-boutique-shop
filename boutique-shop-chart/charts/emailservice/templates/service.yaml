@@ -1,0 +1,21 @@
+{{- $service := (lookup "v1" "Service" (include "utilities.namespace" .) "emailservice") }}
+{{- if not $service }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: emailservice
+  namespace: {{ include "utilities.namespace" .}}
+  {{- if include "emailservice.keep" . }}
+  annotations: 
+    helm.sh/resource-policy: keep
+  {{- end }}
+spec:
+  type: ClusterIP
+  selector:
+    app: emailservice
+    function: backends
+  ports:
+  - name: grpc
+    port: 5000
+    targetPort: 8080
+{{- end }}

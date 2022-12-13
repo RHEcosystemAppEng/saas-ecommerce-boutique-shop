@@ -1,0 +1,29 @@
+{{- $tenantTier := .Values.global.tier }}
+{{- $tenantName := .Values.global.tenant }}
+{{- range .Values.tiers }}
+  {{- $tier := .name }}
+  {{ if eq $tier $tenantTier }}
+    {{- range .namespaces }}
+      {{- $ns := . }}
+      {{- $nsExists := false }}
+      {{- range $index, $namespace := (lookup "v1" "Namespace" "" "").items }}
+        {{- if eq $ns "tenant" }}
+          {{- $ns = $tenantName }}
+        {{- end }}
+        {{- if eq $namespace.metadata.name $ns }}
+          {{- $nsExists = true }}
+        {{- end }}  
+      {{- end }}  
+      {{- if not $nsExists }}
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: {{ $ns }}
+  annotations: 
+    helm.sh/resource-policy: keep
+      {{- end }}  
+    {{- end }}  
+  {{- end }}  
+{{- end }}
+

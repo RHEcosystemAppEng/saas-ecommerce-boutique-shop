@@ -1,0 +1,14 @@
+# Default values for adservice.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  tier: free
+  tenant: tenant
+
+replicaCount: 1
+image:
+  repository: gcr.io/google-samples/microservices-demo/adservice
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v0.3.9"

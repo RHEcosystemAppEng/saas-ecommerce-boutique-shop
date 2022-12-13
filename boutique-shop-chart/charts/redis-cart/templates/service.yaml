@@ -1,0 +1,21 @@
+{{- $service := (lookup "v1" "Service" (include "tenant.namespace" .) "shippingservice") }}
+{{- if not $service }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cart
+  namespace: {{ include "tenant.namespace" . }}
+  {{- if include "redis-cart.keep" . }}
+  annotations: 
+    helm.sh/resource-policy: keep
+  {{- end }}
+spec:
+  type: ClusterIP
+  selector:
+    app: redis-cart
+    function: tenant
+  ports:
+  - name: tls-redis
+    port: 6379
+    targetPort: 6379
+{{- end }}
