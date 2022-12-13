@@ -1,0 +1,10 @@
+global:
+  tier: free
+  tenant: tenant
+
+replicaCount: 1
+image:
+  repository: redis
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: alpine

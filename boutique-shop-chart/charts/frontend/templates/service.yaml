@@ -1,0 +1,21 @@
+{{- $service := (lookup "v1" "Service" (include "tenant.namespace" .) "frontend") }}
+{{- if not $service }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: {{ include "tenant.namespace" . }}
+  {{- if include "frontend.keep" . }}
+  annotations: 
+    helm.sh/resource-policy: keep
+  {{- end }}
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+    function: backends
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+{{- end }}

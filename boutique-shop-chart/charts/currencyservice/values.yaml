@@ -1,0 +1,10 @@
+global:
+  tier: free
+  tenant: tenant
+
+replicaCount: 1
+image:
+  repository: gcr.io/google-samples/microservices-demo/currencyservice
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v0.3.9"

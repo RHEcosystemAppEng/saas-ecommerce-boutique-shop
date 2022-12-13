@@ -1,0 +1,21 @@
+{{- $service := (lookup "v1" "Service" (include "utilities.namespace" .) "paymentservice") }}
+{{- if not $service }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: paymentservice
+  namespace: {{ include "utilities.namespace" . }}
+  {{- if include "paymentservice.keep" . }}
+  annotations: 
+    helm.sh/resource-policy: keep
+  {{- end }}
+spec:
+  type: ClusterIP
+  selector:
+    app: paymentservice
+    function: backends
+  ports:
+  - name: grpc
+    port: 50051
+    targetPort: 50051
+{{- end }}
