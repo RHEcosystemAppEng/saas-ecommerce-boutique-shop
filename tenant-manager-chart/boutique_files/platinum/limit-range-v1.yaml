@@ -11,4 +11,3 @@ spec:
       min:
         cpu: "20m"
         memory: "2Mi"
-

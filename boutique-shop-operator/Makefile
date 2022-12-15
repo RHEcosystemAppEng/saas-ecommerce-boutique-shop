@@ -264,7 +264,7 @@ build-deploy: bundle-all deploy-all
 
 .PHONY: remove
 remove:
-	oc delete --all BoutiqueShop --namespace=${NAMESPACE} || true
+	oc delete --all BoutiqueShop --all-namespaces || true
 	oc delete namespace boutique-free boutique-silver boutique-ops enterprise-utilities || true
 	make undeploy || true
 	oc delete ns ${NAMESPACE}  || true

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: boutique-ops
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: enterprise-utilities
+---
+apiVersion: demo.openshift.com/v1alpha1
+kind: BoutiqueShop
+metadata:
+  name: boutique-ops
+  namespace: boutique-ops
+spec:
+  tier: gold
+---
+apiVersion: demo.openshift.com/v1alpha1
+kind: BoutiqueShop
+metadata:
+  name: enterprise-utilities
+  namespace: enterprise-utilities
+spec:
+  tier: gold
