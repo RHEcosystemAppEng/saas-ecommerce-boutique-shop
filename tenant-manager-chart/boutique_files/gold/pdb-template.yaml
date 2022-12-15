@@ -14,6 +14,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: cart-pdb
+  namespace: boutique-ops
 spec:
   minAvailable: 1
   selector:
@@ -25,6 +26,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: checkout-pdb
+  namespace: boutique-ops
 spec:
   minAvailable: 1
   selector:
@@ -36,6 +38,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: currency-pdb
+  namespace: enterprise-utilities
 spec:
   minAvailable: 1
   selector:
@@ -47,6 +50,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: email-pdb
+  namespace: enterprise-utilities
 spec:
   minAvailable: 1
   selector:
@@ -69,6 +73,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: payment-pdb
+  namespace: enterprise-utilities
 spec:
   minAvailable: 1
   selector:
@@ -80,6 +85,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: productcatalog-pdb
+  namespace: boutique-ops
 spec:
   minAvailable: 1
   selector:
@@ -91,6 +97,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: recommendation-pdb
+  namespace: boutique-ops
 spec:
   minAvailable: 1
   selector:
@@ -113,6 +120,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: shipping-pdb
+  namespace: boutique-ops
 spec:
   minAvailable: 1
   selector:
