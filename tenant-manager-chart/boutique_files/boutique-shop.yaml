@@ -1,0 +1,34 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: boutique-shop-template
+objects:
+  - apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: ${TENANT_NAMESPACE}
+  - apiVersion: demo.openshift.com/v1alpha1
+    kind: BoutiqueShop
+    metadata:
+      name: ${TENANT_NAME}
+      namespace: ${TENANT_NAMESPACE}
+    spec:
+      tier: ${TIER}
+      tenantPrefix: ${TENANT_PREFIX}
+parameters:
+- name: TENANT_NAME 
+  displayName: Tenant Name
+  description: Name of the tenant used to create Boutique Shop CR.
+  required: true
+- name: TENANT_NAMESPACE
+  displayName: Tenant Namespace
+  description: Namespace of the tenant used to create Boutique Shop CR.
+  required: true
+- name: TENANT_PREFIX 
+  displayName: Tenant Prefix
+  description: Tenant Prefix to create the tenant shop url
+  required: true
+- name: TIER 
+  displayName: Tier
+  description: Tier of the boutique shop. Possible values are free, silver, gold and platinum.
+  required: true

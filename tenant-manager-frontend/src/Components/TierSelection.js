@@ -31,15 +31,15 @@ export const TierSelection = () => {
     const [goldTier, setGoldTier] = useState(() => {
         return localStorage.getItem("goldTier") || false;
     });
-    const [premiumTier, setPremiumTier] = useState(() => {
-        return localStorage.getItem("premiumTier") || false;
+    const [platinumTier, setPlatinumTier] = useState(() => {
+        return localStorage.getItem("platinumTier") || false;
     });
 
     const onSelectTier = (tier) => {
         setFreeTier(false);localStorage.removeItem("freeTier");
         setSilverTier(false);localStorage.removeItem("silverTier");
         setGoldTier(false);localStorage.removeItem("goldTier");
-        setPremiumTier(false);localStorage.removeItem("premiumTier");
+        setPlatinumTier(false);localStorage.removeItem("platinumTier");
         switch (tier) {
             case "Free" :
                 setFreeTier(true);
@@ -53,9 +53,9 @@ export const TierSelection = () => {
                 setGoldTier(true);
                 localStorage.setItem("goldTier", true);
                 break;
-            case "Premium" :
-                setPremiumTier(true);
-                localStorage.setItem("premiumTier", true);
+            case "Platinum" :
+                setPlatinumTier(true);
+                localStorage.setItem("platinumTier", true);
                 break;
         }
         setSelectedTier(tier);
@@ -106,15 +106,15 @@ export const TierSelection = () => {
             </FlexItem>
             <FlexItem style={styles.cardContainerStyle}
                       alignSelf={{default: 'alignSelfStretch'}}>
-                <Card style={styles.cardStyle} isSelectableRaised={true} isSelected={premiumTier}
-                      onSelectableInputChange={() => onSelectTier("Premium")}>
-                    <CardTitle component="h4">Premium</CardTitle>
+                <Card style={styles.cardStyle} isSelectableRaised={true} isSelected={platinumTier}
+                      onSelectableInputChange={() => onSelectTier("Platinum")}>
+                    <CardTitle component="h4">Platinum</CardTitle>
                     <CardBody>
-                    Premium Tier - provider best security protection. Tenants can have own instance of application which completely isolated from others. <br/><br/>
+                    Platinum Tier - provider best security protection. Tenants can have own instance of application which completely isolated from others. <br/><br/>
                     The price will be $40/month subscription fee to support every 100 concurrent shoppers
                     </CardBody>
                     <CardFooter style={styles.footer}>
-                        <Button variant="primary" isLarge onClick={() => onSelectTier("Premium")}>Subscribe</Button>
+                        <Button variant="primary" isLarge onClick={() => onSelectTier("Platinum")}>Subscribe</Button>
                     </CardFooter>
                 </Card>
             </FlexItem>

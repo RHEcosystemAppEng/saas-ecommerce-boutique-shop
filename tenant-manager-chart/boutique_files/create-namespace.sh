@@ -19,85 +19,88 @@ function log() {
   echo $1
 }
 
-## Returns 0 if the NS is missing, 1 otherwise
-function checkNamespaceExists() {
-  namespaceInCluster=$(oc get namespace $1 -oname --ignore-not-found=true)
-  if [ ! -z "$namespaceInCluster" ]; then
-    log "The Namespace $1 already exists"
-    return 1
-  else
-    return 0
-  fi
-}
+# ## Returns 0 if the NS is missing, 1 otherwise
+# function checkNamespaceExists() {
+#   namespaceInCluster=$(oc get namespace $1 -oname --ignore-not-found=true)
+#   if [ ! -z "$namespaceInCluster" ]; then
+#     log "The Namespace $1 already exists"
+#     return 1
+#   else
+#     return 0
+#   fi
+# }
 
-## Returns 0 if the NS was missing, 1 otherwise
-function createNamespaceIfMissingAndSetProject() {
-  checkNamespaceExists $1
-  if [ $? -eq 0 ]; then
-    log "Creating namespace $1"
-    oc create namespace $1
-  fi
-  oc project $1
-}
+# ## Returns 0 if the NS was missing, 1 otherwise
+# function createNamespaceIfMissingAndSetProject() {
+#   checkNamespaceExists $1
+#   if [ $? -eq 0 ]; then
+#     log "Creating namespace $1"
+#     oc create namespace $1
+#   fi
+#   oc project $1
+# }
 
 
-function createGoldNamespaceIfMisingAndSetProject() {
+# function createGoldNamespaceIfMisingAndSetProject() {
  
-  base1=enterprise-utilities
-  base2=boutique-ops
+#   base1=enterprise-utilities
+#   base2=boutique-ops
 
-  createNamespaceIfMissingAndSetProject $base1
-  createNamespaceIfMissingAndSetProject $base2
+#   createNamespaceIfMissingAndSetProject $base1
+#   createNamespaceIfMissingAndSetProject $base2
 
-  log "Creating tenant namespace $1 for the Gold tier."
-  createNamespaceIfMissingAndSetProject $1
+#   log "Creating tenant namespace $1 for the Gold tier."
+#   createNamespaceIfMissingAndSetProject $1
 
-  oc adm policy add-scc-to-user privileged -z default -n $base1
-  oc adm policy add-scc-to-user privileged -z default -n $base2
+#   oc adm policy add-scc-to-user privileged -z default -n $base1
+#   oc adm policy add-scc-to-user privileged -z default -n $base2
 
-}
-
-
-function createNewNamespaceAndSetProject() {
-  checkNamespaceExists $1
-  if [ $? -eq 1 ]; then
-    log "Namespace $1 aready exists. Exiting with error code ${ERR_NS_ALREADY_EXISTS}"
-    exit ${ERR_NS_ALREADY_EXISTS}
-  fi
-  oc create namespace $1
-  oc project $1
-}
+# }
 
 
-function provisionAllGoldResources() {
+# function createNewNamespaceAndSetProject() {
+#   checkNamespaceExists $1
+#   if [ $? -eq 1 ]; then
+#     log "Namespace $1 aready exists. Exiting with error code ${ERR_NS_ALREADY_EXISTS}"
+#     exit ${ERR_NS_ALREADY_EXISTS}
+#   fi
+#   oc create namespace $1
+#   oc project $1
+# }
 
-  tierFolder=${SCRIPT_DIR}/${TIER}
 
-  # Modify privileges for the defaut service account in scc. This step needs to be reviewed as the gives the service account too much privileges.
-  oc adm policy add-scc-to-user privileged -z default -n $1
+# function provisionAllGoldResources() {
 
-  # Deploy the all-in-one application stack
-  oc process -f ${tierFolder}/all-in-one.yaml --param=TENANT_NAMESPACE=$1 | oc apply -f -
-  # Apply Horizontal Pod Autoscaler for the microservices
-  oc apply -f ${tierFolder}/hpa.yaml
-  # Apply a quota to the namespace
-  oc apply -f ${tierFolder}/boutique-quota.yaml
-  # Apply a limit in the namespace
-  oc apply -f ${tierFolder}/limit-range-v1.yaml
-  # Apply the pod disruption budget for the tier (Right now only active on premium tier)
-  oc apply -f ${tierFolder}/pdb-template.yaml
+#   tierFolder=${SCRIPT_DIR}/${TIER}
 
-}
+#   # Modify privileges for the defaut service account in scc. This step needs to be reviewed as the gives the service account too much privileges.
+#   oc adm policy add-scc-to-user privileged -z default -n $1
+
+#   # Deploy the all-in-one application stack
+#   oc process -f ${tierFolder}/common.yaml # --param=TENANT_NAMESPACE=$1 | oc apply -f -
+
+#   # Apply Horizontal Pod Autoscaler for the microservices
+#   oc apply -f ${tierFolder}/hpa.yaml
+#   # Apply a quota to the namespace
+#   oc apply -f ${tierFolder}/boutique-quota.yaml
+#   # Apply a limit in the namespace
+#   oc apply -f ${tierFolder}/limit-range-v1.yaml
+# }
 
 function provisionAllResources() {
 
   tierFolder=${SCRIPT_DIR}/${TIER}
 
   # Modify privileges for the defaut service account in scc. This step needs to be reviewed as the gives the service account too much privileges.
-  oc adm policy add-scc-to-user privileged -z default -n $1
-
+  # oc adm policy add-scc-to-user privileged -z default -n $1
+  # Deploy the common services
+  echo "Depoying common services for ${tierFolder}"
+  oc apply -f ${tierFolder}/common.yaml
   # Deploy the all-in-one application stack
-  oc apply -f ${tierFolder}/all-in-one.yaml
+  echo "Depoying boutique shop services for tenant: $1, namespace: $2, prefix: $3, and tier $4"
+  oc process -f ${SCRIPT_DIR}/boutique-shop.yaml --param=TENANT_NAME=$1 --param=TENANT_NAMESPACE=$2  --param=TENANT_PREFIX=$3 --param=TIER=$4 | oc apply -f -
+  
+  oc project $2
   # Apply Horizontal Pod Autoscaler for the microservices
   oc apply -f ${tierFolder}/hpa.yaml
   # Apply a quota to the namespace
@@ -106,67 +109,52 @@ function provisionAllResources() {
   oc apply -f ${tierFolder}/limit-range-v1.yaml
 }
 
-function createRouteAndExportURL(){
+# function provisionFree() {
+#   log "Provisioining free tier"
+#   provisionAllResources ${FREE_NAMESPACE}
+#   # createNamespaceIfMissingAndSetProject ${FREE_NAMESPACE}
+#   # if [ $? -eq 0 ]; then
+#   #   provisionAllResources ${FREE_NAMESPACE}
+#   # fi
+# }
 
-  clusterDomain=$(oc get ingresses.config.openshift.io cluster -ojsonpath='{.spec.domain}')
-  log "Cluster domain is ${clusterDomain}"
-  # **Need to create logic to monitor the website until the service is up and running**
-  oc expose svc frontend --name=${TENANT_NAME} --hostname=${TENANT_HOSTNAME}.${clusterDomain}
-  # Sleep statement to allow for the frontend service to come online
-  sleep 6
+# function provisionSilver() {
+#   log "Provisioining silver tier"
+#   provisionAllResources ${SILVER_NAMESPACE}
+#   # createNamespaceIfMissingAndSetProject ${SILVER_NAMESPACE}
+#   # if [ $? -eq 0 ]; then
+#   #   provisionAllResources ${SILVER_NAMESPACE}
+#   # fi
+# }
 
-  #
-  # Get the url for the website
-  ROUTE=$(oc get route ${TENANT_NAME} --no-headers | awk '{print $4"://"$2}')
+# function provisionGold() {
+#   log "Provisioining gold tier"
+#   provisionAllResources ${GOLD_NAMESPACE}
+#   # createGoldNamespaceIfMisingAndSetProject ${GOLD_NAMESPACE}
+#   # if [ $? -eq 0 ]; then
+#   #   provisionAllGoldResources ${GOLD_NAMESPACE}
+#   # fi
+# }
 
-  #
-  # Validation of the route
-  echo "${ROUTE}"
-}
+# function provisionPlatinum() {
+#   #createNewNamespaceAndSetProject ${TENANT_NAMESPACE}
+#   provisionAllResources ${TENANT_NAMESPACE}
+# }
 
-function provisionFree() {
-  log "Provisioining free tier"
-  createNamespaceIfMissingAndSetProject ${FREE_NAMESPACE}
-  if [ $? -eq 0 ]; then
-    provisionAllResources ${FREE_NAMESPACE}
-  fi
-  createRouteAndExportURL ${FREE_NAMESPACE}
-}
 
-function provisionSilver() {
-  log "Provisioining silver tier"
-  createNamespaceIfMissingAndSetProject ${SILVER_NAMESPACE}
-  if [ $? -eq 0 ]; then
-    provisionAllResources ${SILVER_NAMESPACE}
-  fi
-  createRouteAndExportURL ${SILVER_NAMESPACE}
-}
 
-function provisionGold() {
-  log "Provisioining gold tier"
-  createGoldNamespaceIfMisingAndSetProject ${GOLD_NAMESPACE}
-  if [ $? -eq 0 ]; then
-    provisionAllGoldResources ${GOLD_NAMESPACE}
-  fi
-  createRouteAndExportURL ${GOLD_NAMESPACE}
-}
-
-function provisionPremium() {
-  createNewNamespaceAndSetProject ${TENANT_NAMESPACE}
-  provisionAllResources ${TENANT_NAMESPACE}
-  createRouteAndExportURL ${TENANT_NAMESPACE}
-}
-
-echo "Provisioning for tenant ${TENANT_NAME}, host ${TENANT_HOSTNAME} and tier ${TIER}"
 if [[ ${TIER} == "free" ]]; then
-  provisionFree
+  TENANT_NAMESPACE="boutique-free"
 elif [[ ${TIER} == "silver" ]]; then
-  provisionSilver
+  TENANT_NAMESPACE="boutique-silver"
 elif [[ ${TIER} == "gold" ]]; then
-  provisionGold
-elif [[ ${TIER} == "premium" ]]; then
-  provisionPremium
+  TENANT_NAMESPACE=${TENANT_NAME}
+elif [[ ${TIER} == "platinum" ]]; then
+  TENANT_NAMESPACE=${TENANT_NAME}
 else
   echo "Unmanaged tier ${TIER}-Exiting with error code ${ERR_UNMANAGED_TIER}"
   exit ${ERR_UNMANAGED_TIER}
 fi
+
+echo "Provisioning for tenant ${TENANT_NAME}, host ${TENANT_HOSTNAME} and tier ${TIER}"
+provisionAllResources ${TENANT_NAME} ${TENANT_NAMESPACE} ${TENANT_HOSTNAME} ${TIER}

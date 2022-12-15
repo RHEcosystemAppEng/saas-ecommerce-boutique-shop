@@ -38,7 +38,7 @@ spec:
             - mountPath: /usr/app/boutique_files
               name: provisioner-templates
               readOnly: false
-{{- $tiers := list "free" "gold" "silver" "premium" }}
+{{- $tiers := list "free" "gold" "silver" "platinum" }}
 {{- range $tiers }}
 {{- $tier := . }}
             - mountPath: {{ printf "/usr/app/boutique_files/%s" $tier }}
@@ -51,7 +51,7 @@ spec:
             name: boutique-files-configmap
             optional: false
           name: provisioner-templates
-{{- $tiers := list "free" "gold" "silver" "premium" }}
+{{- $tiers := list "free" "gold" "silver" "platinum" }}
 {{- range $tiers }}
 {{- $tier := . }}
         - configMap:

@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Values.namespace.name }}
 data:
 {{ (.Files.Glob (printf "%s/*" $rootFolder)).AsConfig | indent 2 }}
-{{- $tiers := list "free" "gold" "silver" "premium" }}
+{{- $tiers := list "free" "gold" "silver" "platinum" }}
 {{- range $tiers }}
   {{- $tier := . }}
 ---
