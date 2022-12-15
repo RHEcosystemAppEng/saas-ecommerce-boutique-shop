@@ -18,7 +18,7 @@ function clearLocalStorage() {
     localStorage.removeItem("freeTier")
     localStorage.removeItem("silverTier")
     localStorage.removeItem("goldTier")
-    localStorage.removeItem("premiumTier")
+    localStorage.removeItem("platinumTier")
     localStorage.removeItem("tenantKey")
 }
 

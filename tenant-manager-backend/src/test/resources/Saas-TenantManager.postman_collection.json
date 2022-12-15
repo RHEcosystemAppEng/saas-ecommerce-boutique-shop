@@ -92,7 +92,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"tenantKey\": \"{{tenantKey}}\",\n    \"tier\": \"Premium\",\n    \"avgConcurrentShoppers\": {{newAvgConcurrentShoppers}},\n    \"peakConcurrentShoppers\": {{newPeakConcurrentShoppers}}\n}",
+					"raw": "{\n    \"tenantKey\": \"{{tenantKey}}\",\n    \"tier\": \"Platinum\",\n    \"avgConcurrentShoppers\": {{newAvgConcurrentShoppers}},\n    \"peakConcurrentShoppers\": {{newPeakConcurrentShoppers}}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -269,7 +269,7 @@
 		},
 		{
 			"key": "tier",
-			"value": "Premium",
+			"value": "Platinum",
 			"type": "string"
 		},
 		{

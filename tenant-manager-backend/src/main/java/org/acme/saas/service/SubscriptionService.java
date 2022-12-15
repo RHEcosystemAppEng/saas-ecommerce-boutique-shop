@@ -40,7 +40,7 @@ public class SubscriptionService {
         return switch (tier) {
             case "Silver" -> (avgConcurrentShoppers / 100.0) * 10;
             case "Gold" -> (avgConcurrentShoppers / 100.0) * 20;
-            case "Premium" -> (avgConcurrentShoppers / 100.0) * 40;
+            case "Platinum" -> (avgConcurrentShoppers / 100.0) * 40;
             default -> 0.0;
         };
     }
