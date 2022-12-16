@@ -1,0 +1,129 @@
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: adservice-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: adservice
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: cart-pdb
+  namespace: boutique-ops
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: cartservice
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: checkout-pdb
+  namespace: boutique-ops
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: checkoutservice
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: currency-pdb
+  namespace: enterprise-utilities
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: currencyservice
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: email-pdb
+  namespace: enterprise-utilities
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: emailservice
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: frontend-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: frontendservice
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: payment-pdb
+  namespace: enterprise-utilities
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: paymentservice
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: productcatalog-pdb
+  namespace: boutique-ops
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: productcatalogservice
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: recommendation-pdb
+  namespace: boutique-ops
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: recommendationservice
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: rediscart-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: rediscartservice
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: shipping-pdb
+  namespace: boutique-ops
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: shippingservice
+

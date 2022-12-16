@@ -107,6 +107,8 @@ function provisionAllResources() {
   oc apply -f ${tierFolder}/boutique-quota.yaml
   # Apply a limit in the namespace
   oc apply -f ${tierFolder}/limit-range-v1.yaml
+  # Apply the Pod DisruptionBudget
+  oc apply -f ${tierFolder}/pdb-template.yaml
 }
 
 # function provisionFree() {
