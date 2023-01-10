@@ -47,7 +47,7 @@ public class RequestService {
     public Uni<List<RequestChangeData>> getRequestChangeData() {
         return Uni.combine().all().unis(
                 Request.findAllPendingRequests(),
-                Tenant.findAllActiveTenants()
+                Tenant.findAllTenantsByStatus(Constants.TENANT_STATUS_RUNNING)
         ).combinedWith((pendingRequests, tenants) -> {
             List<RequestChangeData> data = new ArrayList<>();
             Map<String, List<Tenant>> tenantMap = tenants.stream()

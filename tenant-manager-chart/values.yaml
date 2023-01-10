@@ -4,7 +4,7 @@
 
 
 namespace:
-  name: saas-boutique
+  name: jude-saas
 
 database:
   databaseName: tenantmanager
