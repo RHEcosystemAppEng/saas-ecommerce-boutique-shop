@@ -70,8 +70,10 @@ export const TierSelection = () => {
                 <Card style={styles.cardStyle} isSelectableRaised={true} isSelected={freeTier}
                       onSelectableInputChange={() => onSelectTier("Free")}>
                     <CardTitle component="h4">Free</CardTitle>
-                    <CardBody>Free Tier allows 5 concurrent shoppers, <br/><br/> there is no technical support. <br/><br/> 30 day free
-                        trial. </CardBody>
+                    <CardBody>Shop owners - try out the Boutique Shop e-commerce service FREE for 30 days. <br/><br/>
+                        During this period, you can choose your custom business URL, and have up to 10 concurrent web
+                        shoppers.
+                    </CardBody>
                     <CardFooter style={styles.footer}>
                         <Button variant="primary" isLarge onClick={() => onSelectTier("Free")}>Subscribe</Button>
                     </CardFooter>
@@ -82,8 +84,11 @@ export const TierSelection = () => {
                 <Card style={styles.cardStyle} isSelectableRaised={true} isSelected={silverTier}
                       onSelectableInputChange={() => onSelectTier("Silver")}>
                     <CardTitle component="h4">Silver</CardTitle>
-                    <CardBody>Silver Tier, provide reliable service with technical support. <br/><br/> The price will be on the
-                        usage, <br/><br/> $10/ month service fee to support every 100 concurrent online shoppers. </CardBody>
+                    <CardBody>Silver tier is an affordable option that provides you fundamental e-commerce services to
+                        get started. <br/><br/> Simple payment model - pay by the maximum number of concurrent shoppers.
+                        <br/><br/> We ensure reliable web response times, and an up-time performance to ensure a smooth
+                        shopping experience.
+                    </CardBody>
                     <CardFooter style={styles.footer}>
                         <Button variant="primary" isLarge onClick={() => onSelectTier("Silver")}>Subscribe</Button>
                     </CardFooter>
@@ -95,9 +100,10 @@ export const TierSelection = () => {
                       onSelectableInputChange={() => onSelectTier("Gold")}>
                     <CardTitle component="h4">Gold</CardTitle>
                     <CardBody>
-                        Gold Tier. provides the best shopping experience with quick page response time. <br/><br/> This tier is
-                        provided with technical support, in addition tenant can customize the store front webpage
-                        design. <br/><br/>The price will be $20/month for every 100 concurrent shoppers.
+                        In addition to the benefits for Silver Tier, Gold Tier subscribers can customize your storefront
+                        to your liking - create a look & feel that your clientele will identify with. <br/><br/>
+                        Additional customization is available. <br/><br/>Concurrent user pricing starts at $20/month up
+                        to 500 concurrent users.
                     </CardBody>
                     <CardFooter style={styles.footer}>
                         <Button variant="primary" isLarge onClick={() => onSelectTier("Gold")}>Subscribe</Button>
@@ -110,8 +116,10 @@ export const TierSelection = () => {
                       onSelectableInputChange={() => onSelectTier("Platinum")}>
                     <CardTitle component="h4">Platinum</CardTitle>
                     <CardBody>
-                    Platinum Tier - provider best security protection. Tenants can have own instance of application which completely isolated from others. <br/><br/>
-                    The price will be $40/month subscription fee to support every 100 concurrent shoppers
+                        In addition to Gold tier features, our Platinum Tier will scale automatically to your business -
+                        even during peak holiday shopping periods. <br/><br/>This is recommended for multi-location
+                        businesses, firms with an established web business, or concurrent user requirements that
+                        exceed 500 users.
                     </CardBody>
                     <CardFooter style={styles.footer}>
                         <Button variant="primary" isLarge onClick={() => onSelectTier("Platinum")}>Subscribe</Button>
