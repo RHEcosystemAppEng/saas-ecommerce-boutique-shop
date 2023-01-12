@@ -101,8 +101,7 @@ function provisionAllResources() {
   oc process -f ${SCRIPT_DIR}/boutique-shop.yaml --param=TENANT_NAME=$1 --param=TENANT_NAMESPACE=$2  --param=TENANT_PREFIX=$3 --param=TIER=$4 | oc apply -f -
   
   oc project $2
-  # Apply Horizontal Pod Autoscaler for the microservices
-  oc apply -f ${tierFolder}/hpa.yaml
+
   # Apply a quota to the namespace
   oc apply -f ${tierFolder}/boutique-quota.yaml
   # Apply a limit in the namespace
