@@ -22,6 +22,14 @@ metadata:
             "tenantPrefix": "sample-free-shop",
             "tier": "free"
           }
+        },
+        {
+          "apiVersion": "demo.openshift.com/v1alpha1",
+          "kind": "HpaScaler",
+          "metadata": {
+            "name": "hpascaler-sample"
+          },
+          "spec": null
         }
       ]
     capabilities: Basic Install
@@ -37,6 +45,11 @@ spec:
       displayName: Boutique Shop
       kind: BoutiqueShop
       name: boutiqueshops.demo.openshift.com
+      version: v1alpha1
+    - description: HpaScaler is the Schema for the hpascalers API
+      displayName: Hpa Scaler
+      kind: HpaScaler
+      name: hpascalers.demo.openshift.com
       version: v1alpha1
   description: Installs and manages the Boutique Shop demo application
   displayName: Boutique Shop Operator
@@ -106,7 +119,7 @@ spec:
         - apiGroups:
           - demo.openshift.com
           resources:
-          - boutiqueshops
+          - hpascalers
           verbs:
           - create
           - delete
@@ -118,13 +131,13 @@ spec:
         - apiGroups:
           - demo.openshift.com
           resources:
-          - boutiqueshops/finalizers
+          - hpascalers/finalizers
           verbs:
           - update
         - apiGroups:
           - demo.openshift.com
           resources:
-          - boutiqueshops/status
+          - hpascalers/status
           verbs:
           - get
           - patch
