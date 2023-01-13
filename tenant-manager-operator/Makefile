@@ -36,9 +36,7 @@ OPERATOR_DIR=boutique-tenant-operator
 .PHONY: setup
 setup:
 	rm -rf $(shell pwd)/${OPERATOR_DIR} && \
-	mkdir -p $(shell pwd)/${OPERATOR_DIR} && \
-	helm repo add rh-saas ${HELM_REPO}  > /dev/null 2>&1
-	helm repo update
+	mkdir -p $(shell pwd)/${OPERATOR_DIR} 
 
 .PHONY: init
 init: setup
