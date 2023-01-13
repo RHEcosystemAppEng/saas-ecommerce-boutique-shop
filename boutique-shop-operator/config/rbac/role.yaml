@@ -9,7 +9,6 @@ rules:
   - demo.openshift.com
   resources:
   - hpascalers
-  - boutiqueshops
   verbs:
   - create
   - delete
@@ -22,14 +21,12 @@ rules:
   - demo.openshift.com
   resources:
   - hpascalers/finalizers
-  - boutiqueshops/finalizers
   verbs:
   - update
 - apiGroups:
   - demo.openshift.com
   resources:
   - hpascalers/status
-  - boutiqueshops/status
   verbs:
   - get
   - patch
