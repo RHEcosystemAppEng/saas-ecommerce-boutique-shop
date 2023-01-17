@@ -37,7 +37,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.24.1
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: boutique-shop-operator.v0.0.1
+  name: boutique-shop-operator.v0.0.8
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -145,6 +145,32 @@ spec:
           - patch
           - update
         - apiGroups:
+          - demo.openshift.com
+          resources:
+          - boutiqueshops
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - demo.openshift.com
+          resources:
+          - boutiqueshops/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - demo.openshift.com
+          resources:
+          - boutiqueshops/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
           - authentication.k8s.io
           resources:
           - tokenreviews
@@ -204,7 +230,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/ecosystem-appeng/boutique-shop-operator:0.0.1
+                image: quay.io/ecosystem-appeng/boutique-shop-operator:0.0.8
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -295,4 +321,4 @@ spec:
   provider:
     name: SaaS Patterns Community
     url: https://github.com/saas-patterns
-  version: 0.0.1
+  version: 0.0.8

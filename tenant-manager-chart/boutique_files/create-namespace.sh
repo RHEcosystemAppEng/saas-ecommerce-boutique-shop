@@ -106,6 +106,8 @@ function provisionAllResources() {
   oc apply -f ${tierFolder}/boutique-quota.yaml
   # Apply a limit in the namespace
   oc apply -f ${tierFolder}/limit-range-v1.yaml
+
+  createRouteAndExportURL ${TENANT_NAMESPACE}
 }
 
 # function provisionFree() {
@@ -139,6 +141,22 @@ function provisionAllResources() {
 #   #createNewNamespaceAndSetProject ${TENANT_NAMESPACE}
 #   provisionAllResources ${TENANT_NAMESPACE}
 # }
+
+function createRouteAndExportURL(){
+
+  clusterDomain=$(oc get ingresses.config.openshift.io cluster -ojsonpath='{.spec.domain}')
+  log "Cluster domain is ${clusterDomain}"
+  # **Need to create logic to monitor the website until the service is up and running**
+  oc expose svc frontend --name=${TENANT_NAME} --hostname=${TENANT_HOSTNAME}.${clusterDomain}
+  # Sleep statement to allow for the frontend service to come online
+  sleep 6
+  # Get the url for the website
+  ROUTE=$(oc get route ${TENANT_NAME} --no-headers | awk '{print $4"://"$2}')
+
+  #
+  # Validation of the route
+  echo "${ROUTE}"
+}
 
 
 
