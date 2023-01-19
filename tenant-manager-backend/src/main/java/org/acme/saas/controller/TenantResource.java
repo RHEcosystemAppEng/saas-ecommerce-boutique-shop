@@ -1,6 +1,5 @@
 package org.acme.saas.controller;
 
-import io.quarkus.hibernate.reactive.panache.Panache;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.unchecked.Unchecked;
@@ -9,7 +8,6 @@ import org.acme.saas.model.Tenant;
 import org.acme.saas.model.data.LoginData;
 import org.acme.saas.model.data.RegisterData;
 import org.acme.saas.model.data.TenantData;
-import org.acme.saas.model.data.TenantData.TenantDataBuilder;
 import org.acme.saas.model.data.TokenData;
 import org.acme.saas.model.data.TokenData.TokenDataBuilder;
 import org.acme.saas.model.draft.RequestDraft;
@@ -18,7 +16,9 @@ import org.acme.saas.model.draft.SubscriptionDraft;
 import org.acme.saas.model.draft.SubscriptionDraft.SubscriptionDraftBuilder;
 import org.acme.saas.model.draft.TenantDraft;
 import org.acme.saas.model.draft.TenantDraft.TenantDraftBuilder;
+import org.acme.saas.model.mappers.RequestMapper;
 import org.acme.saas.model.mappers.TenantMapper;
+import org.acme.saas.service.ProvisionService;
 import org.acme.saas.service.SubscriptionService;
 import org.acme.saas.service.TenantService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -50,6 +50,9 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class TenantResource {
     @Inject
     TenantService tenantService;
+
+    @Inject
+    ProvisionService provisionService;
 
     @Inject
     SubscriptionService subscriptionService;
@@ -207,8 +210,9 @@ public class TenantResource {
             = true) @PathParam("tenantKey") String tenantKey) {
         return Tenant.findByTenantKey(tenantKey).onItem()
                 .ifNotNull().transform(Unchecked.function(tenant -> {
-                            if (!tenant.status.equals(Constants.TENANT_STATUS_REQUESTED)) {
-                                throw new BadRequestException("The tenant is not in the expected Waiting state");
+                            if (!tenant.status.equals(Constants.TENANT_STATUS_REQUESTED) &&
+                                    !tenant.status.equals(Constants.TENANT_STATUS_STOPPED)) {
+                                throw new BadRequestException("The tenant is not in the expected Waiting/Stopped state");
                             } else {
                                 return tenantService.updateTenantStatus(tenantKey, Constants.TENANT_STATUS_RUNNING);
                             }
@@ -217,6 +221,7 @@ public class TenantResource {
                 .onItem().ifNull().failWith(NotFoundException::new);
 
     }
+
     @Operation(summary = "Disables a tenant subscription")
     @APIResponse(responseCode = "200", description = "Tenant disabled", content =
     @Content(mediaType =
@@ -241,13 +246,14 @@ public class TenantResource {
                 .onItem().ifNull().failWith(NotFoundException::new);
 
     }
+
     @Operation(summary = "Purges a tenant subscription")
     @APIResponse(responseCode = "200", description = "Tenant purged", content =
     @Content(mediaType =
             APPLICATION_JSON, schema =
     @Schema(implementation = TenantData.class)))
     @APIResponse(responseCode = "404", description = "No tenant was found for the given tenantKey")
-    @APIResponse(responseCode = "400", description = "The tenant is not in the expected Stopped state")
+    @APIResponse(responseCode = "400", description = "The tenant is not in the expected Running/Stopped state")
     @PUT
     @Path("/{tenantKey}/purge")
     @Produces(MediaType.APPLICATION_JSON)
@@ -255,10 +261,16 @@ public class TenantResource {
             = true) @PathParam("tenantKey") String tenantKey) {
         return Tenant.findByTenantKey(tenantKey).onItem()
                 .ifNotNull().transform(Unchecked.function(tenant -> {
-                            if (!tenant.status.equals(Constants.TENANT_STATUS_STOPPED)) {
-                                throw new BadRequestException("The tenant is not in the expected Stopped state");
+                            if (!tenant.status.equals(Constants.TENANT_STATUS_RUNNING) &&
+                                    !tenant.status.equals(Constants.TENANT_STATUS_STOPPED)) {
+                                throw new BadRequestException("The tenant is not in the expected Running/Stopped state");
                             } else {
-                                return tenantService.updateTenantStatus(tenantKey, Constants.TENANT_STATUS_PURGED);
+                                return provisionService.onPurgeSubscription(
+                                                TenantMapper.INSTANCE.tenantToTenantDraft(tenant),
+                                                RequestMapper.INSTANCE.requestToRequestDraft(tenant.subscriptions.get(0).request)
+                                        ).onItem().ifNotNull()
+                                        .transformToUni(s ->
+                                                tenantService.updateTenantStatus(tenantKey, Constants.TENANT_STATUS_PURGED));
                             }
                         })
                 ).flatMap(Function.identity())

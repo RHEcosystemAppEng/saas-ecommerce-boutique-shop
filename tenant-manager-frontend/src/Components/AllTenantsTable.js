@@ -5,12 +5,14 @@ import {Bullseye, EmptyState, EmptyStateIcon, Spinner, Title} from "@patternfly/
 
 export const AllTenantsTable = () => {
     const [data, setData] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
 
     const getTenantData = () => {
         axios
             .get("/tenant/")
             .then((res) => {
                 setData(res.data);
+                setLoading(false);
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))
@@ -18,33 +20,33 @@ export const AllTenantsTable = () => {
     }
 
     const enableTenant = (tenant) => {
+        setLoading(true)
         axios
-            .put("/tenant/"+tenant.tenantKey + "/enable")
+            .put("/tenant/" + tenant.tenantKey + "/enable")
             .then((res) => {
-                data.filter(e => e.tenantKey === tenant.tenantKey)
-                    .forEach(e=> e.status = res.data.status)
+                getTenantData()
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))
             })
     }
     const disableTenant = (tenant) => {
+        setLoading(true)
         axios
-            .put("/tenant/"+tenant.tenantKey + "/disable")
+            .put("/tenant/" + tenant.tenantKey + "/disable")
             .then((res) => {
-                data.filter(e => e.tenantKey === tenant.tenantKey)
-                    .forEach(e=> e.status = res.data.status)
+                getTenantData()
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))
             })
     }
     const purgeTenant = (tenant) => {
+        setLoading(true)
         axios
-            .put("/tenant/"+tenant.tenantKey + "/purge")
+            .put("/tenant/" + tenant.tenantKey + "/purge")
             .then((res) => {
-                data.filter(e => e.tenantKey === tenant.tenantKey)
-                    .forEach(e=> e.status = res.data.status)
+                getTenantData()
             })
             .catch((err) => {
                 console.error(JSON.stringify(err))
@@ -83,6 +85,16 @@ export const AllTenantsTable = () => {
                     onClick: () => enableTenant(tenant)
                 })
                 break;
+            case 'Stopped':
+                result.push({
+                    title: 'Enable',
+                    onClick: () => enableTenant(tenant)
+                })
+                result.push({
+                    title: 'Purge',
+                    onClick: () => purgeTenant(tenant)
+                })
+                break;
         }
         return result;
     }
@@ -101,33 +113,35 @@ export const AllTenantsTable = () => {
                 </Tr>
             </Thead>
             <Tbody>
-                {data.length > 0 && data.map(tenant => {
 
-                    return <Tr key={tenant.name}>
-                        <Td dataLabel={columnNames.tenantId}>{tenant.tenantKey}</Td>
-                        <Td dataLabel={columnNames.tenantName}>{tenant.tenantName}</Td>
-                        <Td dataLabel={columnNames.tier}>{tenant.tier}</Td>
-                        <Td dataLabel={columnNames.avgConcurrentShoppers}>{tenant.avgConcurrentShoppers}</Td>
-                        <Td dataLabel={columnNames.peakConcurrentShoppers}>{tenant.peakConcurrentShoppers}</Td>
-                        <Td dataLabel={columnNames.status}>{tenant.status}</Td>
-                        <Td>
-                            <ActionsColumn items={getActionsBasedOnStatus(tenant)} rowData={{}} />
-                        </Td>
-                    </Tr>;
-                })}
-                {data.length === 0 ?
+                {data.length === 0 || loading ?
                     (
                         <td colSpan="7">
                             <Bullseye>
                                 <EmptyState>
-                                    <EmptyStateIcon variant="container" component={Spinner} />
+                                    <EmptyStateIcon variant="container" component={Spinner}/>
                                     <Title size="lg" headingLevel="h2">
                                         Loading
                                     </Title>
                                 </EmptyState>
                             </Bullseye>
                         </td>
-                        ) : null
+                    ) : (
+                        data.map(tenant => {
+
+                            return <Tr key={tenant.name}>
+                                <Td dataLabel={columnNames.tenantId}>{tenant.tenantKey}</Td>
+                                <Td dataLabel={columnNames.tenantName}>{tenant.tenantName}</Td>
+                                <Td dataLabel={columnNames.tier}>{tenant.tier}</Td>
+                                <Td dataLabel={columnNames.avgConcurrentShoppers}>{tenant.avgConcurrentShoppers}</Td>
+                                <Td dataLabel={columnNames.peakConcurrentShoppers}>{tenant.peakConcurrentShoppers}</Td>
+                                <Td dataLabel={columnNames.status}>{tenant.status}</Td>
+                                <Td>
+                                    <ActionsColumn items={getActionsBasedOnStatus(tenant)} rowData={{}}/>
+                                </Td>
+                            </Tr>;
+                        })
+                    )
                 }
             </Tbody>
         </TableComposable>

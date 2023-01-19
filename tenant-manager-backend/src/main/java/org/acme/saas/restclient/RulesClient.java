@@ -37,7 +37,7 @@ public interface RulesClient {
         public Uni<ProvisionResponse> handle(ExecutionContext context) {
             log.warnf("Running ProvisionPlanFallback due to %s", context.getFailure().getMessage());
             return Uni.createFrom().item(
-                    null);
+                    () -> null);
         }
 
     }
