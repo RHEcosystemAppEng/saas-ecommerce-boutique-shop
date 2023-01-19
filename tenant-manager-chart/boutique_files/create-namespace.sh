@@ -151,7 +151,7 @@ function createRouteAndExportURL(){
   # Sleep statement to allow for the frontend service to come online
   sleep 6
   # Get the url for the website
-  ROUTE=$(oc get route ${TENANT_NAME} --no-headers | awk '{print $4"://"$2}')
+  ROUTE=https://$(oc  get route jude -o=jsonpath='{.spec.host}')
 
   #
   # Validation of the route
