@@ -93,7 +93,7 @@
         </dmn:rule>
         <dmn:rule id="_C2AB78E9-2221-40C8-8879-D6B7353CC9C5">
           <dmn:inputEntry id="_9F4079DB-764D-4310-BA75-162235EBAF35">
-            <dmn:text>"Premium"</dmn:text>
+            <dmn:text>"Platinum"</dmn:text>
           </dmn:inputEntry>
           <dmn:outputEntry id="_EC53171F-33D4-418B-95C3-948BC90BEF19">
             <dmn:text>30</dmn:text>

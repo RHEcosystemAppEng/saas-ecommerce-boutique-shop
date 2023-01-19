@@ -5,7 +5,7 @@
   <dmn:itemDefinition id="_6ABDED0C-AE4D-4C71-8CAE-A876900A8541" name="Tier" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues kie:constraintType="enumeration" id="_14634527-FA06-4031-B433-954BDA857344">
-      <dmn:text>"free", "silver", "gold", "premium"</dmn:text>
+      <dmn:text>"free", "silver", "gold", "platinum"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_5746647D-4583-48CD-8864-EF0E01BF9275" name="Bucket" isCollection="false">
@@ -162,13 +162,13 @@
           <dmn:text>"checkoutservice"</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_C8D4FBF5-3852-4276-A3B1-DCD24279995E">
-          <dmn:text>false</dmn:text>
+          <dmn:text>true</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_8FD736EA-D574-4600-A632-CEC75019DD0E">
-          <dmn:text>"boutique-ops"</dmn:text>
+          <dmn:text>""</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
-          <dmn:text>Shared pool</dmn:text>
+          <dmn:text>Tenant namespace</dmn:text>
         </dmn:annotationEntry>
       </dmn:rule>
       <dmn:rule id="_57FDCD47-0CE8-4721-82F6-772F03428552">
@@ -179,13 +179,13 @@
           <dmn:text>"cartservice"</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_16FB68FE-36F6-4A54-905D-51FE4960D46F">
-          <dmn:text>false</dmn:text>
+          <dmn:text>true</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_ECA5E2AA-EC6F-4A15-BC35-B55FDC7E6543">
-          <dmn:text>"boutique-ops"</dmn:text>
+          <dmn:text>""</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
-          <dmn:text>Shared pool</dmn:text>
+          <dmn:text>Tenant namespace</dmn:text>
         </dmn:annotationEntry>
       </dmn:rule>
       <dmn:rule id="_A20A3C1D-C071-43A4-A00F-D1629A45B0B9">
@@ -292,7 +292,7 @@
       </dmn:rule>
       <dmn:rule id="_44A311FD-775E-4EFC-99CE-DA883EE5D52E">
         <dmn:inputEntry id="_E08EDEAB-A150-4DCC-8972-6BBA75513843">
-          <dmn:text>"premium"</dmn:text>
+          <dmn:text>"platinum"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_DFCF0D7F-8017-439E-9C91-C0FF82D9E895">
           <dmn:text>-</dmn:text>

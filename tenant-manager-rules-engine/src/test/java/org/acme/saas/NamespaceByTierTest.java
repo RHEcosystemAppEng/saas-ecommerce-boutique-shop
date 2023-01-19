@@ -82,12 +82,13 @@ public class NamespaceByTierTest {
                                         Arguments.of("gold", "emailservice",
                                                         Map.of("isTenantNamespace", false, "namespace",
                                                                         "enterprise-utilities")),
+
                                         Arguments.of("gold", "checkoutservice",
-                                                        Map.of("isTenantNamespace", false, "namespace",
-                                                                        "boutique-ops")),
+                                                        Map.of("isTenantNamespace", true, "namespace",
+                                                                        "")),
                                         Arguments.of("gold", "cartservice",
-                                                        Map.of("isTenantNamespace", false, "namespace",
-                                                                        "boutique-ops")),
+                                                        Map.of("isTenantNamespace", true, "namespace",
+                                                                        "")),
                                         Arguments.of("gold", "shippingservice",
                                                         Map.of("isTenantNamespace", false, "namespace",
                                                                         "boutique-ops")),
@@ -105,7 +106,7 @@ public class NamespaceByTierTest {
                                                         Map.of("isTenantNamespace", true, "namespace", ""))));
 
                         for (String ms : allMicroservices) {
-                                args.add(Arguments.of("premium", ms,
+                                args.add(Arguments.of("platinum", ms,
                                                 Map.of("isTenantNamespace", true, "namespace", "")));
                         }
 

@@ -1,9 +1,8 @@
----
+# permissions for end users to edit hpascalers.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  creationTimestamp: null
-  name: manager-role
+  name: hpascaler-editor-role
 rules:
 - apiGroups:
   - demo.openshift.com
@@ -20,14 +19,6 @@ rules:
 - apiGroups:
   - demo.openshift.com
   resources:
-  - hpascalers/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - demo.openshift.com
-  resources:
   - hpascalers/status
   verbs:
   - get
-  - patch
-  - update

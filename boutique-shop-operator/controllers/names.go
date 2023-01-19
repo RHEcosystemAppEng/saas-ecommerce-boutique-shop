@@ -9,7 +9,7 @@ func cartName() string {
 }
 
 func catalogName() string {
-	return "catalogservice"
+	return "productcatalogservice"
 }
 
 func checkoutName() string {
@@ -25,7 +25,7 @@ func emailName() string {
 }
 
 func frontendName() string {
-	return "frontendservice"
+	return "frontend"
 }
 
 func loadGeneratorName() string {
@@ -41,7 +41,7 @@ func recommendationName() string {
 }
 
 func redisName() string {
-	return "redisservice"
+	return "redis-cart"
 }
 
 func routeName() string {

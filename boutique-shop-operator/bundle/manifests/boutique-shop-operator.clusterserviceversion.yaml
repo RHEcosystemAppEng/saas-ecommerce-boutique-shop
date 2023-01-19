@@ -22,12 +22,22 @@ metadata:
             "tenantPrefix": "sample-free-shop",
             "tier": "free"
           }
+        },
+        {
+          "apiVersion": "demo.openshift.com/v1alpha1",
+          "kind": "HpaScaler",
+          "metadata": {
+            "name": "hpascaler-sample"
+          },
+          "spec": {
+            "scaler": "{\n\"resourcesByTier\": [\n    {\n        \"tier\": \"gold\",\n        \"resourcesByMicroservices\": [\n            {\n                \"bucket\": \"enterprise utilities\",\n                \"tenant\": null,\n                \"namespace\": \"enterprise-utilities\",\n                \"microservice\": \"emailservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 1,\n                    \"replicas\": 1.0,\n                    \"comment\": \"500/500\"\n                }\n            },\n            {\n                \"bucket\": \"enterprise utilities\",\n                \"tenant\": null,\n                \"namespace\": \"enterprise-utilities\",\n                \"microservice\": \"paymentservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 1,\n                    \"replicas\": 1.0,\n                    \"comment\": \"500/500\"\n                }\n            },\n            {\n                \"bucket\": \"enterprise utilities\",\n                \"tenant\": null,\n                \"namespace\": \"enterprise-utilities\",\n                \"microservice\": \"currencyservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 1,\n                    \"replicas\": 1.0,\n                    \"comment\": \"500/500\"\n                }\n            },\n            {\n                \"bucket\": \"logistics\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-ops\",\n                \"microservice\": \"checkoutservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 1,\n                    \"replicas\": 1.0,\n                    \"comment\": \"500/500\"\n                }\n            },\n            {\n                \"bucket\": \"logistics\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-ops\",\n                \"microservice\": \"cartservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 1,\n                    \"replicas\": 1.0,\n                    \"comment\": \"500/500\"\n                }\n            },\n            {\n                \"bucket\": \"logistics\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-ops\",\n                \"microservice\": \"shippingservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 1,\n                    \"replicas\": 1.0,\n                    \"comment\": \"500/500\"\n                }\n            },\n            {\n                \"bucket\": \"logistics\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-ops\",\n                \"microservice\": \"recommendationservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 1,\n                    \"replicas\": 1.0,\n                    \"comment\": \"500/500\"\n                }\n            },\n            {\n                \"bucket\": \"logistics\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-ops\",\n                \"microservice\": \"productcatalogservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 1,\n                    \"replicas\": 1.0,\n                    \"comment\": \"500/500\"\n                }\n            },\n            {\n                \"bucket\": \"shopper experience\",\n                \"tenant\": \"Tenant1\",\n                \"namespace\": \"Tenant1\",\n                \"microservice\": \"frontend\",\n                \"hpaResources\": {\n                    \"minReplicas\": 2,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 2.0,\n                    \"comment\": \"200/100\"\n                }\n            },\n            {\n                \"bucket\": \"shopper experience\",\n                \"tenant\": \"Tenant1\",\n                \"namespace\": \"Tenant1\",\n                \"microservice\": \"redis-cart\",\n                \"hpaResources\": {\n                    \"minReplicas\": 2,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 2.0,\n                    \"comment\": \"200/100\"\n                }\n            },\n            {\n                \"bucket\": \"shopper experience\",\n                \"tenant\": \"Tenant1\",\n                \"namespace\": \"Tenant1\",\n                \"microservice\": \"adservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 2,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 2.0,\n                    \"comment\": \"200/100\"\n                }\n            }\n        ]\n    },\n    {\n        \"tier\": \"silver\",\n        \"resourcesByMicroservices\": [\n            {\n                \"bucket\": \"enterprise utilities\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"emailservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 1.4,\n                    \"comment\": \"700/500\"\n                }\n            },\n            {\n                \"bucket\": \"enterprise utilities\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"paymentservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 1.4,\n                    \"comment\": \"700/500\"\n                }\n            },\n            {\n                \"bucket\": \"enterprise utilities\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"currencyservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 1.4,\n                    \"comment\": \"700/500\"\n                }\n            },\n            {\n                \"bucket\": \"logistics\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"checkoutservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 1.4,\n                    \"comment\": \"700/500\"\n                }\n            },\n            {\n                \"bucket\": \"logistics\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"cartservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 1.4,\n                    \"comment\": \"700/500\"\n                }\n            },\n            {\n                \"bucket\": \"logistics\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"shippingservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 1.4,\n                    \"comment\": \"700/500\"\n                }\n            },\n            {\n                \"bucket\": \"logistics\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"recommendationservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 1.4,\n                    \"comment\": \"700/500\"\n                }\n            },\n            {\n                \"bucket\": \"logistics\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"productcatalogservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 1,\n                    \"maxReplicas\": 2,\n                    \"replicas\": 1.4,\n                    \"comment\": \"700/500\"\n                }\n            },\n            {\n                \"bucket\": \"shopper experience\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"frontend\",\n                \"hpaResources\": {\n                    \"minReplicas\": 6,\n                    \"maxReplicas\": 7,\n                    \"replicas\": 7.0,\n                    \"comment\": \"700/100\"\n                }\n            },\n            {\n                \"bucket\": \"shopper experience\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"redis-cart\",\n                \"hpaResources\": {\n                    \"minReplicas\": 6,\n                    \"maxReplicas\": 7,\n                    \"replicas\": 7.0,\n                    \"comment\": \"700/100\"\n                }\n            },\n            {\n                \"bucket\": \"shopper experience\",\n                \"tenant\": null,\n                \"namespace\": \"boutique-silver\",\n                \"microservice\": \"adservice\",\n                \"hpaResources\": {\n                    \"minReplicas\": 6,\n                    \"maxReplicas\": 7,\n                    \"replicas\": 7.0,\n                    \"comment\": \"700/100\"\n                }\n            }\n        ]\n    }\n]\n}"
+          }
         }
       ]
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.24.1
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: boutique-shop-operator.v0.0.26
+  name: boutique-shop-operator.v0.0.8
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -37,6 +47,11 @@ spec:
       displayName: Boutique Shop
       kind: BoutiqueShop
       name: boutiqueshops.demo.openshift.com
+      version: v1alpha1
+    - description: HpaScaler is the Schema for the hpascalers API
+      displayName: Hpa Scaler
+      kind: HpaScaler
+      name: hpascalers.demo.openshift.com
       version: v1alpha1
   description: Installs and manages the Boutique Shop demo application
   displayName: Boutique Shop Operator
@@ -102,6 +117,32 @@ spec:
           - list
           - create
           - delete
+          - update
+        - apiGroups:
+          - demo.openshift.com
+          resources:
+          - hpascalers
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - demo.openshift.com
+          resources:
+          - hpascalers/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - demo.openshift.com
+          resources:
+          - hpascalers/status
+          verbs:
+          - get
+          - patch
           - update
         - apiGroups:
           - demo.openshift.com
@@ -189,7 +230,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/ecosystem-appeng/boutique-shop-operator:0.0.26
+                image: quay.io/ecosystem-appeng/boutique-shop-operator:0.0.8
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -280,4 +321,4 @@ spec:
   provider:
     name: SaaS Patterns Community
     url: https://github.com/saas-patterns
-  version: 0.0.26
+  version: 0.0.8

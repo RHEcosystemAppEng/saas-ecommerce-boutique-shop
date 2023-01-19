@@ -29,6 +29,8 @@ public class ProvisionService {
 
     @ConfigProperty(name = "org.acme.saas.service.SubscriptionService.scriptFile")
     String scriptFile;
+    @ConfigProperty(name = "org.acme.saas.service.SubscriptionService.purgeScriptFile")
+    String purgeScriptFile;
     @ConfigProperty(name = "org.acme.saas.service.SubscriptionService.updateScriptFile")
     String updateScriptFile;
 
@@ -53,6 +55,14 @@ public class ProvisionService {
                 requestDraft.getHostName(),
                 requestDraft.getTier());
     }
+
+     public Uni<String> onPurgeSubscription(TenantDraft tenantDraft, RequestDraft requestDraft) {
+        return runScript(purgeScriptFile,
+                getNamespaceName(tenantDraft.getTenantName()),
+                requestDraft.getHostName(),
+                requestDraft.getTier());
+    }
+
 
     private Uni<String> runScript(String... scriptAndArgs) {
         log.infof("Calling the shell script %s with args %s", scriptAndArgs[0],

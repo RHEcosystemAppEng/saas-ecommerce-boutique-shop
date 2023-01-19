@@ -1,0 +1,284 @@
+apiVersion: demo.openshift.com/v1alpha1
+kind: HpaScaler
+metadata:
+  name: hpascaler-sample
+spec:
+  scaler: |-
+    {
+    "resourcesByTier": [
+        {
+            "tier": "gold",
+            "resourcesByMicroservices": [
+                {
+                    "bucket": "enterprise utilities",
+                    "tenant": null,
+                    "namespace": "enterprise-utilities",
+                    "microservice": "emailservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 1,
+                        "replicas": 1.0,
+                        "comment": "500/500"
+                    }
+                },
+                {
+                    "bucket": "enterprise utilities",
+                    "tenant": null,
+                    "namespace": "enterprise-utilities",
+                    "microservice": "paymentservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 1,
+                        "replicas": 1.0,
+                        "comment": "500/500"
+                    }
+                },
+                {
+                    "bucket": "enterprise utilities",
+                    "tenant": null,
+                    "namespace": "enterprise-utilities",
+                    "microservice": "currencyservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 1,
+                        "replicas": 1.0,
+                        "comment": "500/500"
+                    }
+                },
+                {
+                    "bucket": "logistics",
+                    "tenant": null,
+                    "namespace": "boutique-ops",
+                    "microservice": "checkoutservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 1,
+                        "replicas": 1.0,
+                        "comment": "500/500"
+                    }
+                },
+                {
+                    "bucket": "logistics",
+                    "tenant": null,
+                    "namespace": "boutique-ops",
+                    "microservice": "cartservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 1,
+                        "replicas": 1.0,
+                        "comment": "500/500"
+                    }
+                },
+                {
+                    "bucket": "logistics",
+                    "tenant": null,
+                    "namespace": "boutique-ops",
+                    "microservice": "shippingservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 1,
+                        "replicas": 1.0,
+                        "comment": "500/500"
+                    }
+                },
+                {
+                    "bucket": "logistics",
+                    "tenant": null,
+                    "namespace": "boutique-ops",
+                    "microservice": "recommendationservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 1,
+                        "replicas": 1.0,
+                        "comment": "500/500"
+                    }
+                },
+                {
+                    "bucket": "logistics",
+                    "tenant": null,
+                    "namespace": "boutique-ops",
+                    "microservice": "productcatalogservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 1,
+                        "replicas": 1.0,
+                        "comment": "500/500"
+                    }
+                },
+                {
+                    "bucket": "shopper experience",
+                    "tenant": "Tenant1",
+                    "namespace": "Tenant1",
+                    "microservice": "frontend",
+                    "hpaResources": {
+                        "minReplicas": 2,
+                        "maxReplicas": 2,
+                        "replicas": 2.0,
+                        "comment": "200/100"
+                    }
+                },
+                {
+                    "bucket": "shopper experience",
+                    "tenant": "Tenant1",
+                    "namespace": "Tenant1",
+                    "microservice": "redis-cart",
+                    "hpaResources": {
+                        "minReplicas": 2,
+                        "maxReplicas": 2,
+                        "replicas": 2.0,
+                        "comment": "200/100"
+                    }
+                },
+                {
+                    "bucket": "shopper experience",
+                    "tenant": "Tenant1",
+                    "namespace": "Tenant1",
+                    "microservice": "adservice",
+                    "hpaResources": {
+                        "minReplicas": 2,
+                        "maxReplicas": 2,
+                        "replicas": 2.0,
+                        "comment": "200/100"
+                    }
+                }
+            ]
+        },
+        {
+            "tier": "silver",
+            "resourcesByMicroservices": [
+                {
+                    "bucket": "enterprise utilities",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "emailservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 2,
+                        "replicas": 1.4,
+                        "comment": "700/500"
+                    }
+                },
+                {
+                    "bucket": "enterprise utilities",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "paymentservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 2,
+                        "replicas": 1.4,
+                        "comment": "700/500"
+                    }
+                },
+                {
+                    "bucket": "enterprise utilities",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "currencyservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 2,
+                        "replicas": 1.4,
+                        "comment": "700/500"
+                    }
+                },
+                {
+                    "bucket": "logistics",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "checkoutservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 2,
+                        "replicas": 1.4,
+                        "comment": "700/500"
+                    }
+                },
+                {
+                    "bucket": "logistics",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "cartservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 2,
+                        "replicas": 1.4,
+                        "comment": "700/500"
+                    }
+                },
+                {
+                    "bucket": "logistics",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "shippingservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 2,
+                        "replicas": 1.4,
+                        "comment": "700/500"
+                    }
+                },
+                {
+                    "bucket": "logistics",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "recommendationservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 2,
+                        "replicas": 1.4,
+                        "comment": "700/500"
+                    }
+                },
+                {
+                    "bucket": "logistics",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "productcatalogservice",
+                    "hpaResources": {
+                        "minReplicas": 1,
+                        "maxReplicas": 2,
+                        "replicas": 1.4,
+                        "comment": "700/500"
+                    }
+                },
+                {
+                    "bucket": "shopper experience",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "frontend",
+                    "hpaResources": {
+                        "minReplicas": 6,
+                        "maxReplicas": 7,
+                        "replicas": 7.0,
+                        "comment": "700/100"
+                    }
+                },
+                {
+                    "bucket": "shopper experience",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "redis-cart",
+                    "hpaResources": {
+                        "minReplicas": 6,
+                        "maxReplicas": 7,
+                        "replicas": 7.0,
+                        "comment": "700/100"
+                    }
+                },
+                {
+                    "bucket": "shopper experience",
+                    "tenant": null,
+                    "namespace": "boutique-silver",
+                    "microservice": "adservice",
+                    "hpaResources": {
+                        "minReplicas": 6,
+                        "maxReplicas": 7,
+                        "replicas": 7.0,
+                        "comment": "700/100"
+                    }
+                }
+            ]
+        }
+    ]
+    }
