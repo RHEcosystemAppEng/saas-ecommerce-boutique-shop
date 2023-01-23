@@ -105,6 +105,7 @@ public class ProvisionScheduler {
         if (shouldCreateRequest[0]) {
             return provisionService.provisionTier(provisionRequest)
                     .onItem().transform(provisionResponse -> {
+                        // @todo call the operator to rebalance the replica count
                         log.infof("Printing response: %s", provisionResponse);
                         return provisionResponse;
                     });

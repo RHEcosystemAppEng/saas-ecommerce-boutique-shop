@@ -1,9 +1,11 @@
 package org.acme.saas.controller;
 
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.unchecked.Unchecked;
 import org.acme.saas.common.Constants;
+import org.acme.saas.model.Request;
 import org.acme.saas.model.Tenant;
 import org.acme.saas.model.data.LoginData;
 import org.acme.saas.model.data.RegisterData;
@@ -239,7 +241,19 @@ public class TenantResource {
                             if (!tenant.status.equals(Constants.TENANT_STATUS_RUNNING)) {
                                 throw new BadRequestException("The tenant is not in the expected Stopped state");
                             } else {
-                                return tenantService.updateTenantStatus(tenantKey, Constants.TENANT_STATUS_STOPPED);
+                                Request request = tenant.subscriptions.get(0).request;
+                                request.avgConcurrentShoppers = 0;
+                                request.peakConcurrentShoppers = 0;
+                                Uni<PanacheEntityBase> updateAvgConcurrentShoppers = request.persist();
+
+                                Uni<String> stringUni = provisionService.onPurgeSubscription(
+                                        TenantMapper.INSTANCE.tenantToTenantDraft(tenant),
+                                        RequestMapper.INSTANCE.requestToRequestDraft(tenant.subscriptions.get(0).request)
+                                );
+                                return Uni.combine().all().unis(updateAvgConcurrentShoppers, stringUni)
+                                        .combinedWith((panacheEntityBase, s) ->
+                                                tenantService.updateTenantStatus(tenantKey, Constants.TENANT_STATUS_STOPPED))
+                                        .flatMap(Function.identity());
                             }
                         })
                 ).flatMap(Function.identity())
@@ -265,12 +279,19 @@ public class TenantResource {
                                     !tenant.status.equals(Constants.TENANT_STATUS_STOPPED)) {
                                 throw new BadRequestException("The tenant is not in the expected Running/Stopped state");
                             } else {
-                                return provisionService.onPurgeSubscription(
-                                                TenantMapper.INSTANCE.tenantToTenantDraft(tenant),
-                                                RequestMapper.INSTANCE.requestToRequestDraft(tenant.subscriptions.get(0).request)
-                                        ).onItem().ifNotNull()
-                                        .transformToUni(s ->
-                                                tenantService.updateTenantStatus(tenantKey, Constants.TENANT_STATUS_PURGED));
+                                Request request = tenant.subscriptions.get(0).request;
+                                request.avgConcurrentShoppers = 0;
+                                request.peakConcurrentShoppers = 0;
+                                Uni<PanacheEntityBase> updateAvgConcurrentShoppers = request.persist();
+
+                                Uni<String> stringUni = provisionService.onPurgeSubscription(
+                                        TenantMapper.INSTANCE.tenantToTenantDraft(tenant),
+                                        RequestMapper.INSTANCE.requestToRequestDraft(tenant.subscriptions.get(0).request)
+                                );
+                                return Uni.combine().all().unis(updateAvgConcurrentShoppers, stringUni)
+                                        .combinedWith((panacheEntityBase, s) ->
+                                                tenantService.updateTenantStatus(tenantKey, Constants.TENANT_STATUS_PURGED))
+                                        .flatMap(Function.identity());
                             }
                         })
                 ).flatMap(Function.identity())

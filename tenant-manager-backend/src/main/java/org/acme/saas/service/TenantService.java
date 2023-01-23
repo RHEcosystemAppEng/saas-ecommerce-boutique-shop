@@ -113,6 +113,8 @@ public class TenantService {
                 .all()
                 .unis(modifiedTenants, runningTenants)
                 .combinedWith((modified, running) -> {
+                    if(modified.size() == 0)
+                        return null;
                     List<Tenant> noChangeRequiredTenants = running.stream().filter(tenant -> tenant.desiredState).toList();
                     modified.addAll(noChangeRequiredTenants);
                     return modified;
