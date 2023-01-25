@@ -15,6 +15,11 @@ spec:
       kind: BoutiqueShop
       name: boutiqueshops.demo.openshift.com
       version: v1alpha1
+    - description: HpaScaler is the Schema for the hpascalers API
+      displayName: Hpa Scaler
+      kind: HpaScaler
+      name: hpascalers.demo.openshift.com
+      version: v1alpha1
   description: Installs and manages the Boutique Shop demo application
   displayName: Boutique Shop Operator
   icon:

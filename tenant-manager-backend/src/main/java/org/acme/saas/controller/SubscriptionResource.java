@@ -47,7 +47,7 @@ public class SubscriptionResource {
         return String.format("%.2f", priceWithoutFormatting);
     }
 
-    @Operation(summary = "Returns the current subcriptions for a given Tenant, identified by the tenantKey")
+    @Operation(summary = "Returns the current subscriptions for a given Tenant, identified by the tenantKey")
     @APIResponse(responseCode = "200", content = @Content(mediaType = APPLICATION_JSON, schema =
     @Schema(implementation = SubscriptionDraft.class)))
     @APIResponse(responseCode = "404", description = "No Tenant found by the given tenantKey")

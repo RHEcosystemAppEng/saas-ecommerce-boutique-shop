@@ -101,14 +101,15 @@ function provisionAllResources() {
   oc process -f ${SCRIPT_DIR}/boutique-shop.yaml --param=TENANT_NAME=$1 --param=TENANT_NAMESPACE=$2  --param=TENANT_PREFIX=$3 --param=TIER=$4 | oc apply -f -
   
   oc project $2
-  # Apply Horizontal Pod Autoscaler for the microservices
-  oc apply -f ${tierFolder}/hpa.yaml
+
   # Apply a quota to the namespace
   oc apply -f ${tierFolder}/boutique-quota.yaml
   # Apply a limit in the namespace
   oc apply -f ${tierFolder}/limit-range-v1.yaml
   # Apply the Pod DisruptionBudget
   oc apply -f ${tierFolder}/pdb-template.yaml
+
+  createRouteAndExportURL ${TENANT_NAMESPACE}
 }
 
 # function provisionFree() {
@@ -142,6 +143,20 @@ function provisionAllResources() {
 #   #createNewNamespaceAndSetProject ${TENANT_NAMESPACE}
 #   provisionAllResources ${TENANT_NAMESPACE}
 # }
+
+function createRouteAndExportURL(){
+  
+  clusterDomain=$(oc get ingresses.config.openshift.io cluster -ojsonpath='{.spec.domain}')
+  log "Cluster domain is ${clusterDomain}"
+  # **Need to create logic to monitor the website until the service is up and running**
+  oc expose svc frontend --name=${TENANT_NAME} --hostname=${TENANT_HOSTNAME}.${clusterDomain}
+  # Sleep statement to allow for the frontend service to come online
+  sleep 6
+  # Get the url for the website
+  ROUTE=https://$(oc  get route ${TENANT_NAME} -o=jsonpath='{.spec.host}')
+
+  echo "${ROUTE}"
+}
 
 
 

@@ -18,3 +18,5 @@ resources:
 - auth_proxy_client_clusterrole.yaml
 - additional_role.yaml
 - additional_role_binding.yaml
+- role_binding_boutiqueshop.yaml
+- role_boutiqueshop.yaml

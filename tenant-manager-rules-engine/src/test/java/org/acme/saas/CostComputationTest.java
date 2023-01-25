@@ -56,7 +56,7 @@ public class CostComputationTest {
                     Arguments.of("Free", 100, 0.0),
                     Arguments.of("Silver", 1000, 100.0),
                     Arguments.of("Gold", 1000, 200.0),
-                    Arguments.of("Premium", 1000, 300.0),
+                    Arguments.of("Platinum", 1000, 300.0),
                     Arguments.of("Custom", 500, (Double) null));
         }
     }

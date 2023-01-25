@@ -22,7 +22,7 @@
   <dmn:itemDefinition id="_3D856AD5-7B58-4419-B416-D82F8584485D" name="Tier" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues kie:constraintType="enumeration" id="_6A3C016C-5F9A-4654-A7D7-1869D73F62AA">
-      <dmn:text>"free", "silver", "gold", "premium"</dmn:text>
+      <dmn:text>"free", "silver", "gold", "platinum"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:inputData id="_A33DF17D-A7E7-4716-A8F9-775A55AAF5FA" name="Average Concurrent Shoppers">
@@ -177,7 +177,7 @@
       </dmn:rule>
       <dmn:rule id="_EA29A0E2-3779-4480-A3C4-46CD095F41E9">
         <dmn:inputEntry id="_FC9B779B-7E4E-4A62-86C9-FD19DC3FD1A7">
-          <dmn:text>"premium"</dmn:text>
+          <dmn:text>"platinum"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_D10A0A2F-7B71-4542-80F5-7E5A7CA9C83D">
           <dmn:text>"enterprise utilities"</dmn:text>
@@ -233,7 +233,7 @@
       </dmn:rule>
       <dmn:rule id="_77163BFE-0050-4A77-AFBB-9233C829077A">
         <dmn:inputEntry id="_D23C800D-EF17-442C-8C75-8FA1BEC23027">
-          <dmn:text>"premium"</dmn:text>
+          <dmn:text>"platinum"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_B241AB23-FEE8-4A7B-9D58-DA7964A06A1F">
           <dmn:text>"logistics"</dmn:text>
@@ -289,7 +289,7 @@
       </dmn:rule>
       <dmn:rule id="_E9B29944-5CC4-4E16-A4DD-12427FCD7043">
         <dmn:inputEntry id="_3C930791-FC78-41DF-B253-47E6DF0EC548">
-          <dmn:text>"premium"</dmn:text>
+          <dmn:text>"platinum"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_6A9A333A-9E5E-41B4-B67F-29641FA2B7A8">
           <dmn:text>"shopper experience"</dmn:text>

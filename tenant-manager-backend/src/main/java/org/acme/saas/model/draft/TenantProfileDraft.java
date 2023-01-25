@@ -23,6 +23,7 @@ public class TenantProfileDraft {
     private String address;
     private String contactName;
     private String phone;
+    private boolean desiredState;
     private String status;
 
 }

@@ -14,11 +14,11 @@ function App() {
                     <Routes>
                         <Route path="/*" element={<Login/>}/>
                         <Route path="/register" element={<Register/>}/>
+                        <Route path="/mgr-dashboard" element={<ManagerDashboard/>}/>
+                        <Route path="/ops-dashboard" element={<OpsDashboard/>}/>
                         <Route element={<PrivateRoutes/>}>
                             <Route path="/update-limits/:key" element={<UpdateResources/>}/>
                             <Route path="/dashboard/:key" element={<Dashboard/>}/>
-                            <Route path="/mgr-dashboard" element={<ManagerDashboard/>}/>
-                            <Route path="/ops-dashboard" element={<OpsDashboard/>}/>
                         </Route>
                     </Routes>
                 </BrowserRouter>

@@ -31,6 +31,7 @@ import {useNavigate, useParams} from 'react-router-dom';
 import {clearLocalStorage} from "../../Utils/Helper";
 import {ManagerDataList} from "../ManagerDataList";
 import {ManagerPendingList} from "../ManagerPendingList";
+import {AllTenantsTable} from "../AllTenantsTable";
 
 const ManagerDashboard = () => {
 
@@ -138,6 +139,9 @@ const ManagerDashboard = () => {
             </PageSection>
             <PageSection isWidthLimited>
                 <ManagerDataList />
+            </PageSection>
+            <PageSection isWidthLimited>
+                <AllTenantsTable />
             </PageSection>
             <Divider/>
             <PageSection isWidthLimited>

@@ -70,11 +70,11 @@ public class HpaComputationTest {
                                                         Map.of("replicas", 2.4, "minReplicas", 2, "maxReplicas", 3)),
                                         Arguments.of(1200, "shopper experience", "gold",
                                                         Map.of("replicas", 12, "minReplicas", 10, "maxReplicas", 12)),
-                                        Arguments.of(1200, "enterprise utilities", "premium",
+                                        Arguments.of(1200, "enterprise utilities", "platinum",
                                                         Map.of("replicas", 2.4, "minReplicas", 2, "maxReplicas", 3)),
-                                        Arguments.of(1200, "logistics", "premium",
+                                        Arguments.of(1200, "logistics", "platinum",
                                                         Map.of("replicas", 2.4, "minReplicas", 2, "maxReplicas", 3)),
-                                        Arguments.of(1200, "shopper experience", "premium",
+                                        Arguments.of(1200, "shopper experience", "platinum",
                                                         Map.of("replicas", 12, "minReplicas", 10, "maxReplicas", 12)));
                 }
         }
