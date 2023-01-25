@@ -7,6 +7,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/utils/pointer"
@@ -37,6 +38,16 @@ func (r *BoutiqueShopReconciler) newAdDeployment(ctx context.Context, instance *
 			{
 				Name:  "DISABLE_TRACING",
 				Value: "1",
+			},
+		},
+		Resources: corev1.ResourceRequirements{
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("200m"),
+				"memory": resource.MustParse("180Mi"),
+			},
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("300m"),
+				"memory": resource.MustParse("300Mi"),
 			},
 		},
 		LivenessProbe: &corev1.Probe{
@@ -130,6 +141,16 @@ func (r *BoutiqueShopReconciler) newCartDeployment(ctx context.Context, instance
 				},
 			},
 		},
+		Resources: corev1.ResourceRequirements{
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("200m"),
+				"memory": resource.MustParse("64Mi"),
+			},
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("300m"),
+				"memory": resource.MustParse("128Mi"),
+			},
+		},
 		ReadinessProbe: &corev1.Probe{
 			FailureThreshold:    3,
 			InitialDelaySeconds: 15,
@@ -168,6 +189,7 @@ func (r *BoutiqueShopReconciler) newCartDeployment(ctx context.Context, instance
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 		deployment.Spec.Template.Spec.SecurityContext = newPodSecurityContext()
 		deployment.Spec.Template.Spec.TerminationGracePeriodSeconds = pointer.Int64(5)
@@ -222,6 +244,16 @@ func (r *BoutiqueShopReconciler) newCatalogDeployment(ctx context.Context, insta
 				},
 			},
 		},
+		Resources: corev1.ResourceRequirements{
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("100m"),
+				"memory": resource.MustParse("64Mi"),
+			},
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("200m"),
+				"memory": resource.MustParse("128Mi"),
+			},
+		},
 		ReadinessProbe: &corev1.Probe{
 			FailureThreshold:    3,
 			InitialDelaySeconds: 15,
@@ -270,6 +302,7 @@ func (r *BoutiqueShopReconciler) newCatalogDeployment(ctx context.Context, insta
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 		deployment.Spec.Template.Spec.SecurityContext = newPodSecurityContext()
 		deployment.Spec.Template.Spec.TerminationGracePeriodSeconds = pointer.Int64(5)
@@ -347,6 +380,16 @@ func (r *BoutiqueShopReconciler) newCheckoutDeployment(ctx context.Context, inst
 				},
 			},
 		},
+		Resources: corev1.ResourceRequirements{
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("200m"),
+				"memory": resource.MustParse("128Mi"),
+			},
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("100m"),
+				"memory": resource.MustParse("64Mi"),
+			},
+		},
 		ReadinessProbe: &corev1.Probe{
 			FailureThreshold:    3,
 			InitialDelaySeconds: 15,
@@ -395,6 +438,7 @@ func (r *BoutiqueShopReconciler) newCheckoutDeployment(ctx context.Context, inst
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 		deployment.Spec.Template.Spec.SecurityContext = newPodSecurityContext()
 
@@ -449,6 +493,16 @@ func (r *BoutiqueShopReconciler) newCurrencyDeployment(ctx context.Context, inst
 				},
 			},
 		},
+		Resources: corev1.ResourceRequirements{
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("200m"),
+				"memory": resource.MustParse("128Mi"),
+			},
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("100m"),
+				"memory": resource.MustParse("64Mi"),
+			},
+		},
 		ReadinessProbe: &corev1.Probe{
 			FailureThreshold:    3,
 			InitialDelaySeconds: 15,
@@ -487,6 +541,7 @@ func (r *BoutiqueShopReconciler) newCurrencyDeployment(ctx context.Context, inst
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 		deployment.Spec.Template.Spec.SecurityContext = newPodSecurityContext()
 		deployment.Spec.Template.Spec.TerminationGracePeriodSeconds = pointer.Int64(5)
@@ -537,6 +592,16 @@ func (r *BoutiqueShopReconciler) newEmailDeployment(ctx context.Context, instanc
 				},
 			},
 		},
+		Resources: corev1.ResourceRequirements{
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("200m"),
+				"memory": resource.MustParse("128Mi"),
+			},
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("100m"),
+				"memory": resource.MustParse("64Mi"),
+			},
+		},
 		ReadinessProbe: &corev1.Probe{
 			FailureThreshold:    3,
 			InitialDelaySeconds: 15,
@@ -575,6 +640,7 @@ func (r *BoutiqueShopReconciler) newEmailDeployment(ctx context.Context, instanc
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 		deployment.Spec.Template.Spec.SecurityContext = newPodSecurityContext()
 		deployment.Spec.Template.Spec.TerminationGracePeriodSeconds = pointer.Int64(5)
@@ -639,6 +705,16 @@ func (r *BoutiqueShopReconciler) newFrontendDeployment(ctx context.Context, inst
 			{
 				Name:  "SHIPPING_SERVICE_ADDR",
 				Value: fmt.Sprintf("%s.%s.svc:%d", shippingName(), r.getNs(instance, shippingName()), shippingServicePort),
+			},
+		},
+		Resources: corev1.ResourceRequirements{
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("100m"),
+				"memory": resource.MustParse("64Mi"),
+			},
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("200m"),
+				"memory": resource.MustParse("128Mi"),
 			},
 		},
 		LivenessProbe: &corev1.Probe{
@@ -707,6 +783,7 @@ func (r *BoutiqueShopReconciler) newFrontendDeployment(ctx context.Context, inst
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 		if deployment.ObjectMeta.Annotations == nil {
 			deployment.ObjectMeta.Annotations = map[string]string{}
@@ -773,6 +850,16 @@ func (r *BoutiqueShopReconciler) newLoadGeneratorDeployment(ctx context.Context,
 				"	exit 1\n" +
 				"fi\n",
 		},
+		Resources: corev1.ResourceRequirements{
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("300m"),
+				"memory": resource.MustParse("256Mi"),
+			},
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("500m"),
+				"memory": resource.MustParse("512Mi"),
+			},
+		},
 		SecurityContext: newContainerSecurityContext(),
 	}
 
@@ -795,6 +882,7 @@ func (r *BoutiqueShopReconciler) newLoadGeneratorDeployment(ctx context.Context,
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 
 		if len(deployment.Spec.Template.Spec.InitContainers) != 1 {
@@ -806,6 +894,7 @@ func (r *BoutiqueShopReconciler) newLoadGeneratorDeployment(ctx context.Context,
 			c.Image = initContainer.Image
 			c.Name = initContainer.Name
 			c.SecurityContext = initContainer.SecurityContext
+			c.Resources = container.Resources
 		}
 
 		if deployment.ObjectMeta.Annotations == nil {
@@ -851,6 +940,16 @@ func (r *BoutiqueShopReconciler) newPaymentDeployment(ctx context.Context, insta
 			{
 				Name:  "DISABLE_TRACING",
 				Value: "1",
+			},
+		},
+		Resources: corev1.ResourceRequirements{
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("100m"),
+				"memory": resource.MustParse("64Mi"),
+			},
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("200m"),
+				"memory": resource.MustParse("128Mi"),
 			},
 		},
 		LivenessProbe: &corev1.Probe{
@@ -903,6 +1002,7 @@ func (r *BoutiqueShopReconciler) newPaymentDeployment(ctx context.Context, insta
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 		deployment.Spec.Template.Spec.SecurityContext = newPodSecurityContext()
 		deployment.Spec.Template.Spec.TerminationGracePeriodSeconds = pointer.Int64(5)
@@ -947,6 +1047,16 @@ func (r *BoutiqueShopReconciler) newRecommendationDeployment(ctx context.Context
 			{
 				Name:  "PRODUCT_CATALOG_SERVICE_ADDR",
 				Value: fmt.Sprintf("%s.%s.svc:%d", catalogName(), r.getNs(instance, catalogName()), catalogServicePort),
+			},
+		},
+		Resources: corev1.ResourceRequirements{
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("100m"),
+				"memory": resource.MustParse("220Mi"),
+			},
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("200m"),
+				"memory": resource.MustParse("450Mi"),
 			},
 		},
 		LivenessProbe: &corev1.Probe{
@@ -999,6 +1109,7 @@ func (r *BoutiqueShopReconciler) newRecommendationDeployment(ctx context.Context
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 		deployment.Spec.Template.Spec.SecurityContext = newPodSecurityContext()
 		deployment.Spec.Template.Spec.TerminationGracePeriodSeconds = pointer.Int64(5)
@@ -1021,6 +1132,16 @@ func (r *BoutiqueShopReconciler) newRedisDeployment(ctx context.Context, instanc
 			{
 				ContainerPort: int32(6379),
 				Protocol:      corev1.ProtocolTCP,
+			},
+		},
+		Resources: corev1.ResourceRequirements{
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("70m"),
+				"memory": resource.MustParse("200Mi"),
+			},
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("125m"),
+				"memory": resource.MustParse("256Mi"),
 			},
 		},
 		LivenessProbe: &corev1.Probe{
@@ -1078,6 +1199,7 @@ func (r *BoutiqueShopReconciler) newRedisDeployment(ctx context.Context, instanc
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 		deployment.Spec.Template.Spec.SecurityContext = newPodSecurityContext()
 		deployment.Spec.Template.Spec.Volumes = []corev1.Volume{
@@ -1125,6 +1247,16 @@ func (r *BoutiqueShopReconciler) newShippingDeployment(ctx context.Context, inst
 			{
 				Name:  "DISABLE_TRACING",
 				Value: "1",
+			},
+		},
+		Resources: corev1.ResourceRequirements{
+			Requests: corev1.ResourceList{
+				"cpu":    resource.MustParse("100m"),
+				"memory": resource.MustParse("64Mi"),
+			},
+			Limits: corev1.ResourceList{
+				"cpu":    resource.MustParse("200m"),
+				"memory": resource.MustParse("128Mi"),
 			},
 		},
 		LivenessProbe: &corev1.Probe{
@@ -1177,6 +1309,7 @@ func (r *BoutiqueShopReconciler) newShippingDeployment(ctx context.Context, inst
 			c.LivenessProbe = container.LivenessProbe
 			c.ReadinessProbe = container.ReadinessProbe
 			c.SecurityContext = container.SecurityContext
+			c.Resources = container.Resources
 		}
 		deployment.Spec.Template.Spec.SecurityContext = newPodSecurityContext()
 		deployment.Spec.Template.Spec.TerminationGracePeriodSeconds = pointer.Int64(5)

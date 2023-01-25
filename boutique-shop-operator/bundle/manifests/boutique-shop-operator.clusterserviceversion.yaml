@@ -37,7 +37,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.24.1
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: boutique-shop-operator.v0.0.8
+  name: boutique-shop-operator.v0.0.5
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -230,7 +230,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/ecosystem-appeng/boutique-shop-operator:0.0.8
+                image: quay.io/ecosystem-appeng/boutique-shop-operator:0.0.5
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -321,4 +321,4 @@ spec:
   provider:
     name: SaaS Patterns Community
     url: https://github.com/saas-patterns
-  version: 0.0.8
+  version: 0.0.5
