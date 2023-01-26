@@ -1,5 +1,7 @@
 package org.acme.saas.common;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.scheduler.Scheduled;
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.model.Request;
@@ -38,14 +40,14 @@ public class ProvisionScheduler {
         log.info("Provisioning scheduler started...");
         tenantService.findAllTenantsForResourceCalculation().onItem()
                 .ifNotNull().transformToUni(this::sendDmnRequests)
-                .onItem().invoke(provisionResponses -> {
+                .onItem().invoke(lastLineList -> {
                     running.set(false);
                     log.info("Provisioning scheduler finished.");
                 })
                 .await().indefinitely();
     }
 
-    private Uni<List<ProvisionResponse>> sendDmnRequests(List<Tenant> tenantList) {
+    private Uni<List<String>> sendDmnRequests(List<Tenant> tenantList) {
         List<Tenant> freeTierTenants = new ArrayList<>();
         List<Tenant> silverTierTenants = new ArrayList<>();
         List<Tenant> goldTierTenants = new ArrayList<>();
@@ -65,17 +67,17 @@ public class ProvisionScheduler {
                         sendDmnRequest("silver", silverTierTenants),
                         sendDmnRequest("gold", goldTierTenants),
                         sendDmnRequest("platinum", platinumTierTenants))
-                .combinedWith((provisionResponse, provisionResponse2, provisionResponse3, provisionResponse4) -> {
-                    List<ProvisionResponse> requests = new ArrayList<>();
-                    requests.add(provisionResponse);
-                    requests.add(provisionResponse2);
-                    requests.add(provisionResponse3);
-                    requests.add(provisionResponse4);
-                    return requests;
+                .combinedWith((str1, str2, str3, str4) -> {
+                    List<String> lastLineList = new ArrayList<>();
+                    lastLineList.add(str1);
+                    lastLineList.add(str2);
+                    lastLineList.add(str3);
+                    lastLineList.add(str4);
+                    return lastLineList;
                 });
     }
 
-    private Uni<ProvisionResponse> sendDmnRequest(String tier, List<Tenant> tierTenants) {
+    private Uni<String> sendDmnRequest(String tier, List<Tenant> tierTenants) {
         ProvisionRequest provisionRequest = new ProvisionRequest();
         int shopperCount = 0;
         final boolean[] shouldCreateRequest = {false};
@@ -105,10 +107,15 @@ public class ProvisionScheduler {
         if (shouldCreateRequest[0]) {
             return provisionService.provisionTier(provisionRequest)
                     .onItem().transform(provisionResponse -> {
-                        // @todo call the operator to rebalance the replica count
-                        log.infof("Printing response: %s", provisionResponse);
-                        return provisionResponse;
-                    });
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        try {
+                            String jsonPayload = objectMapper.writeValueAsString(provisionResponse);
+                            log.infof("Printing response: %s", jsonPayload);
+                            return jsonPayload;
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException("Rules engine response could be parsed as a JSON. Reason:" + e);
+                        }
+                    }).onItem().transformToUni(jsonPayload -> provisionService.onResourceUpdate(tier, jsonPayload));
         }
         return Uni.createFrom().item(() -> null);
     }
