@@ -45,6 +45,10 @@ public class ProvisionService {
                 Integer.toString(maxReplicas));
     }
 
+    public Uni<String> onResourceUpdate(String tier, String jsonPayload) {
+        return runScript(updateScriptFile, tier, jsonPayload);
+    }
+
     private String getNamespaceName(String tenantName) {
         return tenantName.replaceAll("\\s", "-");
     }

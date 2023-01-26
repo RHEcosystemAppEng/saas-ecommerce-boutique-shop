@@ -84,6 +84,8 @@ public class RequestService {
     @ReactiveTransactional
     public Uni<RequestDraft> approveByRequestId(long id) {
         Uni<Request> requestUni = Request.findById(id);
+
+        // @todo remove the status change and let the scheduler to handle it
         return requestUni.onItem().ifNotNull().transformToUni(request -> {
                             validateRequestStatus(request);
                             request.status = REQUEST_STATUS_APPROVED;
