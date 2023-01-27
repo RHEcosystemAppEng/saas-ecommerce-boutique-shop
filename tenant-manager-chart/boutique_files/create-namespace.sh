@@ -149,12 +149,12 @@ function createRouteAndExportURL(){
   clusterDomain=$(oc get ingresses.config.openshift.io cluster -ojsonpath='{.spec.domain}')
   log "Cluster domain is ${clusterDomain}"
   # **Need to create logic to monitor the website until the service is up and running**
-  oc expose svc frontend --name=${TENANT_NAME} --hostname=${TENANT_HOSTNAME}.${clusterDomain}
+  # oc expose svc frontend --name=${TENANT_NAME} --hostname=${TENANT_HOSTNAME}.${clusterDomain}
   # Sleep statement to allow for the frontend service to come online
-  sleep 6
+  # sleep 60
   # Get the url for the website
-  ROUTE=https://$(oc  get route ${TENANT_NAME} -o=jsonpath='{.spec.host}')
-
+  # ROUTE=https://$(oc  get route ${TENANT_NAME} -o=jsonpath='{.spec.host}')
+  ROUTE=https://${TENANT_HOSTNAME}-${TENANT_NAMESPACE}.${clusterDomain}
   echo "${ROUTE}"
 }
 
