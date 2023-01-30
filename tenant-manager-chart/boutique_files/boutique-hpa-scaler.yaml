@@ -1,0 +1,24 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: boutique-shop-hpa-template
+objects:
+  - apiVersion: demo.openshift.com/v1alpha1
+    kind: HpaScaler
+    metadata:
+      name: hpascaler-${TIER}
+    spec:
+      scaler: |-
+        ${RULES_RESPONSE_PAYLOAD}
+parameters:
+- name: RULES_RESPONSE_PAYLOAD 
+  displayName: Rules engine response
+  description: Rules engine response specific to a selected Tier
+  required: true
+- name: TIER 
+  displayName: Tier
+  description: Tier of the boutique shop. Possible values are free, silver, gold and platinum.
+  required: true
+
+
+

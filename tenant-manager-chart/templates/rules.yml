@@ -9,6 +9,8 @@ metadata:
 spec:
   template:
     metadata:
+#      annotations:
+#        autoscaling.knative.dev/min-scale: "1"
       labels:
         app.kubernetes.io/name: tenant-manager-rules-engine
     spec:
@@ -19,5 +21,5 @@ spec:
           image: {{ .Values.rules.containerImagePath }}
           name: tenant-manager-rules-engine
           ports:
-            - containerPort: 8080
+            - containerPort: 8181
               protocol: TCP

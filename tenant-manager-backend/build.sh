@@ -29,4 +29,4 @@ echo Building image: ${IMAGE_FULL}
 docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} -f ./src/main/docker/Dockerfile.jvm .
 docker tag ${IMAGE_FULL} ${IMAGE_LATEST}
 docker push ${IMAGE_FULL}
-# docker push ${IMAGE_LATEST}
+docker push ${IMAGE_LATEST}

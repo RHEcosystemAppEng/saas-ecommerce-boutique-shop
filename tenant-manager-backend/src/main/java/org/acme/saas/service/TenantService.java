@@ -59,9 +59,13 @@ public class TenantService {
                         builder.tenantKey(tenant.tenantKey);
                         builder.tenantName(tenant.tenantName);
                         builder.status(tenant.status);
-                        builder.tier(tenant.subscriptions.get(0).tier);
-                        builder.avgConcurrentShoppers(String.valueOf(tenant.subscriptions.get(0).request.avgConcurrentShoppers));
-                        builder.peakConcurrentShoppers(String.valueOf(tenant.subscriptions.get(0).request.peakConcurrentShoppers));
+                        if (tenant.subscriptions != null && tenant.subscriptions.size() > 0 ) {
+                            builder.tier(tenant.subscriptions.get(0).tier);
+                            if (tenant.subscriptions.get(0).request != null) {
+                                builder.avgConcurrentShoppers(String.valueOf(tenant.subscriptions.get(0).request.avgConcurrentShoppers));
+                                builder.peakConcurrentShoppers(String.valueOf(tenant.subscriptions.get(0).request.peakConcurrentShoppers));
+                            }
+                        }
                         tenantDataList.add(builder.build());
                     }
                     return tenantDataList;
