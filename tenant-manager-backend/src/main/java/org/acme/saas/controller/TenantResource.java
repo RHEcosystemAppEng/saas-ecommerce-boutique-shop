@@ -14,6 +14,8 @@ import org.acme.saas.model.data.TokenData;
 import org.acme.saas.model.data.TokenData.TokenDataBuilder;
 import org.acme.saas.model.draft.RequestDraft;
 import org.acme.saas.model.draft.RequestDraft.RequestDraftBuilder;
+import org.acme.saas.model.draft.StyleDraft;
+import org.acme.saas.model.draft.StyleDraft.StyleDraftBuilder;
 import org.acme.saas.model.draft.SubscriptionDraft;
 import org.acme.saas.model.draft.SubscriptionDraft.SubscriptionDraftBuilder;
 import org.acme.saas.model.draft.TenantDraft;
@@ -21,6 +23,7 @@ import org.acme.saas.model.draft.TenantDraft.TenantDraftBuilder;
 import org.acme.saas.model.mappers.RequestMapper;
 import org.acme.saas.model.mappers.TenantMapper;
 import org.acme.saas.service.ProvisionService;
+import org.acme.saas.service.StyleService;
 import org.acme.saas.service.SubscriptionService;
 import org.acme.saas.service.TenantService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -58,6 +61,9 @@ public class TenantResource {
 
     @Inject
     SubscriptionService subscriptionService;
+
+    @Inject
+    StyleService styleService;
 
     @Operation(hidden = true)
     @GET
@@ -183,10 +189,18 @@ public class TenantResource {
         subscriptionDraftBuilder.maxInstanceCount(instanceCount[1]);
         subscriptionDraftBuilder.status(Constants.SUBSCRIPTION_STATUS_INITIAL);
 
+        StyleDraftBuilder styleDraftBuilder = StyleDraft.builder();
+        styleDraftBuilder.tenantKey(tenantKey);
+        styleDraftBuilder.headingText(registerData.getHeadingText());
+        styleDraftBuilder.headingColor(registerData.getHeadingColor());
+        styleDraftBuilder.ribbonColor(registerData.getRibbonColor());
+
         // Added to ensure a unique Transaction
-        return subscriptionService.createNewSubscription(
-                        tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft).onItem().ifNotNull()
-                .transform(subscription -> tenantService.createNewTenant(tenantDraftBuilder.build(),
+        return Uni.combine().all().unis(
+                        styleService.createNewStyle(styleDraftBuilder.build()),
+                        subscriptionService.createNewSubscription(
+                                tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft)
+                ).combinedWith((style, subscription) -> tenantService.createNewTenant(tenantDraftBuilder.build(),
                         subscription))
                 .flatMap(Function.identity())
                 .onItem().transform(tenant -> {

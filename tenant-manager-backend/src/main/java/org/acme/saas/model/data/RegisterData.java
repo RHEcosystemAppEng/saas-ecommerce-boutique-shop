@@ -20,5 +20,8 @@ public class RegisterData {
     private int peakConcurrentShoppers;
     private String fromTime;
     private String toTime;
+    private String headingText;
+    private String headingColor;
+    private String ribbonColor;
 
 }

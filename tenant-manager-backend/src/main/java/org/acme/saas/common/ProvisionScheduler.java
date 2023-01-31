@@ -85,6 +85,7 @@ public class ProvisionScheduler {
         tierRequestBuilder.tier(tier);
         ProvisionRequest.TierRequest tierRequest = tierRequestBuilder.build();
         List<ProvisionRequest.TenantRequest> tmpList = new ArrayList<>();
+        List<Tenant> updateStatusAfterDesiredState = new ArrayList<>();
 
         for (Tenant tenant : tierTenants) {
             if (tenant.status.equals(Constants.TENANT_STATUS_RUNNING)) {
@@ -98,6 +99,7 @@ public class ProvisionScheduler {
                 tenantRequestBuilder.averageConcurrentShoppers(String.valueOf(request.avgConcurrentShoppers));
 
                 tmpList.add(tenantRequestBuilder.build());
+                updateStatusAfterDesiredState.add(tenant);
             }
         }
         tierRequest.setTenantRequests(tmpList);
@@ -109,13 +111,15 @@ public class ProvisionScheduler {
                     .onItem().transform(provisionResponse -> {
                         ObjectMapper objectMapper = new ObjectMapper();
                         try {
-                            String jsonPayload = objectMapper.writeValueAsString(provisionResponse);
-                            log.infof("Printing response: %s", jsonPayload);
-                            return jsonPayload;
+                            return objectMapper.writeValueAsString(provisionResponse);
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException("Rules engine response could be parsed as a JSON. Reason:" + e);
                         }
                     }).onItem().transformToUni(jsonPayload -> provisionService.onResourceUpdate(tier, jsonPayload));
+//                    .onItem().transformToUni(ignore -> {
+//                        updateStatusAfterDesiredState.forEach(e -> e.desiredState = true);
+//                        return Uni.createFrom().item(updateStatusAfterDesiredState);
+//                    }).onItem().
         }
         return Uni.createFrom().item(() -> null);
     }
