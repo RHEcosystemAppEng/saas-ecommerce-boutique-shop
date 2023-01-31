@@ -31,6 +31,11 @@ public class SubscriptionService {
         return Subscription.findFirstByTenantKey(tenantKey);
     }
 
+     @ReactiveTransactional
+    public Uni<Subscription> findFirstByHostname(String hostname) {
+        return Subscription.findFirstByHostname(hostname);
+    }
+
     @ReactiveTransactional
     public Uni<List<Subscription>> findAllByTenantKey(String tenantKey) {
         return Subscription.findAllByTenantKey(tenantKey);
