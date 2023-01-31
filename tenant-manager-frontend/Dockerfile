@@ -10,7 +10,7 @@ COPY ./public/ /public
 
 # installing git cos https://github.com/mbrn/material-table/issues/2109
 RUN apk add git
-RUN npm ci --force
+RUN npm ci
 
 COPY . ./
 EXPOSE 3000
