@@ -33,6 +33,10 @@ public class Subscription extends PanacheEntity {
         return find("tenantKey= ?1", tenantKey).firstResult();
     }
 
+    public static Uni<Subscription> findFirstByHostname(String hostname) {
+        return find("url like '%//" + hostname + "'").firstResult();
+    }
+
     public static Uni<List<SubscriptionSummaryData>> getSubscriptionSummary() {
         return find(Constants.SQL_QUERY_SUBSCRIPTION_SUMMARY)
                 .project(SubscriptionSummaryData.class).list();
