@@ -77,12 +77,11 @@ public class SubscriptionResource {
     @Schema(implementation = SubscriptionDraft.class)))
     @APIResponse(responseCode = "404", description = "No Tenant found by the given tenantKey")
     @GET
-    @Path("/host/{host}")
+    @Path("/host/{hostname}")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<SubscriptionDraft> getSubscriptionByHostname(@Parameter(description = "Url of the subscription",
-            required = true) String host) {
-        System.out.println("in getSubscriptionByHost");
-        return subscriptionService.findFirstByHostname(host)
+            required = true) String hostname) {
+        return subscriptionService.findFirstByHostname(hostname)
                 .onItem().ifNotNull()
                 .transform(SubscriptionMapper.INSTANCE::subscriptionToSubscriptionDraft)
                 .onItem().ifNull().failWith(NotFoundException::new);
