@@ -77,7 +77,6 @@ public class SubscriptionResource {
     @Schema(implementation = SubscriptionDraft.class)))
     @APIResponse(responseCode = "404", description = "No Tenant found by the given tenantKey")
     @GET
-
     @Path("/host/{hostname}")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<SubscriptionDraft> getSubscriptionByHostname(@Parameter(description = "Url of the subscription",
