@@ -35,14 +35,14 @@ spec:
                   name: tenant-controller-mysql-password
                   key: MYSQL_PASSWORD
             - name: RULES_SERVICE_URL
-{{ - $route := "UNKNOWN" }}
-{{ - $cluster := lookup "config.openshift.io/v1" "Ingress" "" "cluster" }}
-{{ - if hasKey $cluster "spec" }}
-  {{ - if hasKey $cluster.spec "domain" }}
-    {{ - $domain := $cluster.spec.domain }}
-    {{ - $route =  printf  "https://tenant-manager-rules-engine-%s.%s" $.Values.namespace.name $domain }}
-  {{ - end }}
-{{ - end }}
+{{- $route := "UNKNOWN" }}
+{{- $cluster := lookup "config.openshift.io/v1" "Ingress" "" "cluster" }}
+{{- if hasKey $cluster "spec" }}
+  {{- if hasKey $cluster.spec "domain" }}
+    {{- $domain := $cluster.spec.domain }}
+    {{- $route =  printf  "https://tenant-manager-rules-engine-%s.%s" $.Values.namespace.name $domain }}
+  {{- end }}
+{{- end }}
               value: {{ $route }}
           volumeMounts:
             - mountPath: /usr/app/boutique_files
