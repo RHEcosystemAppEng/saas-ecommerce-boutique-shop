@@ -657,8 +657,9 @@ func (r *BoutiqueShopReconciler) newEmailDeployment(ctx context.Context, instanc
 
 func (r *BoutiqueShopReconciler) newFrontendDeployment(ctx context.Context, instance *demov1alpha1.BoutiqueShop) (*appResource, error) {
 	container := corev1.Container{
-		Name:  "server",
-		Image: "gcr.io/google-samples/microservices-demo/frontend:v0.3.9",
+		Name: "server",
+		//Image: "gcr.io/google-samples/microservices-demo/frontend:v0.3.9",
+		Image: "asaurabh/frontend:latest",
 		Ports: []corev1.ContainerPort{
 			{
 				ContainerPort: int32(8080),

@@ -13,6 +13,6 @@ echo Building image: ${IMAGE_FULL}
 #docker login "${{ env.IMAGE_REGISTRY }}" --username="${{ secrets.REGISTRY_USERNAME }}" --password="${{ secrets.REGISTRY_PASSWORD }}"
 
 docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${IMAGE_FULL} .
-#docker tag ${IMAGE_FULL} ${IMAGE_LATEST}
+docker tag ${IMAGE_FULL} ${IMAGE_LATEST}
 docker push ${IMAGE_FULL}
-#docker push ${IMAGE_LATEST}
+docker push ${IMAGE_LATEST}
