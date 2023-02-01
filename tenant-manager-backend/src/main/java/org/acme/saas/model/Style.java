@@ -1,6 +1,7 @@
 package org.acme.saas.model;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
+import io.smallrye.mutiny.Uni;
 import lombok.ToString;
 
 import javax.persistence.Entity;
@@ -14,4 +15,7 @@ public class Style extends PanacheEntity {
     public String headingColor;
     public String ribbonColor;
 
+    public static Uni<Style> findByTenantKey(String tenantKey) {
+        return find("tenantKey= ?1", tenantKey).firstResult();
+    }
 }

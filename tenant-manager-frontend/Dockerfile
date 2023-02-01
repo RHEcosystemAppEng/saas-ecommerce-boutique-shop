@@ -7,6 +7,7 @@ COPY package-lock.json ./
 COPY ./src/ /src
 COPY ./public/ /public
 
+RUN npm config set cache /tmp --global
 
 # installing git cos https://github.com/mbrn/material-table/issues/2109
 RUN apk add git

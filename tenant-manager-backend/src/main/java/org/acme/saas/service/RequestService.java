@@ -1,6 +1,7 @@
 package org.acme.saas.service;
 
 import io.quarkus.hibernate.reactive.panache.Panache;
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
 import io.smallrye.mutiny.Uni;
 import org.acme.saas.common.Constants;
@@ -97,17 +98,11 @@ public class RequestService {
                                     (updatedRequest, tenant, subscription) -> {
                                         subscription.request = updatedRequest;
                                         Uni<Subscription> updatedSubscriptionUni = subscription.persist();
+                                        tenant.desiredState = false;
+                                        Uni<Tenant> updatedTenantUni = tenant.persist();
 
-                                        int[] replicas = subscriptionService.calculateInstanceCount(
-                                                request.avgConcurrentShoppers,
-                                                request.peakConcurrentShoppers);
-                                        Uni<String> resourceUpdateUni =
-                                                provisionService.onResourceUpdate(tenant.tenantName,
-                                                        replicas[0],
-                                                        replicas[1]);
-
-                                        return Uni.combine().all().unis(updatedSubscriptionUni, resourceUpdateUni).combinedWith(
-                                                (updatedSubscription, resourceUpdate) ->
+                                        return Uni.combine().all().unis(updatedSubscriptionUni, updatedTenantUni).combinedWith(
+                                                (updatedSubscription, tenant1) ->
                                                         // This is necessary to move back the execution into one event
                                                         // thread, otherwise it takes the worker thread of the ProvisionService
                                                         Panache.withTransaction(() ->
