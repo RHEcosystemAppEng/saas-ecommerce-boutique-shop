@@ -10,6 +10,7 @@ COPY ./public/ /public
 RUN npm config set cache /tmp --global
 
 # installing git cos https://github.com/mbrn/material-table/issues/2109
+RUN npm config set cache /tmp --global
 RUN apk add git
 RUN npm i
 

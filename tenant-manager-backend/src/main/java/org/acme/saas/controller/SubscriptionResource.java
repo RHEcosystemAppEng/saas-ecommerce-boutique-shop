@@ -72,4 +72,19 @@ public class SubscriptionResource {
         return subscriptionService.getSubscriptionSummary();
     }
 
+    @Operation(summary = "Returns the current subscriptions for a given Tenant, identified by the url")
+    @APIResponse(responseCode = "200", content = @Content(mediaType = APPLICATION_JSON, schema =
+    @Schema(implementation = SubscriptionDraft.class)))
+    @APIResponse(responseCode = "404", description = "No Tenant found by the given tenantKey")
+    @GET
+    @Path("/host/{hostname}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<SubscriptionDraft> getSubscriptionByHostname(@Parameter(description = "Url of the subscription",
+            required = true) String hostname) {
+        return subscriptionService.findFirstByHostname(hostname)
+                .onItem().ifNotNull()
+                .transform(SubscriptionMapper.INSTANCE::subscriptionToSubscriptionDraft)
+                .onItem().ifNull().failWith(NotFoundException::new);
+    }
+
 }

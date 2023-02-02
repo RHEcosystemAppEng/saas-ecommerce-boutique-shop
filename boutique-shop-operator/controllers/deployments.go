@@ -658,7 +658,7 @@ func (r *BoutiqueShopReconciler) newEmailDeployment(ctx context.Context, instanc
 func (r *BoutiqueShopReconciler) newFrontendDeployment(ctx context.Context, instance *demov1alpha1.BoutiqueShop) (*appResource, error) {
 	container := corev1.Container{
 		Name:  "server",
-		Image: "gcr.io/google-samples/microservices-demo/frontend:v0.3.9",
+		Image: "quay.io/ecosystem-appeng/frontend:v0.3.9",
 		Ports: []corev1.ContainerPort{
 			{
 				ContainerPort: int32(8080),
@@ -705,6 +705,10 @@ func (r *BoutiqueShopReconciler) newFrontendDeployment(ctx context.Context, inst
 			{
 				Name:  "SHIPPING_SERVICE_ADDR",
 				Value: fmt.Sprintf("%s.%s.svc:%d", shippingName(), r.getNs(instance, shippingName()), shippingServicePort),
+			},
+			{
+				Name:  "TENANT_SERVICE_ADDR",
+				Value: "http://tenant-controller-service.saas-boutique.svc.cluster.local",
 			},
 		},
 		Resources: corev1.ResourceRequirements{
