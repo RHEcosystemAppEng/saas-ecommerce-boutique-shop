@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ProvisionResponse {
 
     List<ResourceByTier> resourcesByTier;
@@ -19,6 +21,7 @@ public class ProvisionResponse {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
+    @ToString
     public static class ResourceByTier {
         String tier;
         List<Resource> resourcesByMicroservices;
@@ -28,6 +31,7 @@ public class ProvisionResponse {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
+    @ToString
     public static class Resource {
         String bucket;
         String tenant;
@@ -39,6 +43,7 @@ public class ProvisionResponse {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
+    @ToString
     public static class HpaResources {
         int minReplicas;
         int maxReplicas;

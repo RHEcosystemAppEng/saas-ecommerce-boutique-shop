@@ -110,7 +110,7 @@ public class ProvisionScheduler {
             log.info("Before calling the Rules Engine: (Request)=" + provisionRequest.toString());
             return provisionService.provisionTier(provisionRequest)
                     .onItem().transform(provisionResponse -> {
-                        log.info("After calling the Rules Engine: (Response)=" + provisionResponse);
+                        log.info("After calling the Rules Engine: (Response)=" + provisionResponse.toString());
                         ObjectMapper objectMapper = new ObjectMapper();
                         try {
                             return objectMapper.writeValueAsString(provisionResponse);
