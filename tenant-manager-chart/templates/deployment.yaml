@@ -40,7 +40,7 @@ spec:
 {{- if hasKey $cluster "spec" }}
   {{- if hasKey $cluster.spec "domain" }}
     {{- $domain := $cluster.spec.domain }}
-    {{- $route =  printf  "https://tenant-manager-rules-engine-%s.%s" $.Values.namespace.name $domain }}
+    {{- $route =  printf "http://tenant-manager-rules-engine-%s.%s" $.Values.namespace.name svc.cluster.local }}
   {{- end }}
 {{- end }}
               value: {{ $route }}
