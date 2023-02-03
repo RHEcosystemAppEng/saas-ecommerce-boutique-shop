@@ -107,10 +107,10 @@ public class ProvisionScheduler {
         provisionRequest.setTierRequests(Collections.singletonList(tierRequest));
 
         if (shouldCreateRequest[0]) {
-            log.info("Before calling the Rules Engine: (Request)=" + provisionRequest.toString());
+//            log.info("Before calling the Rules Engine: (Request)=" + provisionRequest.toString());
             return provisionService.provisionTier(provisionRequest)
                     .onItem().transform(provisionResponse -> {
-                        log.info("After calling the Rules Engine: (Response)=" + provisionResponse.toString());
+//                        log.info("After calling the Rules Engine: (Response)=" + provisionResponse.toString());
                         ObjectMapper objectMapper = new ObjectMapper();
                         try {
                             return objectMapper.writeValueAsString(provisionResponse);

@@ -69,9 +69,9 @@ public class ProvisionService {
 
 
     private Uni<String> runScript(String... scriptAndArgs) {
-        log.infof("Calling the shell script %s with args %s", scriptAndArgs[0],
-                List.of(Arrays.copyOfRange(scriptAndArgs, 1,
-                        scriptAndArgs.length)));
+//        log.infof("Calling the shell script %s with args %s", scriptAndArgs[0],
+//                List.of(Arrays.copyOfRange(scriptAndArgs, 1,
+//                        scriptAndArgs.length)));
         return Uni.createFrom()
                 .item(() -> runScriptUsingBlockingIO(scriptAndArgs))
                 .runSubscriptionOn(Infrastructure.getDefaultWorkerPool());

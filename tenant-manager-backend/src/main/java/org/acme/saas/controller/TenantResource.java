@@ -1,7 +1,7 @@
 package org.acme.saas.controller;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
-import io.smallrye.mutiny.Multi;
+import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.unchecked.Unchecked;
 import org.acme.saas.common.Constants;
@@ -45,7 +45,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 
@@ -53,6 +52,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Path("/tenant")
 public class TenantResource {
+
     @Inject
     TenantService tenantService;
 
@@ -65,22 +65,23 @@ public class TenantResource {
     @Inject
     StyleService styleService;
 
-    @Operation(hidden = true)
-    @GET
-    @Path("/test")
-    @Produces(APPLICATION_JSON)
-    public Multi<Long> test() {
-        return Multi.createFrom()
-                .ticks().every(Duration.ofSeconds(1))
-                .onItem().transform(i -> i * 2)
-                .select().first(10);
-    }
+//    @Operation(hidden = true)
+//    @GET
+//    @Path("/test")
+//    @Produces(APPLICATION_JSON)
+//    public Multi<Long> test() {
+//        return Multi.createFrom()
+//                .ticks().every(Duration.ofSeconds(1))
+//                .onItem().transform(i -> i * 2)
+//                .select().first(10);
+//    }
 
     @Operation(summary = "Health check service")
     @GET
     @Path("/health")
     @Produces(APPLICATION_JSON)
     public Uni<String> healthEndpoint() {
+        Log.info("In Tenant Resource = healthEndpoint");
         return Uni.createFrom().item("ok");
     }
 
@@ -100,16 +101,17 @@ public class TenantResource {
     @GET
     @Path("/{tenantKey}")
     @Produces(APPLICATION_JSON)
-    public Uni<TenantDraft> getTenantById(@Parameter(description = "tenantKey of the Tenant", required = true) @PathParam("tenantKey") String tenantKey) {
+    public Uni<TenantDraft> getTenantById(@PathParam("tenantKey") String tenantKey) {
         return tenantService.findByTenantKey(tenantKey)
                 .onItem().transform(TenantMapper.INSTANCE::tenantToTenantDraft)
-                .onItem().ifNull().failWith(NotFoundException::new);
+                .onItem().ifNull().failWith(RuntimeException::new);
     }
 
     @GET
     @Path("/")
     @Produces(APPLICATION_JSON)
     public Uni<List<TenantData>> getAllTenants() {
+        Log.info("In Tenant Resource = getAllTenants");
         return tenantService.findAllTenants();
     }
 
