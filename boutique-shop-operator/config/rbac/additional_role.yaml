@@ -59,3 +59,14 @@ rules:
       - ''
     resources:
       - services
+  - verbs:
+      - get
+      - watch
+      - list
+      - create
+      - delete
+      - update
+    apiGroups:
+      - 'autoscaling'
+    resources:
+      - horizontalpodautoscalers
