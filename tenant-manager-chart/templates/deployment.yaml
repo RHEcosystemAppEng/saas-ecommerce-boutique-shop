@@ -35,7 +35,7 @@ spec:
                   name: tenant-controller-mysql-password
                   key: MYSQL_PASSWORD
             - name: RULES_SERVICE_URL
-              value: http://tenant-manager-rules-engine-{{ .Values.namespace.name }}.svc.cluster.local
+              value: http://tenant-manager-rules-engine.{{ .Values.namespace.name }}.svc.cluster.local
           volumeMounts:
             - mountPath: /usr/app/boutique_files
               name: provisioner-templates
