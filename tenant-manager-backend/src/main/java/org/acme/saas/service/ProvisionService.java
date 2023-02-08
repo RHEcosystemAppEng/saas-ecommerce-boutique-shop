@@ -69,6 +69,11 @@ public class ProvisionService {
 
 
     private Uni<String> runScript(String... scriptAndArgs) {
+        log.info("Printing script and args:::");
+        log.info(Arrays.toString(scriptAndArgs));
+//        Arrays.stream(scriptAndArgs).forEach(s -> log.info(s));
+        log.info("Finished printing script and args:::");
+
 //        log.infof("Calling the shell script %s with args %s", scriptAndArgs[0],
 //                List.of(Arrays.copyOfRange(scriptAndArgs, 1,
 //                        scriptAndArgs.length)));

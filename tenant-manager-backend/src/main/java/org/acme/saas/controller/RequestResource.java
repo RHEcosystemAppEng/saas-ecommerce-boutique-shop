@@ -67,6 +67,7 @@ public class RequestResource {
                     schema = @Schema(implementation = RequestData.class))) RequestData requestData) {
         RequestDraft.RequestDraftBuilder requestDraftBuilder = RequestDraft.builder();
         requestDraftBuilder.tenantKey(requestData.getTenantKey());
+        requestDraftBuilder.hostName(requestData.getHostName());
         requestDraftBuilder.tier(requestData.getTier());
         requestDraftBuilder.avgConcurrentShoppers(requestData.getAvgConcurrentShoppers());
         requestDraftBuilder.peakConcurrentShoppers(requestData.getPeakConcurrentShoppers());

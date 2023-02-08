@@ -38,8 +38,11 @@ export const UpdateResources = () => {
         const formData = {
             "tenantKey": localStorage.getItem("tenantKey") || "",
             "tier": localStorage.getItem("tier") || "",
+            "hostName": localStorage.getItem("hostName") || "",
             "avgConcurrentShoppers": localStorage.getItem("avgConcurrentShoppers") || null,
             "peakConcurrentShoppers": localStorage.getItem("peakConcurrentShoppers") || null,
+            "fromTime": localStorage.getItem("fromTime") || "",
+            "toTime": localStorage.getItem("toTime") || ""
         }
 
         axios
@@ -72,7 +75,7 @@ export const UpdateResources = () => {
         {
             id: 1,
             name: 'Service Details',
-            component: <ServiceDetailsForm isEdited={isEdited} markDataChanged={setIsEdited}/>
+            component: <ServiceDetailsForm isEdited={isEdited} markDataChanged={setIsEdited} disableHostName={true}/>
         },
         {
             id: 2,

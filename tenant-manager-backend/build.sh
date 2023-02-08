@@ -18,8 +18,8 @@ IMAGE_NAME=saas-tenant-manager-backend
 # #docker push ${IMAGE_LATEST}
 
 #BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-mvn package
-BUILD_VERSION=0.0.1
+mvn clean install
+BUILD_VERSION=0.0.12
 echo Build version is: ${BUILD_VERSION}
 IMAGE_FULL=${IMAGE_REGISTRY}/${IMAGE_REPOSITORY}/${IMAGE_NAME}:${BUILD_VERSION}
 IMAGE_LATEST=${IMAGE_REGISTRY}/${IMAGE_REPOSITORY}/${IMAGE_NAME}:latest

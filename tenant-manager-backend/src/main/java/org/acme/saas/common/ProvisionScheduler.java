@@ -95,7 +95,7 @@ public class ProvisionScheduler {
                 ProvisionRequest.TenantRequest.TenantRequestBuilder tenantRequestBuilder = ProvisionRequest.TenantRequest.builder();
                 shouldCreateRequest[0] = true;
                 Request request = tenant.subscriptions.get(0).request;
-                tenantRequestBuilder.tenant(request.tenantKey);
+                tenantRequestBuilder.tenant(tenant.tenantName);
                 tenantRequestBuilder.averageConcurrentShoppers(String.valueOf(request.avgConcurrentShoppers));
 
                 tmpList.add(tenantRequestBuilder.build());
@@ -107,10 +107,10 @@ public class ProvisionScheduler {
         provisionRequest.setTierRequests(Collections.singletonList(tierRequest));
 
         if (shouldCreateRequest[0]) {
-//            log.info("Before calling the Rules Engine: (Request)=" + provisionRequest.toString());
+            log.info("Before calling the Rules Engine: (Request)=" + provisionRequest.toString());
             return provisionService.provisionTier(provisionRequest)
                     .onItem().transform(provisionResponse -> {
-//                        log.info("After calling the Rules Engine: (Response)=" + provisionResponse.toString());
+                        log.info("After calling the Rules Engine: (Response)=" + provisionResponse.toString());
                         ObjectMapper objectMapper = new ObjectMapper();
                         try {
                             return objectMapper.writeValueAsString(provisionResponse);

@@ -117,6 +117,8 @@ public class TenantService {
                 .all()
                 .unis(modifiedTenants, runningTenants)
                 .combinedWith((modified, running) -> {
+                    System.out.println("Modified tenants:" + modified.toString());
+                    System.out.println("Running tenants:" + running.toString());
                     if(modified.size() == 0)
                         return null;
                     List<Tenant> noChangeRequiredTenants = running.stream().filter(tenant -> tenant.desiredState).toList();

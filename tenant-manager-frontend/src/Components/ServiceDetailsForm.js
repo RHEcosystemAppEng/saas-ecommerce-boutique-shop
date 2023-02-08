@@ -13,6 +13,7 @@ import HelpIcon from '@patternfly/react-icons/dist/esm/icons/help-icon';
 import axios from "../axios-middleware";
 
 export const ServiceDetailsForm = (props) => {
+    const [disableHostName, setDisableHostName] = React.useState(!!props.disableHostName);
     const [hostName, setHostName] = React.useState(() => {
         return localStorage.getItem("hostName") || "";
     });
@@ -128,6 +129,7 @@ export const ServiceDetailsForm = (props) => {
         helperText={hostNameHelperText}>
             <TextInput isRequired type="text" id="simple-form-email-00" name="simple-form-email-00"
                        value={hostName}
+                       isDisabled={disableHostName}
                        onChange={handleHostNameChange} validated={isHostNameValid}
             placeholder={"my-online-shop"}/>
         </FormGroup>
