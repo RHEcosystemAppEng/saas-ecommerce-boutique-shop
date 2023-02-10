@@ -30,7 +30,7 @@ public class ProvisionScheduler {
     @Inject
     ProvisionService provisionService;
 
-    @Scheduled(every = "200s")
+    @Scheduled(every = "60s")
     void increment() {
         if (running.get())
             return;

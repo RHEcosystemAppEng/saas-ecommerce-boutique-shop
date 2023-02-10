@@ -24,7 +24,7 @@ public class HpaComputationTest {
         private static final Logger log = Logger.getLogger(HpaComputationTest.class);
 
         private String inputs(int averageConcurrentShoppers, String bucket, String tier) {
-                return String.format("{ \"Average Concurrent Shoppers\": %d, \"Bucket\": \"%s\", \"Tier\": \"%s\" }",
+                return String.format("{ \"averageConcurrentShoppers\": %d, \"bucket\": \"%s\", \"tier\": \"%s\" }",
                                 averageConcurrentShoppers, bucket, tier);
         }
 
@@ -41,7 +41,7 @@ public class HpaComputationTest {
                                 .statusCode(200).extract().response();
 
                 Map<String, Object> responseMap = response.as(HashMap.class);
-                Map<String, Object> actualReplicas = (Map<String, Object>) responseMap.get("HPA Replicas");
+                Map<String, Object> actualReplicas = (Map<String, Object>) responseMap.get("hpaReplicas");
                 actualReplicas.remove("comment");
                 log.infof("Comparing expected %s to actual %s for %d/%s/%s", expectedReplicas, actualReplicas,
                                 averageConcurrentShoppers, bucket, tier);

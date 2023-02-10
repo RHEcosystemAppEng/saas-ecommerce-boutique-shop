@@ -65,17 +65,6 @@ public class TenantResource {
     @Inject
     StyleService styleService;
 
-//    @Operation(hidden = true)
-//    @GET
-//    @Path("/test")
-//    @Produces(APPLICATION_JSON)
-//    public Multi<Long> test() {
-//        return Multi.createFrom()
-//                .ticks().every(Duration.ofSeconds(1))
-//                .onItem().transform(i -> i * 2)
-//                .select().first(10);
-//    }
-
     @Operation(summary = "Health check service")
     @GET
     @Path("/health")
@@ -166,7 +155,7 @@ public class TenantResource {
         tenantDraftBuilder.address(registerData.getAddress());
         tenantDraftBuilder.phone(registerData.getPhone());
         tenantDraftBuilder.contactName(registerData.getContactName());
-        tenantDraftBuilder.desiredState(true);
+        tenantDraftBuilder.desiredState(false);
         tenantDraftBuilder.status(Constants.TENANT_STATUS_RUNNING);
 
         RequestDraftBuilder requestDraftBuilder = RequestDraft.builder();
@@ -181,14 +170,10 @@ public class TenantResource {
         requestDraftBuilder.status(Constants.REQUEST_STATUS_APPROVED);
         RequestDraft requestDraft = requestDraftBuilder.build();
 
-        int[] instanceCount = subscriptionService.calculateInstanceCount(
-                requestDraft.getAvgConcurrentShoppers(), requestDraft.getPeakConcurrentShoppers());
         SubscriptionDraftBuilder subscriptionDraftBuilder = SubscriptionDraft.builder();
         subscriptionDraftBuilder.tenantKey(tenantKey);
         subscriptionDraftBuilder.serviceName(Constants.REQUEST_SERVICE_NAME_ALL);
         subscriptionDraftBuilder.tier(registerData.getTier());
-        subscriptionDraftBuilder.minInstanceCount(instanceCount[0]);
-        subscriptionDraftBuilder.maxInstanceCount(instanceCount[1]);
         subscriptionDraftBuilder.status(Constants.SUBSCRIPTION_STATUS_INITIAL);
 
         StyleDraftBuilder styleDraftBuilder = StyleDraft.builder();
@@ -197,21 +182,27 @@ public class TenantResource {
         styleDraftBuilder.headingColor(registerData.getHeadingColor());
         styleDraftBuilder.ribbonColor(registerData.getRibbonColor());
 
-        // Added to ensure a unique Transaction
-        return Uni.combine().all().unis(
-                        styleService.createNewStyle(styleDraftBuilder.build()),
-                        subscriptionService.createNewSubscription(
-                                tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft)
-                ).combinedWith((style, subscription) -> tenantService.createNewTenant(tenantDraftBuilder.build(),
-                        subscription))
-                .flatMap(Function.identity())
-                .onItem().transform(tenant -> {
-                    TokenDataBuilder tokenDataBuilder = TokenData.builder();
-                    tokenDataBuilder.Id(tenant.id);
-                    tokenDataBuilder.key(tenant.tenantKey);
-                    tokenDataBuilder.loggedInUserName(tenant.tenantName);
-                    return tokenDataBuilder.build();
-                });
+        return subscriptionService.calculateInstanceCount(registerData.getTier(), registerData.getAvgConcurrentShoppers())
+                .onItem().transform(
+                        instanceCount -> subscriptionDraftBuilder.minInstanceCount(instanceCount[0])
+                                .maxInstanceCount(instanceCount[1])
+
+                ).onItem().transformToUni(
+                        ignore -> Uni.combine().all().unis(
+                                        styleService.createNewStyle(styleDraftBuilder.build()),
+                                        subscriptionService.createNewSubscription(
+                                                tenantDraftBuilder.build(), subscriptionDraftBuilder.build(), requestDraft)
+                                ).combinedWith((style, subscription) -> tenantService.createNewTenant(tenantDraftBuilder.build(),
+                                        subscription))
+                                .flatMap(Function.identity())
+                                .onItem().transform(tenant -> {
+                                    TokenDataBuilder tokenDataBuilder = TokenData.builder();
+                                    tokenDataBuilder.Id(tenant.id);
+                                    tokenDataBuilder.key(tenant.tenantKey);
+                                    tokenDataBuilder.loggedInUserName(tenant.tenantName);
+                                    return tokenDataBuilder.build();
+                                })
+                );
     }
 
     @Operation(summary = "Enables a tenant subscription")

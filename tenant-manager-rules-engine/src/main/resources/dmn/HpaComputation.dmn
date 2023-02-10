@@ -11,31 +11,33 @@
     <dmn:itemComponent id="_0F30B403-1108-4CE2-AA47-19E31759D28C" name="minReplicas" isCollection="false">
       <dmn:typeRef>number</dmn:typeRef>
     </dmn:itemComponent>
-    <dmn:itemComponent id="_E45C6E38-8626-45BD-9023-BCF030006351" name="maxReplicas" isCollection="false"/>
+    <dmn:itemComponent id="_E45C6E38-8626-45BD-9023-BCF030006351" name="maxReplicas" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
   </dmn:itemDefinition>
-  <dmn:itemDefinition id="_B76BD24C-D617-4C9B-A3CA-7C1B78F951B4" name="Bucket" isCollection="false">
+  <dmn:itemDefinition id="_B76BD24C-D617-4C9B-A3CA-7C1B78F951B4" name="bucket" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues kie:constraintType="enumeration" id="_9B1992DB-54E5-41CE-A660-A93BE79CE4AC">
       <dmn:text>null, "enterprise utilities", "logistics", "shopper experience"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
-  <dmn:itemDefinition id="_3D856AD5-7B58-4419-B416-D82F8584485D" name="Tier" isCollection="false">
+  <dmn:itemDefinition id="_3D856AD5-7B58-4419-B416-D82F8584485D" name="tier" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues kie:constraintType="enumeration" id="_6A3C016C-5F9A-4654-A7D7-1869D73F62AA">
       <dmn:text>"free", "silver", "gold", "platinum"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
-  <dmn:inputData id="_A33DF17D-A7E7-4716-A8F9-775A55AAF5FA" name="Average Concurrent Shoppers">
+  <dmn:inputData id="_A33DF17D-A7E7-4716-A8F9-775A55AAF5FA" name="averageConcurrentShoppers">
     <dmn:extensionElements/>
-    <dmn:variable id="_A39E3C1C-7966-46DA-B002-1B34D50829F1" name="Average Concurrent Shoppers" typeRef="number"/>
+    <dmn:variable id="_A39E3C1C-7966-46DA-B002-1B34D50829F1" name="averageConcurrentShoppers" typeRef="number"/>
   </dmn:inputData>
-  <dmn:inputData id="_AF81CE5D-7523-4ECB-844B-05CF7F73DF70" name="Bucket">
+  <dmn:inputData id="_AF81CE5D-7523-4ECB-844B-05CF7F73DF70" name="bucket">
     <dmn:extensionElements/>
-    <dmn:variable id="_1C2F4294-6237-4153-B1CC-3BEB0FB527A1" name="Bucket" typeRef="Bucket"/>
+    <dmn:variable id="_1C2F4294-6237-4153-B1CC-3BEB0FB527A1" name="bucket" typeRef="bucket"/>
   </dmn:inputData>
-  <dmn:decision id="_7C2DF06E-4151-4404-931E-6D08F87A539F" name="HPA Replicas">
+  <dmn:decision id="_7C2DF06E-4151-4404-931E-6D08F87A539F" name="hpaReplicas">
     <dmn:extensionElements/>
-    <dmn:variable id="_C3B5ED9B-7F45-4877-869D-B94BDA846B9D" name="HPA Replicas" typeRef="HpaReplicas"/>
+    <dmn:variable id="_C3B5ED9B-7F45-4877-869D-B94BDA846B9D" name="hpaReplicas" typeRef="HpaReplicas"/>
     <dmn:informationRequirement id="_07225385-ACBC-4388-BC8D-FB5135DA64BF">
       <dmn:requiredInput href="#_A33DF17D-A7E7-4716-A8F9-775A55AAF5FA"/>
     </dmn:informationRequirement>
@@ -52,7 +54,7 @@
       <dmn:contextEntry>
         <dmn:variable id="_79B4C348-5413-4C07-85B6-8500402A29C4" name="Replicas" typeRef="number"/>
         <dmn:literalExpression id="_79B4C348-5413-4C07-85B6-8500402A29C5">
-          <dmn:text>Average Concurrent Shoppers / Divisor</dmn:text>
+          <dmn:text>averageConcurrentShoppers / divisor</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
       <dmn:contextEntry>
@@ -72,16 +74,16 @@
               <dmn:text>-</dmn:text>
             </dmn:inputEntry>
             <dmn:outputEntry id="_2220D98F-9DB9-4239-B653-7FFA2FAA5C72">
-              <dmn:text>Min Replicas(Replicas)</dmn:text>
+              <dmn:text>minReplicas(Replicas)</dmn:text>
             </dmn:outputEntry>
             <dmn:outputEntry id="_B6488740-EACC-4126-9075-69AD34105569">
-              <dmn:text>Max Replicas(Replicas)</dmn:text>
+              <dmn:text>maxReplicas(Replicas)</dmn:text>
             </dmn:outputEntry>
             <dmn:outputEntry id="_13586416-987B-4A70-88C9-F23F25CB3DC9">
               <dmn:text>Replicas</dmn:text>
             </dmn:outputEntry>
             <dmn:outputEntry id="_FB81227B-2693-4A45-8528-48267C9AAF24">
-              <dmn:text>string join( [string(Average Concurrent Shoppers), "/", string(Divisor)] )</dmn:text>
+              <dmn:text>string join( [string(averageConcurrentShoppers), "/", string(divisor)] )</dmn:text>
             </dmn:outputEntry>
             <dmn:annotationEntry>
               <dmn:text/>
@@ -91,9 +93,9 @@
       </dmn:contextEntry>
     </dmn:context>
   </dmn:decision>
-  <dmn:businessKnowledgeModel id="_9E43E889-AF31-415C-AC98-B8F166FA2689" name="Min Replicas">
+  <dmn:businessKnowledgeModel id="_9E43E889-AF31-415C-AC98-B8F166FA2689" name="minReplicas">
     <dmn:extensionElements/>
-    <dmn:variable id="_FDB2FBFE-A72D-41A8-B8A6-C0202036453F" name="Min Replicas" typeRef="number"/>
+    <dmn:variable id="_FDB2FBFE-A72D-41A8-B8A6-C0202036453F" name="minReplicas" typeRef="number"/>
     <dmn:encapsulatedLogic id="_BC7FD206-FA57-41CC-AE82-40C1C343FB0F" kind="FEEL">
       <dmn:formalParameter id="_9B70F465-F81E-4474-9E4A-B58B081D737E" name="Replicas" typeRef="number"/>
       <dmn:literalExpression id="_745F6597-6A09-44D7-8CD9-2E34716799B5">
@@ -101,9 +103,9 @@
       </dmn:literalExpression>
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
-  <dmn:businessKnowledgeModel id="_D9D73EF5-EE27-4579-A3B3-6446EDA0B67A" name="Max Replicas">
+  <dmn:businessKnowledgeModel id="_D9D73EF5-EE27-4579-A3B3-6446EDA0B67A" name="maxReplicas">
     <dmn:extensionElements/>
-    <dmn:variable id="_BB656693-BED6-484B-B290-4FB8105B6B9C" name="Max Replicas" typeRef="number"/>
+    <dmn:variable id="_BB656693-BED6-484B-B290-4FB8105B6B9C" name="maxReplicas" typeRef="number"/>
     <dmn:encapsulatedLogic id="_7D063A6C-0BC3-4055-BDEE-F146C0C3A906" kind="FEEL">
       <dmn:formalParameter id="_E537878A-50B6-459D-BD60-556BB981B509" name="Replicas" typeRef="number"/>
       <dmn:literalExpression id="_23609C1E-9A39-4023-8BA2-6EF1F6C07667">
@@ -111,9 +113,9 @@
       </dmn:literalExpression>
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
-  <dmn:decision id="_B18D3379-0355-4C77-B82F-D446861C928E" name="Divisor">
+  <dmn:decision id="_B18D3379-0355-4C77-B82F-D446861C928E" name="divisor">
     <dmn:extensionElements/>
-    <dmn:variable id="_9368B3D7-8C4D-4218-B0B1-DF93B2D27AF8" name="Divisor" typeRef="number"/>
+    <dmn:variable id="_9368B3D7-8C4D-4218-B0B1-DF93B2D27AF8" name="divisor" typeRef="number"/>
     <dmn:informationRequirement id="_45837FE8-2801-4BBA-9CA7-E7743EABEEAA">
       <dmn:requiredInput href="#_AF81CE5D-7523-4ECB-844B-05CF7F73DF70"/>
     </dmn:informationRequirement>
@@ -123,12 +125,12 @@
     <dmn:decisionTable id="_4EEA7315-D53F-4934-A34E-D2171A903919" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
       <dmn:input id="_CA570289-D25E-4A42-B700-FD7E0437C66A">
         <dmn:inputExpression id="_DE79F45F-884A-4114-8F23-09C3940FE04D">
-          <dmn:text>Tier</dmn:text>
+          <dmn:text>tier</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
       <dmn:input id="_8B6CD474-3282-453D-9523-1345842C90EA">
         <dmn:inputExpression id="_1F3E5EEE-EC42-48B8-AD55-A3C6CEDB6A7D" typeRef="string">
-          <dmn:text>Bucket</dmn:text>
+          <dmn:text>bucket</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
       <dmn:output id="_B2133FA2-4C40-424A-A23D-D67F3BAA82DA"/>
@@ -303,9 +305,9 @@
       </dmn:rule>
     </dmn:decisionTable>
   </dmn:decision>
-  <dmn:inputData id="_4A271F6E-813F-4C48-896D-CCA615A3C4E7" name="Tier">
+  <dmn:inputData id="_4A271F6E-813F-4C48-896D-CCA615A3C4E7" name="tier">
     <dmn:extensionElements/>
-    <dmn:variable id="_52DCADD3-72E4-4DF5-A50C-73B5FC802D63" name="Tier" typeRef="Tier"/>
+    <dmn:variable id="_52DCADD3-72E4-4DF5-A50C-73B5FC802D63" name="tier" typeRef="tier"/>
   </dmn:inputData>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_47A4B0E3-B363-4314-A9A1-83BA3AFC3D99" name="DRG">

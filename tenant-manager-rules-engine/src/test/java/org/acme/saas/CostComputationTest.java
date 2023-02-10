@@ -24,7 +24,7 @@ public class CostComputationTest {
     private static final Logger log = Logger.getLogger(CostComputationTest.class);
 
     private String inputs(String tier, int averageConcurrentShoppers) {
-        return String.format("{ \"Tier\": \"%s\", \"Average Concurrent Shoppers\": %d }", tier,
+        return String.format("{ \"tier\": \"%s\", \"averageConcurrentShoppers\": %d }", tier,
                 averageConcurrentShoppers);
     }
 
@@ -42,8 +42,8 @@ public class CostComputationTest {
         Map<String, Object> responseMap = response.as(HashMap.class);
         // Pay attention that numbers might be reported as integers so you need to pass from the generic Number class
         // to get the Double
-        Double actualCost = Objects.isNull(responseMap.get("Calculated Price")) ? null : ((Number) responseMap.get(
-                "Calculated Price")).doubleValue();
+        Double actualCost = Objects.isNull(responseMap.get("calculatedPrice")) ? null : ((Number) responseMap.get(
+                "calculatedPrice")).doubleValue();
         log.infof("Comparing expected %s to actual %s for %s/%d", expectedCost, actualCost,
                 tier, averageConcurrentShoppers);
         assertThat(actualCost, is(expectedCost));

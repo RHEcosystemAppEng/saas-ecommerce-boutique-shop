@@ -128,16 +128,16 @@ public class RulesResource {
 
         java.util.Map<String, Object> variables = new HashMap<>();
         logger.infof("Invoking HpaComputation");
-        variables.put("Average Concurrent Shoppers", averageConcurrentShoppers);
-        variables.put("Bucket", bucket);
-        variables.put("Tier", tier);
+        variables.put("averageConcurrentShoppers", averageConcurrentShoppers);
+        variables.put("bucket", bucket);
+        variables.put("tier", tier);
         logger.infof("Invoking %s with %s", "HpaComputation", variables);
         org.kie.dmn.api.core.DMNResult decisionResult = dmn.evaluateAll(DMNJSONUtils.ctx(dmn, variables));
         KogitoDMNResult dmnResult = new KogitoDMNResult(
                 "https://kiegroup.org/dmn/hpa-computation",
                 "HpaComputation", decisionResult);
 
-        DMNDecisionResult decision = dmnResult.getDecisionResultByName("HPA Replicas");
+        DMNDecisionResult decision = dmnResult.getDecisionResultByName("hpaReplicas");
         logger.infof("Result is %s", decision.getResult());
         Map<String, Object> result = (Map<String, Object>) decision.getResult();
         HpaResources hpaResources = new HpaResources(((BigDecimal) result.get("minReplicas")).intValue(),
