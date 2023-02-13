@@ -155,7 +155,7 @@ public class TenantResource {
         tenantDraftBuilder.address(registerData.getAddress());
         tenantDraftBuilder.phone(registerData.getPhone());
         tenantDraftBuilder.contactName(registerData.getContactName());
-        tenantDraftBuilder.desiredState(false);
+//        tenantDraftBuilder.desiredState(false);
         tenantDraftBuilder.status(Constants.TENANT_STATUS_RUNNING);
 
         RequestDraftBuilder requestDraftBuilder = RequestDraft.builder();
