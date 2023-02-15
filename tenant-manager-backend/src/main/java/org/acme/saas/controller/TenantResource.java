@@ -249,8 +249,8 @@ public class TenantResource {
                                 throw new BadRequestException("The tenant is not in the expected Stopped state");
                             } else {
                                 Request request = tenant.subscriptions.get(0).request;
-                                request.avgConcurrentShoppers = 0;
-                                request.peakConcurrentShoppers = 0;
+                               // request.avgConcurrentShoppers = 0;
+                               // request.peakConcurrentShoppers = 0;
                                 Uni<PanacheEntityBase> updateAvgConcurrentShoppers = request.persist();
 
                                 Uni<String> stringUni = provisionService.onPurgeSubscription(
