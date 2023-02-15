@@ -69,14 +69,10 @@ bundle:
 deploy:
 	# Make a new namespace and deploy the operator
 	oc new-project ${OPERATOR_NAMESPACE} || true
-	oc project ${OPERATOR_NAMESPACE} 
 	operator-sdk run bundle ${BUNDLE_IMG}
 
-.PHONY: build-deploy
-build-deploy: init bundle deploy
-
-.PHONY: all
-all: build-deploy
+.PHONY: bundle-deploy
+bundle-deploy: init bundle deploy
 
 .PHONY: undeploy
 undeploy:

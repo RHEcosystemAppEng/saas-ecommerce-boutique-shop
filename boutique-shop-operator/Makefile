@@ -25,6 +25,13 @@ BUNDLE_DEFAULT_CHANNEL := --default-channel=$(DEFAULT_CHANNEL)
 endif
 BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
+# OPERATOR_NAME defines the name of the operator
+OPERATOR_NAME ?=boutique-shop-operator
+
+# OPERATOR_NAMESPACE in which to deploy the boutique tenant operator
+# By default using the same name as the operator name
+OPERATOR_NAMESPACE ?=${OPERATOR_NAME}
+
 # IMAGE_TAG_BASE defines the docker.io namespace and part of the image name for remote images.
 # This variable is used to construct full image tags for bundle and catalog images.
 #
@@ -39,12 +46,6 @@ BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(VERSION)
 # BUNDLE_GEN_FLAGS are the flags passed to the operator-sdk generate bundle command
 BUNDLE_GEN_FLAGS ?= -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
 
-# OPERATOR_NAME defines the name of the operator
-OPERATOR_NAME ?=boutique-shop-operator
-
-# NAMESPACE in which to deploy the boutique tenant operator
-# By default using the same name as the operator name
-NAMESPACE ?=${OPERATOR_NAME}
 # USE_IMAGE_DIGESTS defines if images are resolved via tags or digests
 # You can enable this value if you would like to use SHA Based Digests
 # To enable set flag to true
@@ -144,13 +145,13 @@ install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~
 uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
 	$(KUSTOMIZE) build config/crd | kubectl delete --ignore-not-found=$(ignore-not-found) -f -
 
-.PHONY: deploy
-deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
+.PHONY: internal-deploy
+internal-deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
-.PHONY: undeploy
-undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
+.PHONY: internal-undeploy
+internal-undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
 	$(KUSTOMIZE) build config/default | kubectl delete --ignore-not-found=$(ignore-not-found) -f -
 
 ##@ Build Dependencies
@@ -185,8 +186,8 @@ envtest: $(ENVTEST) ## Download envtest-setup locally if necessary.
 $(ENVTEST): $(LOCALBIN)
 	test -s $(LOCALBIN)/setup-envtest || GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
 
-.PHONY: bundle
-bundle: manifests kustomize ## Generate bundle manifests and metadata, then validate generated files.
+.PHONY: internal-bundle
+internal-bundle: manifests kustomize ## Generate bundle manifests and metadata, then validate generated files.
 	operator-sdk generate kustomize manifests -q
 	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
 	$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle $(BUNDLE_GEN_FLAGS)
@@ -241,31 +242,28 @@ catalog-build: opm ## Build a catalog image.
 catalog-push: ## Push a catalog image.
 	$(MAKE) docker-push IMG=$(CATALOG_IMG)
 
-.PHONY: bundle-all
-bundle-all:
-	# create manifest file
-	# $(shell pwd)/scripts/manifest.sh "$(shell pwd)/${OPERATOR_DIR}" "${OPERATOR_NAME}"
-
+.PHONY: bundle
+bundle:
 	# Make the operator image
 	make docker-build docker-push IMG="${IMG}" VERSION=${VERSION}
 
 	# Make the operator bundle by adding OLM to the operator image
-	make bundle IMG=${IMG} IMAGE_TAG_BASE=${IMAGE_TAG_BASE} VERSION=${VERSION}
+	make internal-bundle IMG=${IMG} IMAGE_TAG_BASE=${IMAGE_TAG_BASE} VERSION=${VERSION}
 
 	make bundle-build bundle-push IMG="${IMG}" IMAGE_TAG_BASE="${IMAGE_TAG_BASE}" VERSION=${VERSION}
 
-.PHONY: deploy-all
-deploy-all:
+.PHONY: deploy
+deploy:
 	# Make a new namespace and deploy the operator
-	oc new-project ${NAMESPACE} || true
+	oc new-project ${OPERATOR_NAMESPACE} || true
 	operator-sdk run bundle ${BUNDLE_IMG}
 
-.PHONY: build-deploy
-build-deploy: bundle-all deploy-all
+.PHONY: bundle-deploy
+bundle-deploy: bundle deploy
 
-.PHONY: remove
-remove:
+.PHONY: undeploy
+undeploy:
 	oc delete --all BoutiqueShop --all-namespaces || true
 	oc delete namespace boutique-free boutique-silver boutique-ops enterprise-utilities || true
-	make undeploy || true
-	oc delete ns ${NAMESPACE}  || true
+	make internal-undeploy || true
+	oc delete ns ${OPERATOR_NAMESPACE}  || true

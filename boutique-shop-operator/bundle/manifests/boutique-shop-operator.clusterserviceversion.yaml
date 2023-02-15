@@ -35,7 +35,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    operators.operatorframework.io/builder: operator-sdk-v1.25.3
+    operators.operatorframework.io/builder: operator-sdk-v1.24.1
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
   name: boutique-shop-operator.v0.0.1
   namespace: placeholder
@@ -111,6 +111,17 @@ spec:
           - ""
           resources:
           - services
+          verbs:
+          - get
+          - watch
+          - list
+          - create
+          - delete
+          - update
+        - apiGroups:
+          - autoscaling
+          resources:
+          - horizontalpodautoscalers
           verbs:
           - get
           - watch
@@ -231,6 +242,7 @@ spec:
                 command:
                 - /manager
                 image: quay.io/ecosystem-appeng/boutique-shop-operator:0.0.1
+                imagePullPolicy: Always
                 livenessProbe:
                   httpGet:
                     path: /healthz
