@@ -14,8 +14,14 @@ HELM_CHART=tenant-manager-chart
 # DOMAIN defines the domain used to initialize the operator
 DOMAIN ?=ecosystem-appeng.redhat.com
 
+# OPERATOR_NAME defines the name of the operator
+OPERATOR_NAME ?=saas-tenant-operator
+
+# OPERATOR_DIR defines the directory in which the operator code is generator
+OPERATOR_DIR=${OPERATOR_NAME}
+
 # IMAGE_TAG_BASE defines the image repository for operator
-IMAGE_TAG_BASE=quay.io/ecosystem-appeng/saas-tenant-operator
+IMAGE_TAG_BASE=quay.io/ecosystem-appeng/${OPERATOR_NAME}
 
 # IMG defines the tagged image with the version information
 IMG=${IMAGE_TAG_BASE}:v${VERSION}
@@ -23,15 +29,9 @@ IMG=${IMAGE_TAG_BASE}:v${VERSION}
 # BUNDLE_IMG defines the name and version of the bundle image
 BUNDLE_IMG=${IMAGE_TAG_BASE}-bundle:v${VERSION}
 
-# OPERATOR_NAME defines the name of the operator
-OPERATOR_NAME ?=boutique-tenant-operator
-
 # NAMESPACE in which to deploy the boutique tenant operator
 # By default using the same name as the operator name
-NAMESPACE ?=${OPERATOR_NAME}
-
-# OPERATOR_DIR defines the directory in which the operator code is generator
-OPERATOR_DIR=boutique-tenant-operator
+OPERATOR_NAMESPACE ?=${OPERATOR_NAME}
 
 .PHONY: setup
 setup:
@@ -45,13 +45,14 @@ init: setup
 	--domain=${DOMAIN} \
 	--helm-chart=$(shell pwd)/../${HELM_CHART} \
 	--kind=TenantManager
-	$(shell pwd)/scripts/post-init.sh "$(shell pwd)/${OPERATOR_DIR}" "${OPERATOR_NAME}" "${NAMESPACE}"
+	$(shell pwd)/scripts/post-init.sh "$(shell pwd)/${OPERATOR_DIR}" "${OPERATOR_NAME}" "${OPERATOR_NAMESPACE}"
 
 
 .PHONY: bundle
 bundle:
 	# create manifest file
 	$(shell pwd)/scripts/manifest.sh "$(shell pwd)/${OPERATOR_DIR}" "${OPERATOR_NAME}"
+	$(shell pwd)/scripts/manager.sh "$(shell pwd)/${OPERATOR_DIR}" "${OPERATOR_NAME}"
 
 	# Make the operator image
 	cd $(shell pwd)/${OPERATOR_DIR} && \
@@ -67,7 +68,8 @@ bundle:
 .PHONY: deploy
 deploy:
 	# Make a new namespace and deploy the operator
-	oc new-project ${NAMESPACE} || true
+	oc new-project ${OPERATOR_NAMESPACE} || true
+	oc project ${OPERATOR_NAMESPACE} 
 	operator-sdk run bundle ${BUNDLE_IMG}
 
 .PHONY: build-deploy
@@ -81,7 +83,7 @@ undeploy:
 	oc delete ns boutique-ops enterprise-utilities boutique-free boutique-silver || true
 	cd $(shell pwd)/${OPERATOR_DIR} && \
 	make undeploy || true
-	oc delete --all TenantManager --namespace=${NAMESPACE} || true
+	oc delete --all TenantManager --all-namespaces || true
 	oc delete ns saas-boutique || true
-	oc delete ns ${NAMESPACE}  || true
+	oc delete ns ${OPERATOR_NAMESPACE}  || true
  
