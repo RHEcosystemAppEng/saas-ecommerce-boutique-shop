@@ -77,7 +77,7 @@ boutique-shop-undeploy: # Undeploy boutique shop operator
 	make undeploy IMAGE_TAG_BASE="${BOUTIQUE_SHOP_IMAGE_TAG_BASE}" VERSION=${VERSION}
 
 .PHONY: tenant-undeploy
-tenant-deploy: # Undeploy tenant operator
+tenant-undeploy: # Undeploy tenant operator
 	cd $(shell pwd)/${TENANT_OPERATOR_DIR} && \
 	make undeploy IMAGE_TAG_BASE="${TENANT_IMAGE_TAG_BASE}" VERSION=${VERSION}
 
