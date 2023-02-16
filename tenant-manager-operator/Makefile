@@ -76,10 +76,10 @@ bundle-deploy: init bundle deploy
 
 .PHONY: undeploy
 undeploy:
+	oc delete --all TenantManager --all-namespaces || true
 	oc delete ns boutique-ops enterprise-utilities boutique-free boutique-silver || true
 	cd $(shell pwd)/${OPERATOR_DIR} && \
 	make undeploy || true
-	oc delete --all TenantManager --all-namespaces || true
 	oc delete ns saas-boutique || true
 	oc delete ns ${OPERATOR_NAMESPACE}  || true
  

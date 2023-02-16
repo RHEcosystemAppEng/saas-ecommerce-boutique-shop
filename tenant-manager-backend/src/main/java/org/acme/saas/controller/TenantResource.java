@@ -253,11 +253,12 @@ public class TenantResource {
                                // request.peakConcurrentShoppers = 0;
                                 Uni<PanacheEntityBase> updateAvgConcurrentShoppers = request.persist();
 
-                                Uni<String> stringUni = provisionService.onPurgeSubscription(
-                                        TenantMapper.INSTANCE.tenantToTenantDraft(tenant),
-                                        RequestMapper.INSTANCE.requestToRequestDraft(tenant.subscriptions.get(0).request)
-                                );
-                                return Uni.combine().all().unis(updateAvgConcurrentShoppers, stringUni)
+                                // Uni<String> stringUni = provisionService.onPurgeSubscription(
+                                //         TenantMapper.INSTANCE.tenantToTenantDraft(tenant),
+                                //         RequestMapper.INSTANCE.requestToRequestDraft(tenant.subscriptions.get(0).request)
+                                // );
+
+                                return Uni.combine().all().unis(updateAvgConcurrentShoppers, Uni.createFrom().item(1))
                                         .combinedWith((panacheEntityBase, s) ->
                                                 tenantService.updateTenantStatus(tenantKey, Constants.TENANT_STATUS_STOPPED))
                                         .flatMap(Function.identity());

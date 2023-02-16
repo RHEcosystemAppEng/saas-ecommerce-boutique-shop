@@ -65,23 +65,23 @@ class RequestResourceTest {
     //     assertEquals(1, requestChangeDataList.get(0).getNewMinInstances());
     // }
 
-    // private List<RequestChangeData> getPendingChangeData() {
-    //     Response getPendingRequestResponse = given()
-    //             .when().contentType("application/json")
-    //             .get("/request/pending")
-    //             .then()
-    //             .statusCode(200)
-    //             .extract().response();
+    private List<RequestChangeData> getPendingChangeData() {
+        Response getPendingRequestResponse = given()
+                .when().contentType("application/json")
+                .get("/request/pending")
+                .then()
+                .statusCode(200)
+                .extract().response();
 
-    //     List rawList = getPendingRequestResponse.as(List.class);
-    //     List<RequestChangeData> requestChangeDataList = new ArrayList<>();
-    //     final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
-    //     for (Object raw : rawList) {
-    //         final RequestChangeData requestChangeData = mapper.convertValue(raw, RequestChangeData.class);
-    //         requestChangeDataList.add(requestChangeData);
-    //     }
-    //     return requestChangeDataList;
-    // }
+        List rawList = getPendingRequestResponse.as(List.class);
+        List<RequestChangeData> requestChangeDataList = new ArrayList<>();
+        final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
+        for (Object raw : rawList) {
+            final RequestChangeData requestChangeData = mapper.convertValue(raw, RequestChangeData.class);
+            requestChangeDataList.add(requestChangeData);
+        }
+        return requestChangeDataList;
+    }
 
     // @Test
     // void createNewRequestTest() {
@@ -101,22 +101,22 @@ class RequestResourceTest {
     //     return createNewRequest(createResponseToken.getKey());
     // }
 
-    // private TokenData createNewRequest(String tenantKey) {
-    //     RequestData requestData = new RequestData();
-    //     requestData.setTenantKey(tenantKey);
-    //     requestData.setAvgConcurrentShoppers(50);
-    //     requestData.setPeakConcurrentShoppers(100);
-    //     requestData.setHostName("test-host-name");
+    private TokenData createNewRequest(String tenantKey) {
+        RequestData requestData = new RequestData();
+        requestData.setTenantKey(tenantKey);
+        requestData.setAvgConcurrentShoppers(50);
+        requestData.setPeakConcurrentShoppers(100);
+        requestData.setHostName("test-host-name");
 
-    //     Response response = given()
-    //             .when().contentType("application/json")
-    //             .body(requestData)
-    //             .post("/request/resource")
-    //             .then()
-    //             .statusCode(200)
-    //             .extract().response();
-    //     return response.as(TokenData.class);
-    // }
+        Response response = given()
+                .when().contentType("application/json")
+                .body(requestData)
+                .post("/request/resource")
+                .then()
+                .statusCode(200)
+                .extract().response();
+        return response.as(TokenData.class);
+    }
 
     // @Test
     // void approveRequest() {
@@ -150,8 +150,8 @@ class RequestResourceTest {
     //     assertEquals(requestDraft.getStatus(), Constants.REQUEST_STATUS_REJECTED);
     // }
 
-    // @Inject
-    // RequestService requestService;
+    @Inject
+    RequestService requestService;
 
     // @Test
     // public void approveOrRejectNonExistingRequest() {

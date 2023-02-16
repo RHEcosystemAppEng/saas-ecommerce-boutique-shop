@@ -19,6 +19,7 @@ spec:
             - name: JAVA_APP_JAR
               value: /deployments/quarkus-run.jar
           image: {{ .Values.rules.containerImagePath }}
+          imagePullPolicy: Always
           name: tenant-manager-rules-engine
           ports:
             - containerPort: 8181
