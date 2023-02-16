@@ -109,7 +109,7 @@
     <dmn:encapsulatedLogic id="_7D063A6C-0BC3-4055-BDEE-F146C0C3A906" kind="FEEL">
       <dmn:formalParameter id="_E537878A-50B6-459D-BD60-556BB981B509" name="Replicas" typeRef="number"/>
       <dmn:literalExpression id="_23609C1E-9A39-4023-8BA2-6EF1F6C07667">
-        <dmn:text>ceiling(Replicas)</dmn:text>
+        <dmn:text>max(ceiling(Replicas), 1)</dmn:text>
       </dmn:literalExpression>
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
