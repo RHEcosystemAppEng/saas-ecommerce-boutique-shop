@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tenant-controller-mysql-db
+  namespace: {{ .Values.namespace.name }}
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: "mysql"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: mysql
+          image: mysql
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-store
+              mountPath: /var/lib/mysql
+          env:
+            - name: MYSQL_DATABASE
+              value: {{ .Values.database.databaseName }}
+            - name: MYSQL_USER
+              value: {{ .Values.database.username }}
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tenant-controller-mysql-password
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tenant-controller-mysql-password
+                  key: MYSQL_ROOT_PASSWORD
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-store
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 2Gi

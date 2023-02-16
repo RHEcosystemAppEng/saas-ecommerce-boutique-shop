@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: boutique-silver
+---
+apiVersion: demo.openshift.com/v1alpha1
+kind: BoutiqueShop
+metadata:
+  name: boutique-silver
+  namespace: boutique-silver
+spec:
+  tier: silver

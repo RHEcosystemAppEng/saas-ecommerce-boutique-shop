@@ -1,0 +1,20 @@
+# permissions for end users to view tenantmanagers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tenantmanager-viewer-role
+rules:
+- apiGroups:
+  - charts.ecosystem-appeng.redhat.com
+  resources:
+  - tenantmanagers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - charts.ecosystem-appeng.redhat.com
+  resources:
+  - tenantmanagers/status
+  verbs:
+  - get
