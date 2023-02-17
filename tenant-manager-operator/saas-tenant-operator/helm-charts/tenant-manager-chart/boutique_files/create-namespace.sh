@@ -98,7 +98,7 @@ function provisionAllResources() {
   oc apply -f ${tierFolder}/common.yaml
   # Deploy the all-in-one application stack
   echo "Depoying boutique shop services for tenant: $1, namespace: $2, prefix: $3, and tier $4"
-  oc project default
+  oc project saas-boutique
   oc process -f ${SCRIPT_DIR}/boutique-shop.yaml --param=TENANT_NAME=$1 --param=TENANT_NAMESPACE=$2  --param=TENANT_PREFIX=$3 --param=TIER=$4 | oc apply -f -
   oc project $2
 
